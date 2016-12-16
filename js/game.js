@@ -3,8 +3,8 @@ function Game(width, height) {
     this.width = width;
     this.height = height;
 
-
-    var p = new Asteroid(Points.ASTEROIDS[0], 10, 50, 20);
+    var requestId = 0;
+    var p = new Asteroid(Points.ASTEROIDS[2], 10, 50, 20);
     p.maxX = this.width;
     p.maxY = this.height;
     log(p);
@@ -15,28 +15,29 @@ function Game(width, height) {
 
     // ... cose definite nella lezione precedente
 
-
-    this.gameLoop = function() {
-
-        if (!this.paused) {
-
-            // aggiorna tutti gli oggetti
-            this.update();
-        }
-
-        //disegna l'intera scena a schermo
-        this.draw();
-
-        window.requestAnimFrame(function() {
-
-            // rilancia la funzione GameLoop ad ogni frame
-            game.gameLoop();
-        });
-    }
-    this.update = function() {
+    function update() {
         p.update()
     }
-    this.draw = function() {
+
+    function draw() {
         p.draw(canvas)
     }
+
+    function gameLoop(time) {
+        // aggiorna tutti gli oggetti
+        update();
+        //disegna l'intera scena a schermo
+        draw();
+        requestId = window.requestAnimationFrame(gameLoop);
+    }
+
+    function stop() {
+        if (requestId)
+            window.cancelAnimationFrame(requestId);
+        requestId = 0;
+    }
+
+    Game.animate = function() { gameLoop() }
+    Game.stop = function() { stop() }
+
 }
