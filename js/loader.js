@@ -9,6 +9,7 @@ function loadScripts() {
         'utils',
         'polygon',
         'asteroid',
+        'ship',
         'canvas',
         'points',
         'game',

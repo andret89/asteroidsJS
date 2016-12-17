@@ -91,7 +91,7 @@ function Asteroid(p, s, x, y) {
         ca.ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
         ca.ctx.stroke();
     }
-    this.colliion = function(other) {
+    this.collision = function(other) {
         var dx = this.x - other.x;
         var dy = this.y - other.y;
         var distance = Math.sqrt(dx * dx + dy * dy);
@@ -116,7 +116,7 @@ Extends(Polygon, Asteroid);
  * @param  {number}        y start y coordinate
  */
 
-function Ship(p, s, x, y) {
+function Shipl(p, s, x, y) {
     /**
      * Bounds for the asteroid
      */

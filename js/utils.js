@@ -69,7 +69,7 @@ function savePosMouse(event) {
 window.addEventListener("keydown", keydown, false)
 window.addEventListener("keyup", keyup, false)
 
-window.addEventListener("mousemove", savePosMouse, false)
+window.addEventListener("mouseup", savePosMouse, false)
 
 /*
 // Define the Person constructor

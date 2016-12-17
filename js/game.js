@@ -12,6 +12,7 @@ function Game(width, height) {
     o.maxX = this.width;
     o.maxY = this.height;
     log(o);
+    var player = new ship(this.width, this.height);
     var canvas = new Canvas(this.width, this.height);
     log(canvas);
 
@@ -21,10 +22,11 @@ function Game(width, height) {
         canvas.clearAll();
         p.update()
         o.update()
+        player.update()
     }
 
     function collisionDetect(a, b) {
-        if (a.colliion(b)) {
+        if (a.collision(b)) {
             a.color = 'red';
             log("collision")
         } else
@@ -34,8 +36,9 @@ function Game(width, height) {
     function draw() {
         p.draw(canvas)
         o.draw(canvas)
-        collisionDetect(p, o)
-        collisionDetect(o, p)
+        collisionDetect(player, o)
+        collisionDetect(player, p)
+        player.draw(canvas)
 
         //        p.debug(canvas)
     }

@@ -1,30 +1,24 @@
-var ship = function(width, height) {
-    position = {
+function ship(width, height) {
+    this.position = {
         x: (width / 2),
         y: (height / 2)
     }
-    movement = {
+    this.movement = {
         x: 0,
         y: 0
     }
-    rotation = 0
+    this.rotation = 0
+    this.width = width
+    this.height = height
+    this.radius = 20
 }
 
-
-ship.prototype.update = function(progress) {
-    // Make a smaller time value that's easier to work with
-    var p = progress / 16
-
-    updateRotation(p)
-    updateMovement(p)
-    updatePosition(p)
-}
 
 ship.prototype.updateRotation = function(p) {
     if (state.pressedKeys.left) {
-        state.rotation -= p * 5
+        this.rotation -= p * 5
     } else if (state.pressedKeys.right) {
-        state.rotation += p * 5
+        this.rotation += p * 5
     }
 }
 
@@ -36,51 +30,60 @@ ship.prototype.updateMovement = function(p) {
     }
 
     if (state.pressedKeys.up) {
-        state.movement.x += accelerationVector.x
-        state.movement.y += accelerationVector.y
+        this.movement.x += accelerationVector.x
+        this.movement.y += accelerationVector.y
     } else if (state.pressedKeys.down) {
-        state.movement.x -= accelerationVector.x
-        state.movement.y -= accelerationVector.y
+        this.movement.x -= accelerationVector.x
+        this.movement.y -= accelerationVector.y
     }
 
     // Limit movement speed
-    if (state.movement.x > 40) {
-        state.movement.x = 40
-    } else if (state.movement.x < -40) {
-        state.movement.x = -40
+    if (this.movement.x > 40) {
+        this.movement.x = 40
+    } else if (this.movement.x < -40) {
+        this.movement.x = -40
     }
-    if (state.movement.y > 40) {
-        state.movement.y = 40
-    } else if (state.movement.y < -40) {
-        state.movement.y = -40
+    if (this.movement.y > 40) {
+        this.movement.y = 40
+    } else if (this.movement.y < -40) {
+        this.movement.y = -40
     }
 }
 
-ship.updatePosition = function(p) {
-    state.position.x += state.movement.x
-    state.position.y += state.movement.y
+ship.prototype.updatePosition = function(p) {
+    this.position.x += this.movement.x
+    this.position.y += this.movement.y
 
     // Detect boundaries
-    if (state.position.x > width) {
-        state.position.x -= width
-    } else if (state.position.x < 0) {
-        state.position.x += width
+    if (this.position.x > this.width) {
+        this.position.x -= this.width
+    } else if (this.position.x < 0) {
+        this.position.x += this.width
     }
-    if (state.position.y > height) {
-        state.position.y -= height
-    } else if (state.position.y < 0) {
-        state.position.y += height
+    if (this.position.y > this.height) {
+        this.position.y -= this.height
+    } else if (this.position.y < 0) {
+        this.position.y += this.height
     }
 }
 
-ship.draw = function() {
-    ctx.clearRect(0, 0, width, height)
+ship.prototype.update = function() {
+    // Make a smaller time value that's easier to work with
+    var p = 2
+
+    this.updateRotation(p)
+    this.updateMovement(p)
+    this.updatePosition(p)
+}
+
+ship.prototype.draw = function(ca) {
+    var ctx = ca.ctx;
 
     ctx.save()
-    ctx.translate(state.position.x, state.position.y)
-    ctx.rotate((Math.PI / 180) * state.rotation)
+    ctx.translate(this.position.x, this.position.y)
+    ctx.rotate((Math.PI / 180) * this.rotation)
 
-    ctx.strokeStyle = 'white'
+    ctx.strokeStyle = this.color
     ctx.lineWidth = 2
     ctx.beginPath()
     ctx.moveTo(0, 0)
@@ -92,3 +95,14 @@ ship.draw = function() {
     ctx.stroke()
     ctx.restore()
 }
+
+ship.prototype.collision = function(other) {
+        var dx = this.position.x - other.x;
+        var dy = this.position.y - other.y;
+        var distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < this.radius + other.radius) {
+            return true;
+        }
+        return false;
+    }
