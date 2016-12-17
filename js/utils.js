@@ -28,6 +28,49 @@ function Extends(objSub, objSup) {
     objSub.prototype.constructor = objSub;
 }
 
+var state = {
+    pressedKeys: {
+        left: false,
+        right: false,
+        up: false,
+        down: false,
+        space: false
+    },
+    mousePos: {
+        x: 0,
+        y: 0
+    }
+}
+
+var keyMap = {
+    68: 'right',
+    65: 'left',
+    87: 'up',
+    83: 'down',
+    32: 'space'
+}
+
+function keydown(event) {
+    var key = keyMap[event.keyCode]
+    state.pressedKeys[key] = true
+}
+
+function keyup(event) {
+    var key = keyMap[event.keyCode]
+    state.pressedKeys[key] = false
+}
+
+function savePosMouse(event) {
+    state.mousePos.x = event.clientX
+    state.mousePos.y = event.clientY
+    console.log(state.mousePos.x + ', ' + state.mousePos.y)
+}
+
+window.addEventListener("keydown", keydown, false)
+window.addEventListener("keyup", keyup, false)
+
+window.addEventListener("mousemove", savePosMouse, false)
+
 /*
 // Define the Person constructor
 var Person = function(firstName) {

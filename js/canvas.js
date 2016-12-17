@@ -15,7 +15,7 @@ function Canvas(width, height) {
     this.canvas.width = width;
     this.canvas.height = height;
     //nasconde il cursore
-    this.canvas.style.cursor = "none";
+    //this.canvas.style.cursor = "none";
     document.body.appendChild(this.canvas);
 
     // create augmented drawing context
@@ -50,7 +50,6 @@ function Canvas(width, height) {
             for (var i = 2, len = p.length; i < len; i += 2) {
                 this.ctx.lineTo(p[i] + x, p[i + 1] + y);
             }
-            this.ctx.strokeStyle = "white";
             this.ctx.stroke();
         }
         /**

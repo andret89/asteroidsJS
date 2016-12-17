@@ -8,7 +8,9 @@ function Game(width, height) {
     p.maxX = this.width;
     p.maxY = this.height;
     log(p);
-    var o = new Polygon(Points.ASTEROIDS[2]);
+    var o = new Asteroid(Points.ASTEROIDS[1], 20, 80, 100);
+    o.maxX = this.width;
+    o.maxY = this.height;
     log(o);
     var canvas = new Canvas(this.width, this.height);
     log(canvas);
@@ -16,11 +18,26 @@ function Game(width, height) {
     // ... cose definite nella lezione precedente
 
     function update() {
+        canvas.clearAll();
         p.update()
+        o.update()
+    }
+
+    function collisionDetect(a, b) {
+        if (a.colliion(b)) {
+            a.color = 'red';
+            log("collision")
+        } else
+            a.color = 'white';
     }
 
     function draw() {
         p.draw(canvas)
+        o.draw(canvas)
+        collisionDetect(p, o)
+        collisionDetect(o, p)
+
+        //        p.debug(canvas)
     }
 
     function gameLoop(time) {

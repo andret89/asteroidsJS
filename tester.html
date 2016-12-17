@@ -10,27 +10,16 @@
     }
 </style>
 <script>
-    var requestId = 0;
+    function funzioneEsterna() {
+        var nome = "Mardona";
 
-    function animate(time) {
-        document.getElementById("animated").style.left =
-            (time - animationStartTime) % 2000 / 4 + "px";
-        requestId = window.requestAnimationFrame(animate);
+        function funzioneInterna() {
+            return nome
+        }
     }
-
-    function start() {
-        animationStartTime = window.performance.now();
-        requestId = window.requestAnimationFrame(animate);
-    }
-
-    function stop() {
-        if (requestId)
-            window.cancelAnimationFrame(requestId);
-        requestId = 0;
-    }
+    funzioneEsterna()
+    console.log(funzioneInterna())
 </script>
-<button onclick="start()">Click me to start!</button>
-<button onclick="stop()">Click me to stop!</button>
-<div id="animated">Hello there.</div>
+
 
 </html>

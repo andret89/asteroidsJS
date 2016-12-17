@@ -25,6 +25,7 @@ function Asteroid(p, s, x, y) {
     // scale the asteroid to the specified size
     this.size = s;
     this.scale(s);
+    this.radius = this.size * 4;
 
     // Set rotation angle used in each update
     this.rotAngle = 0.02 * (Math.random() * 2 - 1);
@@ -46,7 +47,7 @@ function Asteroid(p, s, x, y) {
          * @param  {context2d} ctx augmented drawing conext
          */
     this.draw = function(ca) {
-            ca.clearAll();
+            ca.ctx.strokeStyle = this.color;
             ca.drawPolygon(this, this.x, this.y);
         }
         /**
@@ -70,6 +71,7 @@ function Asteroid(p, s, x, y) {
             }
             // rotate asteroids 
             this.rotate(this.rotAngle);
+
         }
         /**
          * Useful point in polygon check, taken from:
@@ -80,9 +82,51 @@ function Asteroid(p, s, x, y) {
          * 
          * @override Polygon.hasPoint
          */
-    this.hasPoint = function(x, y) {
+    this.hasPointold = function(x, y) {
         return this.prototype.hasPoint(this.x, this.y, x, y);
+    }
+    this.debug = function(ca) {
+        ca.ctx.strokeStyle = "red";
+        ca.ctx.beginPath();
+        ca.ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+        ca.ctx.stroke();
+    }
+    this.colliion = function(other) {
+        var dx = this.x - other.x;
+        var dy = this.y - other.y;
+        var distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < this.radius + other.radius) {
+            return true;
+        }
+        return false;
     }
 }
 
 Extends(Polygon, Asteroid);
+
+
+/**
+ * Ship
+ * Ship class, extends Polygon see polygon.js
+ * 
+ * @param  {Array<number>} p list of verticies
+ * @param  {number}        s scalefactor, size of asteroid
+ * @param  {number}        x start x coordinate
+ * @param  {number}        y start y coordinate
+ */
+
+function Ship(p, s, x, y) {
+    /**
+     * Bounds for the asteroid
+     */
+    maxX = null;
+    maxY = null;
+    Polygon.call(this, p);
+    this.type = "Ship";
+    this.color = "white";
+
+    // position vars
+    this.x = x;
+    this.y = y;
+}
