@@ -7,6 +7,7 @@ function ship(width, height) {
         x: 0,
         y: 0
     }
+    this.bullet = [];
     this.rotation = 0
     this.width = width
     this.height = height
@@ -35,6 +36,8 @@ ship.prototype.updateMovement = function(p) {
     } else if (state.pressedKeys.down) {
         this.movement.x -= accelerationVector.x
         this.movement.y -= accelerationVector.y
+    } else if (state.pressedKeys.space) {
+
     }
 
     // Limit movement speed
@@ -69,7 +72,7 @@ ship.prototype.updatePosition = function(p) {
 
 ship.prototype.update = function() {
     // Make a smaller time value that's easier to work with
-    var p = 2
+    var p = 1
 
     this.updateRotation(p)
     this.updateMovement(p)
@@ -97,12 +100,12 @@ ship.prototype.draw = function(ca) {
 }
 
 ship.prototype.collision = function(other) {
-        var dx = this.position.x - other.x;
-        var dy = this.position.y - other.y;
-        var distance = Math.sqrt(dx * dx + dy * dy);
+    var dx = this.position.x - other.x;
+    var dy = this.position.y - other.y;
+    var distance = Math.sqrt(dx * dx + dy * dy);
 
-        if (distance < this.radius + other.radius) {
-            return true;
-        }
-        return false;
+    if (distance < this.radius + other.radius) {
+        return true;
     }
+    return false;
+}

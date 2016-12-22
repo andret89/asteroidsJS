@@ -19,6 +19,53 @@ window.requestAnimFrame = (function(callback) {
 
 function log(s) { console.log(s + '') }
 
+var utils = {
+    isNaNparam: function(param) {
+        for (key in param) {
+            var b = param[key] || null;
+            if (b === null) {
+                console.log(key + " is null")
+                return true;
+            }
+        }
+        return false;
+    },
+    colisionCircle:function(c1,c2) {
+      return distance(c1.center,c2.center) < c1.radius + c2.radius;
+    },
+    distance : function(ent1, ent2) {
+        var dx = ent2.x - ent1.x;
+        var dy = ent2.y - ent1.y;
+        return Math.sqrt(dx * dx + dy * dy);
+    }, 
+    distaceCircle : function(c1, c2) {
+        return distace(c1.center, c2.center);
+    }
+}
+
+function defineSubclass(superclass, // Constructor of our superclass
+    constructor, // Constructor of our new subclass
+    methods, // Instance methods
+    statics) { // Class properties
+    // Set up the prototype object of the subclass
+    constructor.prototype = Object.create(superclass.prototype);
+    constructor.prototype.constructor = constructor;
+
+    function extend(o, p) {
+        for (var prop in p) {
+            o[prop] = p[prop];
+        }
+        return o;
+    }
+    if (methods) extend(constructor.prototype, methods);
+    if (statics) extend(constructor, statics);
+    return constructor;
+}
+
+Function.prototype.extend = function(constructor, methods, statics) {
+    return defineSubclass(this, constructor, methods, statics);
+};
+
 
 function Extends(objSub, objSup) {
     //eredita da GameObject
@@ -63,68 +110,9 @@ function keyup(event) {
 function savePosMouse(event) {
     state.mousePos.x = event.clientX
     state.mousePos.y = event.clientY
-    console.log(state.mousePos.x + ', ' + state.mousePos.y)
+    //console.log(state.mousePos.x + ', ' + state.mousePos.y)
 }
 
 window.addEventListener("keydown", keydown, false)
 window.addEventListener("keyup", keyup, false)
-
 window.addEventListener("mouseup", savePosMouse, false)
-
-/*
-// Define the Person constructor
-var Person = function(firstName) {
-  this.firstName = firstName;
-};
-
-// Add a couple of methods to Person.prototype
-Person.prototype.walk = function(){
-  console.log("I am walking!");
-};
-
-Person.prototype.sayHello = function(){
-  console.log("Hello, I'm " + this.firstName);
-};
-
-// Define the Student constructor
-function Student(firstName, subject) {
-  // Call the parent constructor, making sure (using Function#call)
-  // that "this" is set correctly during the call
-  Person.call(this, firstName);
-
-  // Initialize our Student-specific properties
-  this.subject = subject;
-};
-
-// Create a Student.prototype object that inherits from Person.prototype.
-// Note: A common error here is to use "new Person()" to create the
-// Student.prototype. That's incorrect for several reasons, not least 
-// that we don't have anything to give Person for the "firstName" 
-// argument. The correct place to call Person is above, where we call 
-// it from Student.
-Student.prototype = Object.create(Person.prototype); // See note below
-
-// Set the "constructor" property to refer to Student
-Student.prototype.constructor = Student;
-
-// Replace the "sayHello" method
-Student.prototype.sayHello = function(){
-  console.log("Hello, I'm " + this.firstName + ". I'm studying "
-              + this.subject + ".");
-};
-
-// Add a "sayGoodBye" method
-Student.prototype.sayGoodBye = function(){
-  console.log("Goodbye!");
-};
-
-// Example usage:
-var student1 = new Student("Janet", "Applied Physics");
-student1.sayHello();   // "Hello, I'm Janet. I'm studying Applied Physics."
-student1.walk();       // "I am walking!"
-student1.sayGoodBye(); // "Goodbye!"
-
-// Check that instanceof works correctly
-console.log(student1 instanceof Person);  // true 
-console.log(student1 instanceof Student); // true
-*/
