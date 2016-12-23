@@ -1,3 +1,7 @@
+function Point(param) {
+    this.x = param.x;
+    this.y = param.y;
+}
 /**
  * Polygon
  * Polygon class, simple polygon class with method as rotation and
@@ -8,34 +12,43 @@
  */
 function Polygon(points, size) {
     this.type = "Polygon";
-    this.points = [];
     this.size = size || 0;
-    for (var i = 0; i < points.length - 1; i += 2)
-            points.push({ x: points[i] + size, y: points[i + 1] + size });
+    var make = function(points, size) {
+        var p = [],
+            j = 0;
+        for (var i = 0; i < points.length - 1; i += 2)
+            p[j++] = (new Point({
+                x: points[i] + size,
+                y: points[i + 1] + size
+            }));
+        return p;
+    }
+    var l = make(points, size)
+    this.points = l;
 }
 Polygon.prototype = {
-    toString :function() {
-            return (this.type + ": " + p);
+    toString: function() {
+            return (this.type + " : " + this.points);
         }
         /**
          * Rotate the polygon clockwise
          * 
          * @param  {number} theta angle to ratate with
          */
-    ,
-    rotate : function(theta) {
+        ,
+    rotate: function(theta) {
         // simplifying computition of 2x2 matrix
         // for more information see slides in part 1
         var c = Math.cos(theta);
         var s = Math.sin(theta);
 
         // iterate thru each vertex and change position
-        for (var i = 0, len = this.points.length; i < len; i += 2) {
-            var x = this.points[i];
-            var y = this.points[i + 1];
+        for (var i = 0, len = this.points.length; i < len; i++) {
+            var x = this.points[i].x;
+            var y = this.points[i].y;
 
-            this.points[i] = c * x - s * y;
-            this.points[i + 1] = s * x + c * y;
+            this.points[i].x = c * x - s * y;
+            this.points[i].y = s * x + c * y;
         }
     },
 
@@ -44,23 +57,24 @@ Polygon.prototype = {
      * 
      * @param  {number} c scalefactor
      */
-    scale : function(c) {
-            // ordinary vector multiplication
-            for (var i = 0, len = this.points.length; i < len; i++) {
-                this.points[i] *= c;
-            }
-        },
-        /**
-         * Useful point in polygon check, taken from:
-         * http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
-         *
-         * @param  {number} ox offset x coordinate
-         * @param  {number} oy offset y coordinate
-         * @param  {number}  x test x coordinate
-         * @param  {number}  y test y coordinate
-         * @return {Boolean}   result from check
-         */
-    hasPoint : function(ox, oy, x, y) {
+    scale: function(c) {
+        // ordinary vector multiplication
+        for (var i = 0, len = this.points.length; i < len; i++) {
+            this.points[i].x *= c;
+            this.points[i].y *= c;
+        }
+    },
+    /**
+     * Useful point in polygon check, taken from:
+     * http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
+     *
+     * @param  {number} ox offset x coordinate
+     * @param  {number} oy offset y coordinate
+     * @param  {number}  x test x coordinate
+     * @param  {number}  y test y coordinate
+     * @return {Boolean}   result from check
+     */
+    hasPoint: function(ox, oy, x, y) {
         var c = false;
         var p = this.points;
         var len = p.length;
@@ -82,15 +96,15 @@ Polygon.prototype = {
         }
         return c;
     },
-    toString : function() {
+    toString: function() {
         return this.type;
     },
-        /**
+    /**
      * Scale the polygon with the scalefactor
      * 
      * @param  {number} testPoint scalefactor
      */
-    isContainsPoint : function(testPoint) {
+    isContainsPoint: function(testPoint) {
         var poly = this.points;
         var inside = false,
             length = poly.length;
@@ -103,61 +117,85 @@ Polygon.prototype = {
         return inside;
     },
     /**
-         * Draw the polygon with an augmented drawing context
-         * 
-         * @param  {context2d} ctx augmented drawing conext
-         */
+     * Draw the polygon with an augmented drawing context
+     * 
+     * @param  {context2d} ctx augmented drawing conext
+     */
 
-    draw : function(g) {
+    drawl: function(g) {
         g.beginPath();
         g.strokeStyle = this.color || "white";
-        var p = this.points; 
+        var p = this.points;
         g.moveTo(p[0].x, p[0].y);
         for (var i = 1; i < p.length - 1; i++)
             g.lineTo(p[i].x, p[i].y);
         g.closePath()
         g.stroke()
-}
+    }
 }
 
-var GameObj = Polygon.extends(
+
+var GameObj = Polygon.extend(
     function GameObj(param) {
+        Polygon.call(this, param.points, param.size);
         this.parent = param.parent;
         this.size = param.size || 10;
-        this.center = {
-            x: param.x + this.size,
-            y: param.y + this.size
-        }
         this.x = param.x;
         this.y = param.y;
-        Polygon.call(this,param);
         this.type = "GameObj";
-                    /**
-     * Bounds for the asteroid
-     */
+        /**
+         * Bounds for the asteroid
+         */
         this.maxX = param.parent.width;
         this.maxY = param.parent.height;
-    // scale the asteroid to the specified size
-    this.scale(s);
-    this.radius = this.size * 4;
+        // scale the asteroid to the specified size
+        this.scale(this.size);
+        this.radius = this.size * 4;
 
-    // Set rotation angle used in each update
-    this.rotAngle = 0.02 * (Math.random() * 2 - 1);
+        // Set rotation angle used in each update
+        this.rotAngle = 0.02 * (Math.random() * 2 - 1);
 
-    // Generate and calculate velocity
-    var r = 2 * Math.PI * Math.random();
-    var v = Math.random() + 1;
-    this.vel = {
-        x: v * Math.cos(r),
-        y: v * Math.sin(r)
-    }
-    },{
-         /**
+        // Generate and calculate velocity
+        var r = 2 * Math.PI * Math.random();
+        var v = Math.random() + 1;
+        this.vel = {
+                x: v * Math.cos(r),
+                y: v * Math.sin(r)
+            }
+            /*    x = min_x + (max_x - min_x)/2,
+                  y = min_y + (max_y - min_y)/2 
+            */
+        var getCenter = function(p) {
+            var maxXpoint = 0,
+                maxYpoint = 0,
+                minXpoint = 1000,
+                minYpoint = 1000;
+            for (var i = 0; i < p.length; i++) {
+                var e = p[i]
+                if (maxXpoint < e.x)
+                    maxXpoint = e.x;
+                if (maxYpoint < e.y)
+                    maxYpoint = e.y
+
+                if (minXpoint > e.x)
+                    minXpoint = e.x;
+                if (minYpoint > e.y)
+                    minYpoint = e.y
+
+            }
+            return {
+                x: (minXpoint + (maxXpoint - minXpoint) / 2),
+                y: (minYpoint + (maxYpoint - minYpoint) / 2)
+            }
+        }
+        var c = getCenter(this.points)
+        this.center = c;
+    }, {
+        /**
          * Translate and rotate the asteroid
          */
         update: function() {
-            log(this.type + " update ")
-                        // update position
+            // update position
             this.x += this.vel.x;
             this.y += this.vel.y;
 
@@ -175,10 +213,19 @@ var GameObj = Polygon.extends(
             // rotate asteroids 
             this.rotate(this.rotAngle);
         },
-        toString: function () {
-             return (this.type + ": " +
+        /**
+         * Draw the polygon with an augmented drawing context
+         * 
+         * @param  {context2d} ctx augmented drawing conext
+         */
+
+        draw: function(g) {
+            g.drawPolygon(this, this.x, this.y);
+        },
+        toString: function() {
+            return (this.type + ": " +
                 this.x + ", " + this.y + ", " + this.size);
-        },        
+        },
         /**
          * Useful point in polygon check, taken from:
          * 
@@ -188,26 +235,8 @@ var GameObj = Polygon.extends(
          * 
          * @override Polygon.hasPoint
          */
-        hasPoint : function(x, y) {
+        hasPoint: function(x, y) {
             return this.hasPoint.call(this.x, this.y, x, y);
-        },
-        debug : function(g) {
-            var b = this.getBox()
-            b.color = "red";
-            this.drawCircle(g,b)
-        },
-        collision : function(other) {
-            return utils.colisionCircle(this.getBox(),other.getBox());
-        },
-        getBox : function(){
-            return {center:this.center,radius:this.radius}
-        },
-        drawCircle:function(g,c){
-            g.beginPath();
-            g.strokeStyle = color || "red";
-            g.arc(c.center.x, c.center.y, c.radius, 0, 2 * Math.PI, false);
-            g.closePath();
-            g.stroke()
         }
     }
 )

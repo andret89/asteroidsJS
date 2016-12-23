@@ -2,24 +2,39 @@
  * Asteroid
  * Asteroid class, extends Polygon see polygon.js
  * 
- * @param  {Array<number>} p list of verticies
- * @param  {number}        s scalefactor, size of asteroid
+ * @param  {Array<number>} points list of verticies
+ * @param  {number}        size scalefactor, size of asteroid
  * @param  {number}        x start x coordinate
  * @param  {number}        y start y coordinate
  */
 var Asteroid = GameObj.extend(
     // constructor
     function Asteroid(arguments) {
-        GameObj.call(this, arguments.points, arguments.size); // Superclass()
+        GameObj.call(this, arguments); // Superclass()
         this.type = "Asteroid";
         this.color = "white";
-
+        this.active = true
         utils.isNaNparam(this)
     }, {
-       }
+        collisionBullet: function(bullet) {
+            if (utils.isUndefined(bullet))
+                return false;
+            var p = [],
+                b = bullet;
+
+            p[0] = ({ x: b.x - this.x, y: b.y - this.y })
+            p[1] = ({ x: b.prevx - this.x, y: b.prevy - this.y });
+            for (var i = 0; i < p.length; i++) {
+                var point = p[i]
+                if (this.isContainsPoint(point))
+                    return true;
+            }
+            return false;
+        }
+    }
 );
 
-    
+
 
 /**
  * Ship

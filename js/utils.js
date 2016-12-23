@@ -20,26 +20,32 @@ window.requestAnimFrame = (function(callback) {
 function log(s) { console.log(s + '') }
 
 var utils = {
+    isUndefined: function(obj) {
+        var ret = obj === void 0;
+        return ret
+    },
     isNaNparam: function(param) {
         for (key in param) {
-            var b = param[key] || null;
-            if (b === null) {
-                console.log(key + " is null")
-                return true;
+            if (param[key] !== 0) {
+                var b = param[key] || null;
+                if (b === null) {
+                    console.log(key + " is null")
+                    return true;
+                }
             }
         }
         return false;
     },
-    colisionCircle:function(c1,c2) {
-      return distance(c1.center,c2.center) < c1.radius + c2.radius;
+    colisionCircle: function(c1, c2) {
+        return utils.distance(c1.center, c2.center) < c1.radius + c2.radius;
     },
-    distance : function(ent1, ent2) {
+    distance: function(ent1, ent2) {
         var dx = ent2.x - ent1.x;
         var dy = ent2.y - ent1.y;
         return Math.sqrt(dx * dx + dy * dy);
-    }, 
-    distaceCircle : function(c1, c2) {
-        return distace(c1.center, c2.center);
+    },
+    distaceCircle: function(c1, c2) {
+        return utils.distace(c1.center, c2.center);
     }
 }
 
@@ -51,14 +57,14 @@ function defineSubclass(superclass, // Constructor of our superclass
     constructor.prototype = Object.create(superclass.prototype);
     constructor.prototype.constructor = constructor;
 
-    function extend(o, p) {
+    function eredita(o, p) {
         for (var prop in p) {
             o[prop] = p[prop];
         }
         return o;
     }
-    if (methods) extend(constructor.prototype, methods);
-    if (statics) extend(constructor, statics);
+    if (methods) eredita(constructor.prototype, methods);
+    if (statics) eredita(constructor, statics);
     return constructor;
 }
 
@@ -107,12 +113,12 @@ function keyup(event) {
     state.pressedKeys[key] = false
 }
 
-function savePosMouse(event) {
+function getPosMouse(event) {
     state.mousePos.x = event.clientX
     state.mousePos.y = event.clientY
-    //console.log(state.mousePos.x + ', ' + state.mousePos.y)
+        //console.log(state.mousePos.x + ', ' + state.mousePos.y)
 }
 
 window.addEventListener("keydown", keydown, false)
 window.addEventListener("keyup", keyup, false)
-window.addEventListener("mouseup", savePosMouse, false)
+window.addEventListener("mouseup", getPosMouse, false)
