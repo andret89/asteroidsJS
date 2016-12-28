@@ -54,11 +54,11 @@ Canvas.prototype = {
             p = polygon.points;
         // iterate thru all points and draw with stroke style
         g.beginPath();
-        g.strokeStyle = p.color || "white";
+        g.strokeStyle = polygon.color || "white";
         g.moveTo(p[0].x + x, p[0].y + y);
-        for (var i = 1; i < p.length - 1; i++)
+        for (var i = 1; i < p.length; i++)
             g.lineTo(p[i].x + x, p[i].y + y);
-        g.closePath()
+        //g.closePath()
         g.stroke()
         if (DEBUG) {
             var b = polygon.getBox()
