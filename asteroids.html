@@ -7,16 +7,37 @@
 
     <!-- Stylesheets -->
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/menu.css">
 
     <!-- Script di caricamento file javascipt -->
     <script src="js/loader.js"></script>
     <!-- Main file -->
 
 </head>
-<button onclick="Game.animate()">Click me to start!</button>
-<button onclick="Game.stop()">Click me to stop!</button>
 
 <body>
+<div id="gamecontainer" width="800px" height="600px">
+    <div id="menuId" style="display: block;">
+        <div id="resumeGame" class="menu">
+            <p>CONTINUE</p>
+        </div>
+        <div id="startGame" class="menu">
+            <p>START</p>
+        </div>
+        <div id="highScore" class="menu">
+            <p>HIGH SCORE</p>
+        </div>
+        <div id="options" class="menu">
+            <p>OPTIONS</p>
+        </div>
+        <div id="credits" class="menu">
+            <p>CREDITS</p>
+        </div>
+        <div id="exitGame" class="menu">
+            <p>EXIT</p>
+        </div>
+    </div>
+</div>
 </body>
 <!--<canvas id="canvasID" width="600" height="400"></canvas>-->
 

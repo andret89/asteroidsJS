@@ -1,29 +1,42 @@
 /**
  * Asteroid
  * Asteroid class, extends Polygon see polygon.js
- * 
+ *
  * @param  {Array<number>} points list of verticies
  * @param  {number}        size scalefactor, size of asteroid
  * @param  {number}        x start x coordinate
  * @param  {number}        y start y coordinate
+ * @param  {Canvas}        parent window parent
+
  */
 var Asteroid = GameObj.extend(
     // constructor
     function Asteroid(arguments) {
+        arguments.points = Points.ASTEROIDS[arguments.typeAster];
         GameObj.call(this, arguments); // Superclass()
         this.type = "Asteroid";
         this.color = "white";
-        this.active = true
-        utils.isNaNparam(this)
+        this.active = true;
+        // Set rotation angle used in each update
+        this.angle = 0.02 * (Math.random() * 2 - 1);
+
+        // Generate and calculate velocity
+        var r = 2 * Math.PI * Math.random();
+        var v = Math.random() //+ 1;
+        this.vel = {
+            x: v * Math.cos(r),
+            y: v * Math.sin(r)
+        }
+        utils.isUndifinedParam(this)
     }, {
-        collisionBullet: function(bullet) {
-            if (utils.isUndefined(bullet))
+        collisionBullet: function (bullet) {
+            if (utils.isUndefined(bullet,"bullet"))
                 return false;
             var p = [],
                 b = bullet;
 
-            p[0] = ({ x: b.x - this.x, y: b.y - this.y })
-            p[1] = ({ x: b.prevx - this.x, y: b.prevy - this.y });
+            p[0] = ({x: b.x - this.x, y: b.y - this.y})
+            p[1] = ({x: b.prevx - this.x, y: b.prevy - this.y});
             for (var i = 0; i < p.length; i++) {
                 var point = p[i]
                 if (this.isContainsPoint(point))
@@ -35,11 +48,10 @@ var Asteroid = GameObj.extend(
 );
 
 
-
 /**
  * Ship
  * Ship class, extends Polygon see polygon.js
- * 
+ *
  * @param  {Array<number>} p list of verticies
  * @param  {number}        s scalefactor, size of asteroid
  * @param  {number}        x start x coordinate

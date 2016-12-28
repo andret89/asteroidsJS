@@ -1,77 +1,77 @@
 /**
  * Canvas
- * 
+ *
  * Canvas class, meant to make life easier by abstracting out
  * rendering and animation code
- * 
+ *
  * @param  {number} width  width of the canvas
  * @param  {number} height height of the canvas
+ * @param  {string} id of the canvas
  */
-function Canvas(param) {
-    var canvas_id = param.canvasId || "canvasGen"
-    this.w = param.width || 800;
-    this.h = param.height || 600;
+function Canvas(width, height, canvasId) {
+    if(utils.isUndifinedParam({w:width, h:height}))
+        return;
+    var canvas_id = canvasId || "canvasId";
+    var w = width;
+    var h = height;
     // create and set dimension of internal canvas
-    if (canvas_id === "canvasGen") {
-        this.canvas = document.createElement(canvas_id);
-        document.body.appendChild(this.canvas);
-    } else {
-        this.canvas = document.getElementById(canvas_id);
+    var _canvas = document.getElementById(canvas_id);
+    if (_canvas === null) {
+        _canvas = document.createElement('canvas');
+        _canvas.id = canvas_id;
+        document.body.appendChild(_canvas);
     }
-    this.canvas.width = this.w;
-    this.canvas.height = this.h;
-    //nasconde il cursore
-    //this.canvas.style.cursor = "none";
 
     // create augmented drawing context
-    this.ctx = this.canvas.getContext("2d");
+    this.ctx = _canvas.getContext("2d");
     //context 2d
     if (!this.ctx) {
         alert("Il tuo browser non supporta HTML5, aggiornalo!");
     }
-    // useful additional fields for convenice and quicker
-    // computations
-    this.ctx.width = this.w;
-    this.ctx.height = this.h;
-    this.width = this.w;
-    this.height = this.h;
+    _canvas.width = w;
+    _canvas.height = h;
+    this.canvas = _canvas;
+    this.ctx.width = w;
+    this.ctx.height = h;
+    this.width = w;
+    this.height = h;
 }
 
 Canvas.prototype = {
-    toString: function() {
+    toString: function () {
         return ("Canvas w:" + this.canvas.width + " , h:" + this.canvas.height)
     },
     /**
      * Draws a polygon object
-     * 
+     *
      * @param  {Polygon} Polygon the polygon to draw
      * @param  {number}  x the x coordinate
      * @param  {number}  y draw y coordinate
      */
-    drawPolygon: function(polygon, x, y) {
+    drawPolygon: function (polygon, x, y) {
         // NOTE: this => ctx
         var g = this.ctx,
             p = polygon.points;
         // iterate thru all points and draw with stroke style
+        g.save()
         g.beginPath();
         g.strokeStyle = polygon.color || "white";
+        g.translate(this.x, this.y);
         g.moveTo(p[0].x + x, p[0].y + y);
         for (var i = 1; i < p.length; i++)
             g.lineTo(p[i].x + x, p[i].y + y);
         //g.closePath()
         g.stroke()
-        if (DEBUG) {
-            var b = polygon.getBox()
-            this.drawCircle(b, polygon.x, polygon.y)
-        }
+        g.restore()
+
     },
     /**
      * Clears the complete canvas
      */
-    clearAll: function() {
-        this.ctx.clearRect(0, 0, this.w, this.h);
+    clearAll: function () {
+        this.ctx.clearRect(0, 0, this.width, this.height);
     },
-    drawCircle: function(c, x, y) {
+    drawCircle: function (c, x, y) {
         var g = this.ctx
         g.beginPath();
         g.strokeStyle = c.color || "red";
@@ -79,7 +79,7 @@ Canvas.prototype = {
         g.closePath();
         g.stroke()
     },
-    drawLine: function(x1, y1, x2, y2, color) {
+    drawLine: function (x1, y1, x2, y2, color) {
         var g = this.ctx
         g.beginPath();
         g.strokeStyle = color || "green";

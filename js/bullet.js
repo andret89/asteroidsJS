@@ -15,7 +15,7 @@ var Bullet = function Bullet(param) {
         x: 3 * Math.cos(this.angle),
         y: 3 * Math.sin(this.angle)
     }
-    utils.isNaNparam(this)
+    utils.isUndifinedParam(this)
     this.active = true;
 }
 Bullet.prototype = {

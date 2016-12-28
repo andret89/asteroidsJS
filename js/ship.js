@@ -16,9 +16,9 @@ function ship(width, height) {
 
 
 ship.prototype.updateRotation = function(p) {
-    if (state.pressedKeys.left) {
+    if (Inputs.pressedKeys.left) {
         this.rotation -= p * 5
-    } else if (state.pressedKeys.right) {
+    } else if (Inputs.pressedKeys.right) {
         this.rotation += p * 5
     }
 }
@@ -30,13 +30,13 @@ ship.prototype.updateMovement = function(p) {
         y: p * .3 * Math.sin((this.rotation - 90) * (Math.PI / 180))
     }
 
-    if (state.pressedKeys.up) {
+    if (Inputs.pressedKeys.up) {
         this.movement.x += accelerationVector.x
         this.movement.y += accelerationVector.y
-    } else if (state.pressedKeys.down) {
+    } else if (Inputs.pressedKeys.down) {
         this.movement.x -= accelerationVector.x
         this.movement.y -= accelerationVector.y
-    } else if (state.pressedKeys.space) {
+    } else if (Inputs.pressedKeys.space) {
 
     }
 

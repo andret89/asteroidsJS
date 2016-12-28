@@ -1,0 +1,168 @@
+:root {
+    --primary-color: #006680;
+    --hover-color: darkgoldenrod;
+    --text-color: white;
+    --bt-height: 50px;
+    --bt-width: 200px;
+    --bt-offset: 25px;
+    --bt-radius: 10px;
+    --font-size: 30px;
+}
+
+#menuId {
+    width: 800px;
+    height: 600px;
+    border-left: 500px solid transparent;
+    border-top: 400px solid transparent;
+    position: fixed;
+    margin: auto;
+    top: 50px;
+    left: 200px;
+    color: var(--primary-color);
+}
+
+#nemuId:nth-child(n)>p {
+    margin-right: 0px;
+}
+
+#startGame {
+    position: relative;
+    display: block;
+    bottom: 333px;
+    right: 300px;
+    height: var(--bt-height);
+    width: var(--bt-width);
+    text-align: center;
+    font-size: 30px;
+    transition: 0.5s;
+    background: var(--primary-color);
+    color: var( --text-color);
+    font-family: shadows into light;
+    cursor: pointer;
+    border-radius: var(--bt-radius);
+}
+
+#resumeGame {
+    position: relative;
+    display: none;
+    bottom: 333px;
+    right: 300px;
+    height: var(--bt-height);
+    width: var(--bt-width);
+    text-align: center;
+    font-size: 30px;
+    transition: 0.5s;
+    background: var(--primary-color);
+    color: var( --text-color);
+    font-family: shadows into light;
+    cursor: pointer;
+    border-radius: var(--bt-radius);
+}
+
+#highScore {
+    display: block;
+    height: var(--bt-height);
+    width: var(--bt-width);
+    background: var(--primary-color);
+    position: relative;
+    bottom: 345px;
+    right: 300px;
+    text-align: center;
+    font-size: 30px;
+    font-family: shadows into light;
+    color: var(--text-color);
+    transition: 0.5s;
+    cursor: pointer;
+    border-radius: var(--bt-radius);
+}
+
+#options {
+    display: block;
+    height: var(--bt-height);
+    width: var(--bt-width);
+    background: var(--primary-color);
+    position: relative;
+    bottom: 360px;
+    right: 300px;
+    font-size: 30px;
+    text-align: center;
+    font-family: shadows into light;
+    color: var(--text-color);
+    transition: 0.5s;
+    cursor: pointer;
+    border-radius: var(--bt-radius);
+}
+
+#credits {
+    display: block;
+    height: var(--bt-height);
+    width: var(--bt-width);
+    position: relative;
+    background: var(--primary-color);
+    bottom: 375px;
+    font-size: 30px;
+    text-align: center;
+    right: 300px;
+    font-family: shadows into light;
+    color: var(--text-color);
+    transition: 0.5s;
+    cursor: pointer;
+    border-radius: var(--bt-radius);
+}
+
+#exitGame {
+    display: block;
+    height: var(--bt-height);
+    width: var(--bt-width);
+    position: relative;
+    background: var(--primary-color);
+    bottom: 390px;
+    font-size: 30px;
+    right: 300px;
+    text-align: center;
+    font-family: shadows into light;
+    color: var(--text-color);
+    transition: 0.5s;
+    cursor: pointer;
+    border-radius: var(--bt-radius);
+}
+
+#startGame:hover,
+#resumeGame:hover,
+#highScore:hover,
+#credits:hover,
+#options:hover,
+#exitGame:hover {
+    background: var(--hover-color);
+    color: var(--text-color);
+}
+
+#menuId p {
+    padding: 10px;
+    position: relative;
+    color: white;
+}
+
+#startGame p {
+    right: 4px;
+}
+
+#resumeGame p {
+    right: 4px;
+}
+
+#highScore p {
+    top: 0px;
+}
+
+#options p {
+    right: 4px;
+}
+
+#credits p {
+    top: 0px;
+}
+
+#exitGame p {
+    top: 0px;
+}
