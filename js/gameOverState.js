@@ -7,6 +7,7 @@ var GameOverState = State.extend(
     },
     {
         inputManager: function () {
+
         },
         update: function () {
 

@@ -14,8 +14,9 @@ var Button = {
 var MenuState = State.extend(
     function MenuState(game) {
         this.game = game;
-        this.menu = game.menu;
+        this.menu = new MainMenu();
         this.menu.enable();
+        this.game.isPaused = true;
     },
     {
         inputManager: function (input) {
@@ -24,7 +25,6 @@ var MenuState = State.extend(
                 if (this.game.isStart) {
                     MainMenu.menuChoice = Button.resumeGame;
                 }
-
             }
 
         },
@@ -35,16 +35,17 @@ var MenuState = State.extend(
                     utils.setVisibility("startGame", 'none');
                     utils.setVisibility("resumeGame", 'block');
                     this.menu.disable();
+                    this.game.isPaused = false;
                     this.game.nextState = States.GAME;
                     break;
                 case Button.resumeGame:
                     console.log("resumeGame");
                     this.menu.disable();
-                    this.game.nextState = States.GAME;
+                    this.game.isPaused = false;
                     break;
                 case Button.exitGame:
-                    console.log("exitGame");
                     if(this.game.isStart) {
+                        console.log("exitGame");
                         utils.setVisibility("resumeGame", 'none');
                         utils.setVisibility("startGame", 'block');
                         this.game.isStart = false;

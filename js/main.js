@@ -2,13 +2,14 @@ var Game = function () {
     this.screen = new Canvas(600, 400);
     this.currState = null;
     this.nextState = States.MENU;
-    this.menu = new MainMenu();
     this.input = new Inputs();
-}
+};
+
 Game.prototype = {
     run: function () {
         var self = this;
         self.isStart = false;
+        self.isPaused = false;
         self.input.init();
 
         function gameLoop() {
@@ -16,11 +17,11 @@ Game.prototype = {
                 switch (self.nextState) {
                     case States.MENU:
                         self.currState = new MenuState(self);
+                        self.menuManager = self.currState;
                         break;
                     case States.GAME:
                         if(!self.isStart) {
                             self.currState = new GameState(self);
-                            self.isStart = true
                         }
                         break;
                     case States.GAMEOVER:
@@ -29,9 +30,17 @@ Game.prototype = {
                 }
                 self.nextState = States.NO_CHANGE;
             }
-            self.currState.inputManager(self.input);
-            self.currState.update();
-            if (!self.menu.active) {
+
+
+            if(!self.isPaused) {
+                self.currState.inputManager(self.input);
+                self.currState.update();
+            }else{
+                //menu manager
+                self.menuManager.inputManager(self.input);
+                self.menuManager.update();
+            }
+            if (!self.menuManager.menu.active) {
                 self.currState.render(self.screen)
             }
             return window.requestAnimationFrame(gameLoop)
@@ -39,7 +48,7 @@ Game.prototype = {
 
         return window.requestAnimationFrame(gameLoop)
     }
-}
+};
 
 var DEBUG = false;
 if (!DEBUG)
