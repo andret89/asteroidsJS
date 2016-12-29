@@ -19,7 +19,7 @@ function Canvas(width, height, canvasId) {
     if (_canvas === null) {
         _canvas = document.createElement('canvas');
         _canvas.id = canvas_id;
-        document.body.appendChild(_canvas);
+        document.getElementById("gamecontainer").appendChild(_canvas);
     }
 
     // create augmented drawing context

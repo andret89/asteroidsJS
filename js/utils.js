@@ -22,16 +22,16 @@ function log(s) {
 }
 
 var utils = {
-    isUndefined: function (obj,s) {
+    isUndefined: function (obj, s) {
         var ret = obj === void 0 || obj === null;
-        if(ret)
-            log(s +" undefined");
+        if (ret)
+            log(s + " undefined");
         return ret
     },
     isUndifinedParam: function (param) {
         for (key in param) {
             if (param[key] !== 0) {
-                if (utils.isUndefined(param[key],key)) {
+                if (utils.isUndefined(param[key], key)) {
                     return true;
                 }
             }
@@ -88,34 +88,126 @@ Function.prototype.extend = function (constructor, methods, statics) {
 };
 
 
-var Inputs = {
-    pressedKeys: {
-        left: false,
-        right: false,
-        up: false,
-        down: false,
-        space: false
-    },
-    mousePos: {
-        x: 0,
-        y: 0
-    },
-    keyMap: {
-        68: 'right',
-        65: 'left',
-        87: 'up',
-        83: 'down',
-        32: 'space'
+var Inputs = function() {
+    this.map = {
+        KEY_LEFT: 37,
+        KEY_RIGHT: 39,
+        KEY_UP: 38,
+        KEY_DOWN: 40,
+        KEY_ENTER: 13,
+        KEY_ESC: 27,
+        KEY_CTRL: 17,
+        KEY_SPACE: 32
+    };
+    this.mousePos = {x: 0, y: 0};
+    this.keys = {};
+    this.down = {};
+    this.pressed = {};
+    // initiate private fields
+    for (var key in this.map) {
+        var code = this.map[key];
+        this.keys[code] = key;
+        this.down[key] = false;
+        this.pressed[key] = false;
     }
+}
+Inputs.prototype ={
+    init:function () {
+
+
+        var self = this;
+
+
+// add eventlisteners to monitor presses
+        document.addEventListener("keydown", function (evt) {
+            if (self.keys[evt.keyCode]) {
+
+                self.down[self.keys[evt.keyCode]] = true;
+            }
+
+        });
+        document.addEventListener("keyup", function (evt) {
+            if (self.keys[evt.keyCode]) {
+
+                self.down[self.keys[evt.keyCode]] = false;
+                self.pressed[self.keys[evt.keyCode]] = false;
+            }
+        });
+        document.addEventListener("mousemove", function (event) {
+            self.mousePos.x = event.clientX;
+            self.mousePos.y = event.clientY;
+            //console.log(Inputs.mousePos.x + ', ' + Inputs.mousePos.y)
+        }, false);
+
+        /**
+         * Tells if a monitored key is hold down
+         *
+         * @param  {string}  key name of monitored key
+         * @return {Boolean}     result from check
+         */
+    },
+    isDown : function (key) {
+        return this.down[key];
+    },
+
+    /**
+     * Tells if a monitored key is pressed, returns true first time
+     * the key is pressed
+     *
+     * @param  {string}  key name of monitored key
+     * @return {Boolean}     result from check
+     */
+    isPressed : function (key) {
+        if (this.pressed[key]) {
+            return false;
+        } else if (this.down[key]) {
+            return this.pressed[key] = true;
+        }
+        return false;
+    }
+};
+/*
+ pressedKeys: {
+ 'KEY_LEFT'  : false,
+ 'KEY_RIGHT' : false,
+ 'KEY_UP'    : false,
+ 'KEY_DOWN'  : false,
+ 'KEY_ENTER' : false,
+ 'KEY_ESC'   : false,
+ 'KEY_CTRL'  : false,
+ 'KEY_SPACE' : false
+ },
+ mousePos: {
+ x: 0,
+ y: 0
+ },
+ key: {
+ 37: 'KEY_LEFT',
+ 39: 'KEY_RIGHT',
+ 38: 'KEY_UP',
+ 40: 'KEY_DOWN',
+ 13: 'KEY_ENTER',
+ 27: 'KEY_ESC',
+ 17: 'KEY_CTRL',
+ 32: 'KEY_SPACE'
+ },
+ map:{}
+ }
+
+//var map = {}; // You could also use an array
+onkeydown = onkeyup = function (e) {
+    e = e || event; // to deal with IE
+    Inputs.map[e.keyCode] = e.type == 'keydown';
+    /* insert conditional here
 }
 
 function keydown(event) {
-    var key = Inputs.keyMap[event.keyCode];
+    var key = Inputs.key[event.keyCode];
     Inputs.pressedKeys[key] = true
 }
 
 function keyup(event) {
-    var key = Inputs.keyMap[event.keyCode];
+    var key = Inputs.key[event.keyCode];
     Inputs.pressedKeys[key] = false
 }
 
@@ -125,7 +217,8 @@ function getPosMouse(event) {
     //console.log(Inputs.mousePos.x + ', ' + Inputs.mousePos.y)
 }
 
-window.addEventListener("keydown", keydown, false)
-window.addEventListener("keyup", keyup, false)
+//window.addEventListener("keydown", onkeydown, false)
+//window.addEventListener("keyup", onkeyup, false)
 window.addEventListener("mouseup", getPosMouse, false)
 window.addEventListener("mousemove", getPosMouse, false)
+*/

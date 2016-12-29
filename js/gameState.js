@@ -9,25 +9,19 @@ var GameState = State.extend(
             parent: game.screen
         })
     }, {
-        inputManager: function () {
+        inputManager: function (input) {
+            if(input.isPressed('KEY_ESC')){
+                log("esc")
+                this.game.nextState = States.MENU;
+            }
 
         },
         update: function () {
             this.aster.update()
-            var x=Inputs.mousePos.x-this.game.screen.canvas.offsetLeft,
-                y=Inputs.mousePos.y-this.game.screen.canvas.offsetTop;
-            if (this.aster.isContains(x,y)) {
-                this.aster.color = "red"
-            }
-            else
-                this.aster.color = "green"
+
         },
         render: function (g) {
             g.clearAll()
-            var x=Inputs.mousePos.x-this.game.screen.canvas.offsetLeft,
-                y=Inputs.mousePos.y-this.game.screen.canvas.offsetTop;
-
-            g.drawCircle({center:{x:x,y:y},color:"yellow",radius:2},0,0)
             this.aster.draw(g)
 
         }

@@ -18,7 +18,14 @@ var MenuState = State.extend(
         this.menu.enable();
     },
     {
-        inputManager: function () {
+        inputManager: function (input) {
+            if(input.isPressed('KEY_ESC')){
+                log("esc")
+                if (this.game.isStart) {
+                    MainMenu.menuChoice = Button.resumeGame;
+                }
+
+            }
 
         },
         update: function () {
@@ -37,9 +44,12 @@ var MenuState = State.extend(
                     break;
                 case Button.exitGame:
                     console.log("exitGame");
-                    utils.setVisibility("resumeGame", 'none');
-                    utils.setVisibility("startGame", 'block');
-                    this.game.nextState = States.GAMEOVER;
+                    if(this.game.isStart) {
+                        utils.setVisibility("resumeGame", 'none');
+                        utils.setVisibility("startGame", 'block');
+                        this.game.isStart = false;
+                        this.game.nextState = States.GAMEOVER;
+                    }
                     break;
                 case Button.highScore:
                     new HighScoreMenu().draw();
