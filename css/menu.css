@@ -10,14 +10,10 @@
 }
 
 #menuId {
-    width: 800px;
-    height: 600px;
-    border-left: 500px solid transparent;
-    border-top: 400px solid transparent;
-    position: fixed;
+    border-left: 750px solid transparent;
+    border-top: 450px solid transparent;
+    position: absolute;
     margin: auto;
-    top: 50px;
-    left: 200px;
     color: var(--primary-color);
 }
 

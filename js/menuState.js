@@ -65,7 +65,13 @@ var MenuState = State.extend(
             MainMenu.menuChoice = Button.noChoice;
 
         },
-        render: function () {
+        render: function (g) {
+            g.clearAll();
+            var ga = g.ctx
+            ga.fillStyle = "white";
+            ga.font = "40px sans-serif";
+            var s ="ASTEROIDS GAME";
+            g.fillTextMultiLine(s, g.canvas.width/2-(s.length+100),100);
         }
     });
 

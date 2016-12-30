@@ -29,6 +29,7 @@ function Canvas(width, height, canvasId) {
     _canvas.width = w;
     _canvas.height = h;
     this.canvas = _canvas;
+    this.ctx.lineWidth = 2;
     this.ctx.width = w;
     this.ctx.height = h;
     this.width = w;
@@ -83,16 +84,31 @@ Canvas.prototype = {
         var g = this.ctx
         g.beginPath();
         g.strokeStyle = c.color || "red";
+        var tmp=g.lineWidth;
+        g.lineWidth = 3;
         g.arc(c.center.x + x, c.center.y + y, c.radius, 0, 2 * Math.PI, false);
         g.closePath();
         g.stroke()
+        g.lineWidth = tmp;
     },
     drawLine: function (x1, y1, x2, y2, color) {
         var g = this.ctx
         g.beginPath();
         g.strokeStyle = color || "green";
+        var tmp=g.lineWidth;
+        g.lineWidth = 3;
         g.moveTo(x1, y1);
         g.lineTo(x2, y2);
         g.stroke();
+        g.lineWidth = tmp;
+
+    },
+    fillTextMultiLine : function(text, x, y) {
+        var lineHeight = this.ctx.measureText("M").width * 1.2;
+        var lines = text.split("\n");
+        for (var i = 0; i < lines.length; ++i) {
+            this.ctx.fillText(lines[i], x, y);
+            y += lineHeight;
+        }
     }
 }

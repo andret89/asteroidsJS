@@ -25,6 +25,8 @@ var Player = GameObj.extend(
          * @return {Bullet} the initated bullet
          */
         addBullet: function (size) {
+            if(this.energy > 10)
+                this.energy -= 10;
             var b = new Bullet({
                 x: this.points[0].x + this.x,
                 y: this.points[0].y + this.y,
@@ -125,7 +127,7 @@ var Player = GameObj.extend(
             if (this.shield)
                 g.drawCircle({
                         center: {x: this.x, y: this.y},
-                        radius: this.size * 6, color: "yellow"
+                        radius: this.size * 6, color: "#1569C7"
                     }
                     , 0, 0)
 

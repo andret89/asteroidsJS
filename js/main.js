@@ -5,10 +5,13 @@ var Game = function () {
     this.input = new Inputs(this);
     this.stateVars = {
         score: 0
-    }
+    };
     this.sm = new SoundManager();
     this.sm.loadSound('audio/shoot.wav', 'shoot');
     this.sm.loadSound('audio/thrust.wav', 'fire');
+    this.sm.loadSound('audio/explosion.wav', 'explosion');
+    this.sm.loadSound('audio/shield.wav', 'shield');
+
 };
 
 Game.prototype = {
@@ -46,9 +49,9 @@ Game.prototype = {
                 self.menuManager.inputManager(self.input);
                 self.menuManager.update();
             }
-            if (!self.menuManager.menu.active) {
+            //if (!self.menuManager.menu.active) {
                 self.currState.render(self.screen)
-            }
+            //}
             return window.requestAnimFrame(gameLoop)
         }
 
@@ -88,15 +91,20 @@ var SoundManager = function () {
 SoundManager.prototype = {
     loadSound: function (url, key) {
         var s = new Audio(url);
-        //s.volume = .12;
-        s.load();
+        if(key === 'shield' )
+            s.volume = .06;
         this.sounds[key] = s;
     },
     stopSound: function (type) {
-        this.sounds[type].stop();
+        var s = this.sounds[type];
+        s.pause();
+        s.currentTime = 0;
+
     },
     playSound: function (type) {
         var s = this.sounds[type];
+        if(type !== 'fire' )
+            s.load();
         s.play();
     }
 };

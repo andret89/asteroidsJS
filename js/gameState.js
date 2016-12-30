@@ -18,7 +18,7 @@ var GameState = State.extend(
         genLevel: function () {
             this.bullets = [];
             this.asteroids = [];
-            var n_asteroids = 5 +( 1* this.lvl);
+            var n_asteroids = Math.round(4 +( this.lvl/2));
             for (var i = 0; i < n_asteroids; i++) {
                 // choose asteroid polygon randomly
                 var n = Math.round(Math.random() * (Points.ASTEROIDS.length - 1));
@@ -68,6 +68,12 @@ var GameState = State.extend(
                 log("shield");
                 this.player.shield = true;
             }
+            if((input.isPressed('KEY_DOWN') || input.isPressed('KEY_S'))){
+                this.game.sm.playSound('shield')
+            }
+            else
+                if(this.player.energy <= 0)
+                    this.game.sm.stopSound('shield')
             if (input.isDown('KEY_RIGHT') || input.isDown('KEY_D')) {
                 this.player.addDirection(Math.radians(4));
                 log("RIGHT")
@@ -77,9 +83,12 @@ var GameState = State.extend(
                 log("LEFT")
             }
             if (input.isPressed('KEY_CTRL') || input.isPressed('KEY_SPACE')) {
-                this.bullets.push(this.player.addBullet(4));
+                if (this.player.energy > 10) {
+
+                this.bullets.push(this.player.addBullet(8));
                 log("SHOOT")
                 this.game.sm.playSound('shoot');
+            }
             }
         },
         update: function () {
@@ -89,6 +98,7 @@ var GameState = State.extend(
 
                 // if ship collids reset position and decrement lives
                 if (this.player.collide(a)) {
+                    this.game.sm.playSound('explosion')
                     if(!this.player.shield) {
                         this.player.x = this.game.screen.width / 2;
                         this.player.y = this.game.screen.height / 2;
@@ -118,6 +128,8 @@ var GameState = State.extend(
                         this.bullets.splice(j, 1);
                         this.asteroids.splice(i, 1);
                         this.score += 50;
+                        this.game.sm.playSound('explosion')
+
                     }
                 }
             }
@@ -138,34 +150,35 @@ var GameState = State.extend(
             // barre
             var ga = g.ctx;
             var percent = this.hp / 100;
-            var offset = g.canvas.width/2;
+            var offset_hp = 250;
 
             ga.fillStyle = "grey";
-            ga.fillRect(g.canvas.width/ 8+25+offset,2, 100, 20);
+            ga.fillRect(g.canvas.width/2+offset_hp,2, 100, 20);
 
             ga.fillStyle = "red";
-            ga.fillRect(g.canvas.width/ 8+25+offset,2, 100 * percent, 20);
-
-            ga.fillStyle = "white";
-            ga.font = "18px sans-serif";
-            ga.fillText("HP ", g.canvas.width/ 8+offset, 20);
-
-            percent = this.player.energy / 100;
-
-            ga.fillStyle = "grey";
-            ga.fillRect(g.canvas.width/ 8+40,2, 100, 20);
-
-            ga.fillStyle = "blue";
-            ga.fillRect(g.canvas.width/ 8+40,2, 100 * percent, 20);
-
-            ga.fillStyle = "white";
-            ga.font = "18px sans-serif";
-            ga.fillText("NRG ", g.canvas.width/ 8, 20);
-
+            ga.fillRect(g.canvas.width/2+offset_hp,2, 100 * percent, 20);
 
             ga.fillStyle = "white";
             ga.font = "20px sans-serif";
-            ga.fillText("SCORE: " + this.score, g.canvas.width / 4+100, 20);
+            ga.fillText("HP ", g.canvas.width/2+offset_hp+30, 20);
+
+            percent = this.player.energy / 100;
+            var offset_nrg = 320;
+
+            ga.fillStyle = "grey";
+            ga.fillRect(g.canvas.width/ 2-offset_nrg,2, 100, 20);
+
+            ga.fillStyle = "#1569C7";
+            ga.fillRect(g.canvas.width/  2-offset_nrg,2, 100 * percent, 20);
+
+            ga.fillStyle = "white";
+            ga.font = "20px sans-serif";
+            ga.fillText("NRG ", g.canvas.width / 2-offset_nrg+30, 20);
+
+
+            ga.fillStyle = "white";
+            ga.font = "25px sans-serif";
+            ga.fillText("SCORE: " + this.score, g.canvas.width / 2-50, 20);
 
             // draw all asteroids and bullets
             for (var i = 0; i < this.asteroids.length; i++) {
@@ -180,8 +193,8 @@ var GameState = State.extend(
             if(this.gameOver){
                 ga.fillStyle = "yellow";
                 ga.font = "50px sans-serif";
-                var s ="GAME OVER ";
-                ga.fillText(s, g.canvas.width/2-s.length, g.canvas.height/2-20);
+                var s ="GAME OVER\n\npush spacebar";
+                g.fillTextMultiLine(s, g.canvas.width/2-s.length, g.canvas.height/2-20);
             }
 
         }
