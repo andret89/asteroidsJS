@@ -13,7 +13,7 @@ window.requestAnimFrame = (function (callback) {
         window.msRequestAnimationFrame ||
 
         function (callback) {
-            window.setTimeout(callback, 1000 / 60);
+            window.setTimeout(callback, 1000 / 30);
         };
 })();
 
@@ -87,57 +87,80 @@ Function.prototype.extend = function (constructor, methods, statics) {
     return defineSubclass(this, constructor, methods, statics);
 };
 
+var Key = {
+    KEY_LEFT:   37,
+    KEY_RIGHT:  39,
+    KEY_UP:     38,
+    KEY_DOWN:   40,
+    KEY_ENTER:  13,
+    KEY_ESC:    27,
+    KEY_CTRL:   17,
+    KEY_SPACE:  32,
+    KEY_W:      87,
+    KEY_A:      65,
+    KEY_S:      83,
+    KEY_D:      68,
+    KEY_P:      80
+};
 
-var Inputs = function() {
-    this.map = {
-        KEY_LEFT: 37,
-        KEY_RIGHT: 39,
-        KEY_UP: 38,
-        KEY_DOWN: 40,
-        KEY_ENTER: 13,
-        KEY_ESC: 27,
-        KEY_CTRL: 17,
-        KEY_SPACE: 32
-    };
+
+var Inputs = function(game) {
+    this.game = game;
     this.mousePos = {x: 0, y: 0};
     this.keys = {};
     this.down = {};
     this.pressed = {};
     // initiate private fields
-    for (var key in this.map) {
-        var code = this.map[key];
-        this.keys[code] = key;
-        this.down[key] = false;
-        this.pressed[key] = false;
+    for (var i in Key) {
+        var code = Key[i];
+        this.keys[code] = i;
+        this.down[i] = false;
+        this.pressed[i] = false;
     }
 }
 Inputs.prototype ={
     init:function () {
-
-
         var self = this;
-
 
 // add eventlisteners to monitor presses
         document.addEventListener("keydown", function (evt) {
-            if (self.keys[evt.keyCode]) {
-
                 self.down[self.keys[evt.keyCode]] = true;
-            }
-
         });
         document.addEventListener("keyup", function (evt) {
-            if (self.keys[evt.keyCode]) {
-
                 self.down[self.keys[evt.keyCode]] = false;
                 self.pressed[self.keys[evt.keyCode]] = false;
-            }
+                log("keyup")
         });
         document.addEventListener("mousemove", function (event) {
+
             self.mousePos.x = event.clientX;
             self.mousePos.y = event.clientY;
+            if(MOUSE_GAME && self.game.currState instanceof GameState) {
+                var gameCurr = self.game.currState;
+                var dx = (self.mousePos.x - gameCurr.player.x);
+                var dy = (self.mousePos.y - gameCurr.player.y);
+                var angle = Math.atan2(dy, dx); //+ toRadians(90
+                if(gameCurr.player.angle-angle !==0 ) {
+                    if(dx > 0)
+                        gameCurr.player.addDirection(-gameCurr.player.angle + angle);
+                    else
+                        gameCurr.player.addDirection(gameCurr.player.angle - angle);
+
+                    gameCurr.player.angle = angle
+                }
+
+            }
             //console.log(Inputs.mousePos.x + ', ' + Inputs.mousePos.y)
-        }, false);
+        });
+        document.addEventListener("mousedown", function (evt) {
+            self.down['KEY_SPACE'] = true;
+        });
+        document.addEventListener('mouseup', function(evt) {
+            self.down['KEY_SPACE'] = false;
+            self.pressed['KEY_SPACE'] = false;
+
+        });
+
 
         /**
          * Tells if a monitored key is hold down
@@ -166,59 +189,3 @@ Inputs.prototype ={
         return false;
     }
 };
-/*
- pressedKeys: {
- 'KEY_LEFT'  : false,
- 'KEY_RIGHT' : false,
- 'KEY_UP'    : false,
- 'KEY_DOWN'  : false,
- 'KEY_ENTER' : false,
- 'KEY_ESC'   : false,
- 'KEY_CTRL'  : false,
- 'KEY_SPACE' : false
- },
- mousePos: {
- x: 0,
- y: 0
- },
- key: {
- 37: 'KEY_LEFT',
- 39: 'KEY_RIGHT',
- 38: 'KEY_UP',
- 40: 'KEY_DOWN',
- 13: 'KEY_ENTER',
- 27: 'KEY_ESC',
- 17: 'KEY_CTRL',
- 32: 'KEY_SPACE'
- },
- map:{}
- }
-
-//var map = {}; // You could also use an array
-onkeydown = onkeyup = function (e) {
-    e = e || event; // to deal with IE
-    Inputs.map[e.keyCode] = e.type == 'keydown';
-    /* insert conditional here
-}
-
-function keydown(event) {
-    var key = Inputs.key[event.keyCode];
-    Inputs.pressedKeys[key] = true
-}
-
-function keyup(event) {
-    var key = Inputs.key[event.keyCode];
-    Inputs.pressedKeys[key] = false
-}
-
-function getPosMouse(event) {
-    Inputs.mousePos.x = event.clientX
-    Inputs.mousePos.y = event.clientY
-    //console.log(Inputs.mousePos.x + ', ' + Inputs.mousePos.y)
-}
-
-//window.addEventListener("keydown", onkeydown, false)
-//window.addEventListener("keyup", onkeyup, false)
-window.addEventListener("mouseup", getPosMouse, false)
-window.addEventListener("mousemove", getPosMouse, false)
-*/

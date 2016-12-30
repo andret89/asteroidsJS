@@ -9,11 +9,9 @@
  * @param  {string} id of the canvas
  */
 function Canvas(width, height, canvasId) {
-    if(utils.isUndifinedParam({w:width, h:height}))
-        return;
     var canvas_id = canvasId || "canvasId";
-    var w = width;
-    var h = height;
+    var w = width || window.innerWidth;
+    var h = height ||  window.innerHeight;
     // create and set dimension of internal canvas
     var _canvas = document.getElementById(canvas_id);
     if (_canvas === null) {
@@ -35,6 +33,17 @@ function Canvas(width, height, canvasId) {
     this.ctx.height = h;
     this.width = w;
     this.height = h;
+    var self= this;
+    window.addEventListener('resize', function(evt) {
+        //TODO resize
+        self.canvas.width = window.innerWidth;
+        self.canvas.height = window.innerHeight;
+        self.width = window.innerWidth;
+        self.height = window.innerHeight;
+        self.ctx.width = window.innerWidth;
+        self.ctx.height = window.innerHeight;
+        log("resize")
+    });
 }
 
 Canvas.prototype = {
@@ -56,11 +65,10 @@ Canvas.prototype = {
         g.save()
         g.beginPath();
         g.strokeStyle = polygon.color || "white";
-        g.translate(this.x, this.y);
-        g.moveTo(p[0].x + x, p[0].y + y);
+        //g.translate(x, y);
+        g.moveTo(p[0].x+x, p[0].y+y);
         for (var i = 1; i < p.length; i++)
-            g.lineTo(p[i].x + x, p[i].y + y);
-        //g.closePath()
+            g.lineTo(p[i].x+x, p[i].y+y)
         g.stroke()
         g.restore()
 
@@ -69,7 +77,7 @@ Canvas.prototype = {
      * Clears the complete canvas
      */
     clearAll: function () {
-        this.ctx.clearRect(0, 0, this.width, this.height);
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     },
     drawCircle: function (c, x, y) {
         var g = this.ctx

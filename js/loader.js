@@ -11,6 +11,7 @@ function loadScripts() {
         'polygon',
         'gameObj',
         'bullet',
+        'player',
         'asteroid',
         'canvas',
         'state',

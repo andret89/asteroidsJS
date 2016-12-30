@@ -1,8 +1,11 @@
 var Game = function () {
-    this.screen = new Canvas(600, 400);
+    this.screen = new Canvas();
     this.currState = null;
     this.nextState = States.MENU;
-    this.input = new Inputs();
+    this.input = new Inputs(this);
+    this.stateVars = {
+        score:0
+    }
 };
 
 Game.prototype = {
@@ -43,20 +46,35 @@ Game.prototype = {
             if (!self.menuManager.menu.active) {
                 self.currState.render(self.screen)
             }
-            return window.requestAnimationFrame(gameLoop)
+            return window.requestAnimFrame(gameLoop)
         }
 
-        return window.requestAnimationFrame(gameLoop)
+        return window.requestAnimFrame(gameLoop)
     }
 };
-
+var MOUSE_GAME = false;
 var DEBUG = false;
-if (!DEBUG)
+if (!DEBUG) {
     window.addEventListener('load', function () {
         var game = new Game();
         game.run()
     }, false);
-else
+}
+else {
     window.onload = function () {
-        //test();
+        test();
     }
+}
+function test() {
+    var game = new Game();
+    var ply = new Player({
+        size: 4,
+        x: game.screen.width / 4,
+        y: game.screen.height / 4,
+        parent: game.screen
+    });
+    ply.direction(Math.radians(20))
+    ply.update()
+    ply.draw(game.screen)
+
+}

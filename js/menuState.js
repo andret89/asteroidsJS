@@ -20,13 +20,12 @@ var MenuState = State.extend(
     },
     {
         inputManager: function (input) {
-            if(input.isPressed('KEY_ESC')){
-                log("esc")
+            if(input.isPressed('KEY_ESC') || input.isPressed('KEY_P')){
                 if (this.game.isStart) {
+                    log("pause");
                     MainMenu.menuChoice = Button.resumeGame;
                 }
             }
-
         },
         update: function () {
             switch (MainMenu.menuChoice) {

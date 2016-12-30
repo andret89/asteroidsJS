@@ -61,6 +61,10 @@ html {
     overflow: hidden;
 }
 
+canvas{
+    display: block;
+}
+
 #starfield {
     width: 100%;
     height: 100%;
@@ -71,15 +75,16 @@ html {
 }
 
 #gamecontainer {
-    width: 400px;
-    height: 500px;
+    width: 100%;
+    height: 100%;
     margin-left: auto;
     margin-right: auto;
+    position: absolute;
 }
 
 #gamecanvas {
-    width: 400px;
-    height: 500px;
+    width: 100%;
+    height: 100%;
 }
 
 #info {

@@ -54,7 +54,7 @@ Polygon.prototype = {
      */
     scale: function (c) {
         // ordinary vector multiplication
-        for (var i = 0, len = this.points.length; i < len; i++) {
+        for (var i = 0; i < this.points.length; i++) {
             this.points[i].x *= c;
             this.points[i].y *= c;
         }
@@ -75,8 +75,51 @@ Polygon.prototype = {
                 inside = !inside;
         }
         return inside;
+pninpoly:function(){
+     var c = false;
+     var p = this.points;
+     var len = p.length;
+
+     // doing magic!
+     for (var i = 0, j = len-2; i < len; i += 2) {
+     var px1 = p[i] + ox;
+     var px2 = p[j] + ox;
+
+     var py1 = p[i+1] + oy;
+     var py2 = p[j+1] + oy;
+
+     if (( py1 > y != py2 > y ) &&
+     ( x < (px2-px1) * (y-py1) / (py2-py1) + px1 )
+     ) {
+     c = !c;
+     }
+     j = i;
+     }
+     return c;
+     }
+
     },
     */
+    pnpoly: function (offsetPoint,testPoint) {
+        var inside = false,
+            poly = this.points;
+        for (var i = 0, j = poly.length - 1; i < poly.length; i++) {
+            var y1 = poly[i].y + offsetPoint.x;
+            var x1 = poly[i].x + offsetPoint.y;
+
+            var y2 = poly[j].y + offsetPoint.x;
+            var x2 = poly[j].x + offsetPoint.y;
+
+            if ((y1 > testPoint.y != y2 > testPoint.y) &&
+                (testPoint.x < (x2 - x1) * (testPoint.y - y1) /
+                (y2 - y1) + x1))
+            {
+                inside = !inside;
+            }
+            j=i;
+        }
+        return inside;
+    },
     /**
      * Useful point in polygon check, taken from:
      * http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
@@ -87,7 +130,7 @@ Polygon.prototype = {
      * @param  {number}  y test y coordinate
      * @return {Boolean}   result from check
      */
-    isContainsPoint: function (testPoint,offsetPoint) {
+    isContainsPoint: function (offsetPoint,testPoint) {
         var inside = false,
             poly = this.points;
         for (var i = 0, j = poly.length - 1; i < poly.length; j = i++) {

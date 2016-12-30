@@ -21,54 +21,43 @@ var Asteroid = GameObj.extend(
         this.angle = 0.02 * (Math.random() * 2 - 1);
 
         // Generate and calculate velocity
-        var r = 2 * Math.PI * Math.random();
-        var v = Math.random() //+ 1;
+        var r = Math.PI * Math.random();
+        var v = Math.random() + 1;
         this.vel = {
             x: v * Math.cos(r),
             y: v * Math.sin(r)
         }
         utils.isUndifinedParam(this)
     }, {
-        collisionBullet: function (bullet) {
-            if (utils.isUndefined(bullet,"bullet"))
-                return false;
-            var p = [],
-                b = bullet;
+        /**
+         * Translate and rotate the asteroid
+         */
+        update: function () {
+            // update position
+            this.x += this.vel.x;
+            this.y += this.vel.y;
 
-            p[0] = ({x: b.x - this.x, y: b.y - this.y})
-            p[1] = ({x: b.prevx - this.x, y: b.prevy - this.y});
-            for (var i = 0; i < p.length; i++) {
-                var point = p[i]
-                if (this.isContainsPoint(point))
-                    return true;
+            // keep within bounds
+            if (this.x > this.maxX) {
+                this.x = 0;
+            } else if (this.x < 0) {
+                this.x = this.maxX;
             }
-            return false;
+            if (this.y > this.maxY) {
+                this.y = 0;
+            } else if (this.y < 0) {
+                this.y = this.maxY;
+            }
+            // rotate asteroids
+            this.rotate(this.angle);
+        },
+        /**
+         * Draw the polygon with an augmented drawing context
+         *
+         * @param  {context2d} ctx augmented drawing conext
+         */
+        draw: function (g) {
+            g.drawPolygon(this, this.x, this.y);
         }
     }
 );
-
-
-/**
- * Ship
- * Ship class, extends Polygon see polygon.js
- *
- * @param  {Array<number>} p list of verticies
- * @param  {number}        s scalefactor, size of asteroid
- * @param  {number}        x start x coordinate
- * @param  {number}        y start y coordinate
- */
-
-function Shipl(p, s, x, y) {
-    /**
-     * Bounds for the asteroid
-     */
-    maxX = null;
-    maxY = null;
-    Polygon.call(this, p);
-    this.type = "Ship";
-    this.color = "white";
-
-    // position vars
-    this.x = x;
-    this.y = y;
-}

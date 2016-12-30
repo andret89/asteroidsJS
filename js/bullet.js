@@ -4,19 +4,17 @@ var Bullet = function Bullet(param) {
     this.x = param.x;
     this.y = param.y;
     this.size = param.size;
-    this.angle = param.angle;
     this.parent = param.parent;
     this.maxX = param.parent.width;
     this.maxY = param.parent.height;
-    this.active = true
+    this.active = true;
 
     // set velocity according to angle param
     this.vel = {
-        x: 3 * Math.cos(this.angle),
-        y: 3 * Math.sin(this.angle)
+        x: 5 * Math.cos(param.angle),
+        y: 5 * Math.sin(param.angle)
     }
     utils.isUndifinedParam(this)
-    this.active = true;
 }
 Bullet.prototype = {
     toString: function() {
@@ -25,7 +23,7 @@ Bullet.prototype = {
     /**
      * Update position of bullet
      */
-    update: function() {
+    updateOld: function() {
 
         // keep within bounds
         if (this.x > this.maxX) {
@@ -39,20 +37,28 @@ Bullet.prototype = {
             this.y = this.maxY;
         }
         // saves previous position, used when rendering
-        this.prevx = this.x;
-        this.prevy = this.y;
+        this.oldx = this.x;
+        this.oldy = this.y;
 
-        /* inside bounds check
+        // translate position
+        this.x += this.vel.x + this.size;
+        this.y += this.vel.y + this.size;
+    },
+    update:function() {
+        // saves previous position, used when rendering
+        this.oldx = this.x;
+        this.oldy = this.y;
+
+// inside bounds check
         if (0 > this.x || this.x > this.maxX ||
             0 > this.y || this.y > this.maxY
         ) {
             this.active = false;
         }
-        */
 
-        // translate position
-        this.x += this.vel.x + this.size;
-        this.y += this.vel.y + this.size;
+// translate position
+        this.x += this.vel.x;
+        this.y += this.vel.y;
     },
 
     /**
@@ -61,6 +67,6 @@ Bullet.prototype = {
      * @param  {Canvas} g agumented drawing context
      */
     draw: function(g) {
-        g.drawLine(this.prevx, this.prevy, this.x, this.y, this.color)
+        g.drawLine(this.oldx, this.oldy, this.x, this.y, this.color)
     }
 }
