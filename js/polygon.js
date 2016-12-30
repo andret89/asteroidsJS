@@ -9,8 +9,6 @@
 function Polygon(points) {
     this.type = "Polygon";
     this.color = "white";
-    this.arrayPoint = points.slice(0);
-    //this.points = points.slice(0);
     var make = function (points) {
         var p = [],
             j = 0;
@@ -63,60 +61,26 @@ Polygon.prototype = {
     toString: function () {
         return this.type;
     },
-    /*
-    isContainsPoint: function (testPoint) {
-        var poly = this.points;
-        var inside = false,
-            length = poly.length;
-        for (var i = 0, j = length - 1; i < length; j = i++) {
-            if (((poly[i].y > testPoint.y) != (poly[j].y > testPoint.y)) &&
-                (testPoint.x < (poly[j].x - poly[i].x) * (testPoint.y - poly[i].y) /
-                (poly[j].y - poly[i].y) + poly[i].x))
-                inside = !inside;
-        }
-        return inside;
-pninpoly:function(){
-     var c = false;
-     var p = this.points;
-     var len = p.length;
+    /**
+     * Useful point in polygon check, taken from:
 
-     // doing magic!
-     for (var i = 0, j = len-2; i < len; i += 2) {
-     var px1 = p[i] + ox;
-     var px2 = p[j] + ox;
+     * @param  {number}  x test x coordinate
+     * @param  {number}  y test y coordinate
+     * @return {Boolean}   result from check
+     */
+    isContainsPoint: function (tx,ty) {
+        var p = this.points;
+        var inside = false;
+        for (var i = 0, j = p.length - 1; i < p.length; j = i++) {
+            var y1 = p[i].y;
+            var x1 = p[i].x;
+            var y2 = p[j].y;
+            var x2 = p[j].x;
 
-     var py1 = p[i+1] + oy;
-     var py2 = p[j+1] + oy;
-
-     if (( py1 > y != py2 > y ) &&
-     ( x < (px2-px1) * (y-py1) / (py2-py1) + px1 )
-     ) {
-     c = !c;
-     }
-     j = i;
-     }
-     return c;
-     }
-
-    },
-    */
-    pnpoly: function (offsetPoint,testPoint) {
-        var inside = false,
-            poly = this.points;
-        for (var i = 0, j = poly.length - 1; i < poly.length; i++) {
-            var y1 = poly[i].y + offsetPoint.x;
-            var x1 = poly[i].x + offsetPoint.y;
-
-            var y2 = poly[j].y + offsetPoint.x;
-            var x2 = poly[j].x + offsetPoint.y;
-
-            if ((y1 > testPoint.y != y2 > testPoint.y) &&
-                (testPoint.x < (x2 - x1) * (testPoint.y - y1) /
+            if (((y1 > ty) != (y2 > ty)) &&
+                (tx < (x2 - x1) * (ty - y1) /
                 (y2 - y1) + x1))
-            {
                 inside = !inside;
-            }
-            j=i;
         }
         return inside;
     },
@@ -130,17 +94,17 @@ pninpoly:function(){
      * @param  {number}  y test y coordinate
      * @return {Boolean}   result from check
      */
-    isContainsPoint: function (offsetPoint,testPoint) {
+    pnPoly: function (ox,oy,tx,ty) {
         var inside = false,
-            poly = this.points;
-        for (var i = 0, j = poly.length - 1; i < poly.length; j = i++) {
-            var y1 = poly[i].y + offsetPoint.x;
-            var x1 = poly[i].x + offsetPoint.y;
-            var y2 = poly[j].y + offsetPoint.x;
-            var x2 = poly[j].x + offsetPoint.y;
+            p = this.points;
+        for (var i = 0, j = p.length - 1; i < p.length; j = i++) {
+            var y1 = p[i].y + ox;
+            var x1 = p[i].x + oy;
+            var y2 = p[j].y + ox;
+            var x2 = p[j].x + oy;
 
-            if (((y1 > testPoint.y) != (y2 > testPoint.y)) &&
-                (testPoint.x < (x2 - x1) * (testPoint.y - y1) /
+            if (((y1 > ty) != (y2 > ty)) &&
+                (tx < (x2 - x1) * (ty - y1) /
                 (y2 - y1) + x1))
                 inside = !inside;
         }

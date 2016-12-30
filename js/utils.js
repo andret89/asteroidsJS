@@ -6,14 +6,14 @@
 // handle multiple browsers for requestAnimationFrame()
 window.requestAnimFrame = (function (callback) {
 
-    return window.requestAnimationFrame ||
-        window.webkitRequestAnimationFrame ||
-        window.mozRequestAnimationFrame ||
-        window.oRequestAnimationFrame ||
-        window.msRequestAnimationFrame ||
+    return window.requestAnimationFrame     ||
+        window.webkitRequestAnimationFrame  ||
+        window.mozRequestAnimationFrame     ||
+        window.oRequestAnimationFrame       ||
+        window.msRequestAnimationFrame      ||
 
         function (callback) {
-            window.setTimeout(callback, 1000 / 30);
+            window.setTimeout(callback, 1000 / 60);
         };
 })();
 
@@ -141,13 +141,17 @@ Inputs.prototype ={
                 var dy = (self.mousePos.y - gameCurr.player.y);
                 var angle = Math.atan2(dy, dx); //+ toRadians(90
                 if(gameCurr.player.angle-angle !==0 ) {
-                    if(dx > 0)
-                        gameCurr.player.addDirection(-gameCurr.player.angle + angle);
-                    else
-                        gameCurr.player.addDirection(gameCurr.player.angle - angle);
-
+                    gameCurr.player.addDirection(gameCurr.player.angle - angle);
                     gameCurr.player.angle = angle
                 }
+                    // if(gameCurr.player.angle-angle !==0 ) {
+                //     if(dx > 0)
+                //         gameCurr.player.addDirection(-gameCurr.player.angle + angle);
+                //     else
+                //         gameCurr.player.addDirection(gameCurr.player.angle - angle);
+                //
+                //     gameCurr.player.angle = angle
+
 
             }
             //console.log(Inputs.mousePos.x + ', ' + Inputs.mousePos.y)

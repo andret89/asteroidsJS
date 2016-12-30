@@ -18,7 +18,7 @@ var GameState = State.extend(
         genLevel: function () {
             this.bullets = [];
             this.asteroids = [];
-            var n_asteroids = 5 * this.lvl;
+            var n_asteroids = 5 +( 1* this.lvl);
             for (var i = 0; i < n_asteroids; i++) {
                 // choose asteroid polygon randomly
                 var n = Math.round(Math.random() * (Points.ASTEROIDS.length - 1));
@@ -87,13 +87,13 @@ var GameState = State.extend(
 
                 // if ship collids reset position and decrement lives
                 if (this.player.collide(a)) {
-                    this.player.x = this.game.screen.width / 2;
-                    this.player.y = this.game.screen.height / 2;
-                    this.player.vel = {
-                        x: 0,
-                        y: 0
-                    };
                     if(!this.player.shield) {
+                        this.player.x = this.game.screen.width / 2;
+                        this.player.y = this.game.screen.height / 2;
+                        this.player.vel = {
+                            x: 0,
+                            y: 0
+                        };
                         this.lives--;
                         this.hp -= 100/3;
                     }

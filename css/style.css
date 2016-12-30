@@ -1,9 +1,3 @@
-body {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 14px;
-    line-height: 20px;
-    background-color: black;
-}
 
 h1,
 h2,
@@ -19,37 +13,6 @@ h6 {
     text-rendering: optimizelegibility;
 }
 
-h1,
-h2,
-h3 {
-    line-height: 40px;
-}
-
-h1 {
-    font-size: 38.5px;
-}
-
-h2 {
-    font-size: 31.5px;
-}
-
-h3 {
-    font-size: 24.5px;
-}
-
-h4 {
-    font-size: 17.5px;
-}
-
-h5 {
-    font-size: 14px;
-}
-
-h6 {
-    font-size: 11.9px;
-}
-
-
 /* Styling needed for a fullscreen canvas and no scrollbars. */
 
 body,
@@ -59,9 +22,12 @@ html {
     margin: 0;
     padding: 0;
     overflow: hidden;
+    background-color: black;
 }
 
 canvas{
+    width: 100%;
+    height: 100%;
     display: block;
 }
 
@@ -82,11 +48,6 @@ canvas{
     position: absolute;
 }
 
-#gamecanvas {
-    width: 100%;
-    height: 100%;
-}
-
 #info {
     color: white;
     width: 800px;
@@ -94,28 +55,3 @@ canvas{
     margin-right: auto;
 }
 
-#progressBar {
-    position: relative;
-}
-
-progress {
-    /* background-color: black !important; */
-}
-
-progress::-moz-progress-bar {
-    background-color: red; //!important;
-}
-
-progress::-webkit-progress-value {
-    background-color: red; //!important;
-}
-
-#healthBar {
-    width: 30%;
-}
-
-#energyBar {
-    left: 42%;
-    width: 30%;
-    position: relative;
-}

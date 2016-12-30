@@ -52,7 +52,7 @@ Game.prototype = {
         return window.requestAnimFrame(gameLoop)
     }
 };
-var MOUSE_GAME = false;
+var MOUSE_GAME = true;
 var DEBUG = false;
 if (!DEBUG) {
     window.addEventListener('load', function () {

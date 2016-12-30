@@ -34,10 +34,10 @@ var GameObj = Polygon.extend(
             var s = Math.sin(this.angle);
             var xc = c * x - s * y, yc = s * x + c * y;
 
-            return this.isContainsPoint({x: this.x, y: this.y}, {x: xc, y: yc});
+            return this.pnPoly(this.x, this.y, xc, yc);
         },
         isContains: function (x, y) {
-            return this.pnpoly({x: this.x, y: this.y}, {x: x, y: y});
+            return this.isContainsPoint(x - this.x, y - this.y);
         }
     }
 )
