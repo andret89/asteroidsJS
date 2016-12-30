@@ -29,7 +29,8 @@ function loadScripts() {
         document.getElementsByTagName('head')[0].appendChild(elem);
     }
     console.log("file javascript caricati");
-}
 
+}
 // invocazione al momento della lettuta
 loadScripts()
+

@@ -4,8 +4,11 @@ var Game = function () {
     this.nextState = States.MENU;
     this.input = new Inputs(this);
     this.stateVars = {
-        score:0
+        score: 0
     }
+    this.sm = new SoundManager();
+    this.sm.loadSound('audio/shoot.wav', 'shoot');
+    this.sm.loadSound('audio/thrust.wav', 'fire');
 };
 
 Game.prototype = {
@@ -23,7 +26,7 @@ Game.prototype = {
                         self.menuManager = self.currState;
                         break;
                     case States.GAME:
-                        if(!self.isStart) {
+                        if (!self.isStart) {
                             self.currState = new GameState(self);
                         }
                         break;
@@ -35,10 +38,10 @@ Game.prototype = {
             }
 
 
-            if(!self.isPaused) {
+            if (!self.isPaused) {
                 self.currState.inputManager(self.input);
                 self.currState.update();
-            }else{
+            } else {
                 //menu manager
                 self.menuManager.inputManager(self.input);
                 self.menuManager.update();
@@ -52,7 +55,7 @@ Game.prototype = {
         return window.requestAnimFrame(gameLoop)
     }
 };
-var MOUSE_GAME = true;
+var MOUSE_GAME = false;
 var DEBUG = false;
 if (!DEBUG) {
     window.addEventListener('load', function () {
@@ -74,7 +77,26 @@ function test() {
         parent: game.screen
     });
     ply.direction(Math.radians(20))
-    ply.update()
+    ply.update();
     ply.draw(game.screen)
 
 }
+
+var SoundManager = function () {
+    this.sounds = [];
+};
+SoundManager.prototype = {
+    loadSound: function (url, key) {
+        var s = new Audio(url);
+        //s.volume = .12;
+        s.load();
+        this.sounds[key] = s;
+    },
+    stopSound: function (type) {
+        this.sounds[type].stop();
+    },
+    playSound: function (type) {
+        var s = this.sounds[type];
+        s.play();
+    }
+};
