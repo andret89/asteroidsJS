@@ -43,6 +43,7 @@ Game.prototype = {
                         break;
                     case States.GAMEOVER:
                         log("game over")
+                        // TODO FIX menu game restart
                         self.currState = new GameOverState(self);
                         break;
                 }
