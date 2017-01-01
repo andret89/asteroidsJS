@@ -10,11 +10,11 @@
 }
 
 #menuId {
-    border-left: 720px solid transparent;
-    border-top: 470px solid transparent;
     position: absolute;
     margin: auto;
     color: var(--primary-color);
+    top: 65%;
+    left: 70%;
 }
 
 #nemuId:nth-child(n)>p {
