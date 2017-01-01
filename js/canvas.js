@@ -29,14 +29,14 @@ function Canvas(width, height, canvasId) {
     _canvas.width = w;
     _canvas.height = h;
     this.canvas = _canvas;
-    this.ctx.lineWidth = 2;
+
+    //this.ctx.lineWidth = 2;
     this.ctx.width = w;
     this.ctx.height = h;
     this.width = w;
     this.height = h;
     var self= this;
     window.addEventListener('resize', function(evt) {
-        //TODO resize
         self.canvas.width = window.innerWidth;
         self.canvas.height = window.innerHeight;
         self.width = window.innerWidth;
@@ -65,16 +65,35 @@ Canvas.prototype = {
         // iterate thru all points and draw with stroke style
         g.save()
         g.beginPath();
-        g.strokeStyle = polygon.color || "white";
+        g.fillStyle = polygon.color;
+        //g.strokeStyle = polygon.color || "white";
         //g.translate(x, y);
         g.moveTo(p[0].x+x, p[0].y+y);
         for (var i = 1; i < p.length; i++)
             g.lineTo(p[i].x+x, p[i].y+y)
-        g.stroke()
+        //g.stroke()
+        g.fill()
         g.restore()
 
     },
-    /**
+    drawPlayer: function(pl, x, y){
+    var g = this.ctx,
+        p = pl.points;
+    // iterate thru all points and draw with stroke style
+    g.save()
+    g.beginPath();
+    g.fillStyle = pl.color;
+    //g.strokeStyle = polygon.color || "white";
+    //g.translate(x, y);
+    //g.rotate(pl.angle)
+    g.moveTo(p[0].x+x, p[0].y+y);
+    for (var i = 1; i < p.length; i++)
+        g.lineTo(p[i].x+x, p[i].y+y)
+    //g.stroke()
+    g.fill()
+    g.restore()
+},
+/**
      * Clears the complete canvas
      */
     clearAll: function () {

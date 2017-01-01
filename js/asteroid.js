@@ -15,7 +15,7 @@ var Asteroid = GameObj.extend(
         arguments.points = Points.ASTEROIDS[arguments.typeAster];
         GameObj.call(this, arguments); // Superclass()
         this.type = "Asteroid";
-        this.color = "white";
+        this.color = "grey";
         this.active = true;
         // Set rotation angle used in each update
         this.angle = 0.02 * (Math.random() * 2 - 1);

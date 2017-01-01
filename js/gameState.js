@@ -7,6 +7,7 @@ var GameState = State.extend(
         this.score = 0;
         this.lives = 3;
         this.hp = 100;
+        this.asterSize = 8;
         this.player = new Player({
             size: 3,
             x: game.screen.width / 2,
@@ -31,7 +32,7 @@ var GameState = State.extend(
                     y = Math.random() * this.game.screen.height;
                 }
                 var aster = new Asteroid({
-                    size: 8,
+                    size: this.asterSize,
                     x: x,
                     y: y,
                     typeAster: n,
@@ -50,7 +51,10 @@ var GameState = State.extend(
                 if (input.isPressed("KEY_SPACE")) {
                     // change state if game over
                     if (this.gameOver) {
-                        this.game.nextState = States.END;
+                        this.game.isPaused = true;
+                        utils.setVisibility("resumeGame", 'none');
+                        utils.setVisibility("startGame", 'block');
+                        this.game.menuManager.menu.enable();
                         this.game.stateVars.score = this.score;
                         return;
                     }
@@ -100,6 +104,7 @@ var GameState = State.extend(
                 if (this.player.collide(a)) {
                     this.game.sm.playSound('explosion')
                     if(!this.player.shield) {
+                        this.player.active = false;
                         this.player.x = this.game.screen.width / 2;
                         this.player.y = this.game.screen.height / 2;
                         this.player.vel = {
@@ -114,8 +119,6 @@ var GameState = State.extend(
 
                     if (this.lives <= 0) {
                         this.gameOver = true;
-                        this.game.isPaused = true;
-                        this.game.isStart = false;
                     }
                     this.asteroids.splice(i, 1);
                 }
@@ -127,8 +130,36 @@ var GameState = State.extend(
                     if (a.isContains(b.x, b.y)) {
                         this.bullets.splice(j, 1);
                         this.asteroids.splice(i, 1);
-                        this.score += 50;
                         this.game.sm.playSound('explosion')
+                        // update score depending on asteroid size
+                        switch (a.size) {
+                            case this.asterSize:
+                                this.score += 20;
+                                break;
+                            case this.asterSize/2:
+                                this.score += 50;
+                                break;
+                            case this.asterSize/4:
+                                this.score += 100;
+                                break;
+                        }
+
+                        // if asteroid splitted twice, then remove
+                        // else split in half
+                        if (a.size > this.asterSize/4) {
+                            for (var k = 0; k < 2; k++) {
+                                var n = Math.round(Math.random() * (Points.ASTEROIDS.length - 1));
+
+                                var astr = new Asteroid({
+                                    size: a.size/2,
+                                    x: a.x,
+                                    y: a.y,
+                                    typeAster: n,
+                                    parent: this.game.screen
+                                });
+                                this.asteroids.push(astr);
+                            }
+                        }
 
                     }
                 }
@@ -190,11 +221,12 @@ var GameState = State.extend(
 
             // draw ship
             this.player.draw(g);
+
             if(this.gameOver){
                 ga.fillStyle = "yellow";
                 ga.font = "50px sans-serif";
                 var s ="GAME OVER\n\npush spacebar";
-                g.fillTextMultiLine(s, g.canvas.width/2-s.length, g.canvas.height/2-20);
+                g.fillTextMultiLine(s,g.canvas.width/2-(s.length+100),100, g.canvas.height/2-20);
             }
 
         }

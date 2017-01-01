@@ -1,6 +1,7 @@
 var Game = function () {
-    this.screen = new Canvas();
+    this.screen = new Canvas(800,600);
     this.currState = null;
+    this.animationFrameID;
     this.nextState = States.MENU;
     this.input = new Inputs(this);
     this.stateVars = {
@@ -15,6 +16,13 @@ var Game = function () {
 };
 
 Game.prototype = {
+    stop: function () {
+        cancelAnimationFrame(this.animationFrameID);
+        this.screen.clearAll();
+    },
+    pause : function () {
+        cancelAnimationFrame(this.animationFrameID);
+    },
     run: function () {
         var self = this;
         self.isStart = false;
@@ -34,6 +42,7 @@ Game.prototype = {
                         }
                         break;
                     case States.GAMEOVER:
+                        log("game over")
                         self.currState = new GameOverState(self);
                         break;
                 }
@@ -55,7 +64,7 @@ Game.prototype = {
             return window.requestAnimFrame(gameLoop)
         }
 
-        return window.requestAnimFrame(gameLoop)
+        this.animationFrameID = window.requestAnimFrame(gameLoop)
     }
 };
 var MOUSE_GAME = false;

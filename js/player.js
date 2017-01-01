@@ -62,7 +62,7 @@ var Player = GameObj.extend(
         addDirection: function (theta) {
             this.jetFire.rotate(theta);
             this.angle += theta;
-            this.rotate(theta)
+            //this.rotate(theta)
         },
         /**
          * Returns whether ship is colling with asteroid
@@ -75,15 +75,31 @@ var Player = GameObj.extend(
             if (!this.active) {
                 return false;
             }
-            for (var i = 0; i < this.points.length; i++) {
-                var x = this.points[i].x + this.x;
-                var y = this.points[i].y + this.y;
+            var _p = this.trasformPoint(this.points,this.angle);
+            for (var i = 0; i < _p.length; i++) {
+                var x = _p[i].x + this.x;
+                var y = _p[i].y + this.y;
 
                 if (astr.isContains(x, y)) {
                     return true;
                 }
             }
             return false;
+        },
+        trasformPoint:function (points,angle) {
+            var p =  points.slice(0);
+            var c = Math.cos(angle);
+            var s = Math.sin(angle);
+
+            // iterate thru each vertex and change position
+            for (var i = 0, len = p.length; i < len; i++) {
+                var x = p[i].x + this.x;
+                var y = p[i].y + this. y;
+
+                p[i].x = c * x - s * y;
+                p[i].y = s * x + c * y;
+            }
+            return p;
         },
         update: function () {
             // update position
@@ -119,7 +135,7 @@ var Player = GameObj.extend(
             if (!this.active) {
                 return;
             }
-            g.drawPolygon(this, this.x, this.y);
+            g.drawPlayer(this, this.x, this.y);
             if (this.jetFireActive) {
                 g.drawPolygon(this.jetFire, this.x, this.y);
                 this.jetFireActive = false;

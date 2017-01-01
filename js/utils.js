@@ -141,11 +141,13 @@ Inputs.prototype ={
                 var dx = (self.mousePos.x - gameCurr.player.x);
                 var dy = (self.mousePos.y - gameCurr.player.y);
                 var angle = Math.atan2(dy, dx); //+ toRadians(90
+                gameCurr.player.angle = angle;
+/*
                 if(gameCurr.player.angle-angle !==0 ) {
                     gameCurr.player.addDirection(gameCurr.player.angle - angle);
                     gameCurr.player.angle = angle
                 }
-                    // if(gameCurr.player.angle-angle !==0 ) {
+*/                    // if(gameCurr.player.angle-angle !==0 ) {
                 //     if(dx > 0)
                 //         gameCurr.player.addDirection(-gameCurr.player.angle + angle);
                 //     else

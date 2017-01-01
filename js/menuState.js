@@ -48,7 +48,7 @@ var MenuState = State.extend(
                         utils.setVisibility("resumeGame", 'none');
                         utils.setVisibility("startGame", 'block');
                         this.game.isStart = false;
-                        this.game.nextState = States.GAMEOVER;
+                        //this.game.nextState = States.GAMEOVER;
                     }
                     break;
                 case Button.highScore:
