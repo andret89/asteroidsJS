@@ -2,11 +2,9 @@ var Game = function () {
     this.screen = new Canvas();
     this.currState = null;
     this.animationFrameID;
+    this.score = 0;
     this.nextState = States.MENU;
     this.input = new Inputs(this);
-    this.stateVars = {
-        score: 0
-    };
     this.sm = new SoundManager();
     this.sm.loadSound('audio/shoot.wav', 'shoot');
     this.sm.loadSound('audio/thrust.wav', 'fire');
@@ -16,6 +14,26 @@ var Game = function () {
 };
 
 Game.prototype = {
+    saveState: function(score) {
+        var hs = this.restoreState();
+        if(hs === null)
+            hs = score;
+        if(hs <= score) {
+            window.localStorage.setItem("highScore", JSON.stringify(score));
+            hs = score;
+        }
+        return hs;
+
+    },
+    restoreState :function() {
+        var state = window.localStorage.getItem("highScore");
+        if (state) {
+            return JSON.parse(state);
+        } else {
+            return null;
+        }
+
+    },
     stop: function () {
         cancelAnimationFrame(this.animationFrameID);
         this.screen.clearAll();
@@ -51,7 +69,7 @@ Game.prototype = {
             }
 
 
-            if (!self.isPaused) {
+            if (!self.menuManager.menu.active) {
                 self.currState.inputManager(self.input);
                 self.currState.update();
             } else {

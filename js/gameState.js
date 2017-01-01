@@ -3,8 +3,8 @@ var GameState = State.extend(
         State.call(this, game); // Superclass()
         this.game.isStart = true;
         this.gameOver = false;
+        this.game.score = 0;
         this.lvl = 1;
-        this.score = 0;
         this.lives = 3;
         this.hp = 100;
         this.asterSize = 8;
@@ -54,8 +54,7 @@ var GameState = State.extend(
                         this.game.isPaused = true;
                         utils.setVisibility("resumeGame", 'none');
                         utils.setVisibility("startGame", 'block');
-                        this.game.menuManager.menu.enable();
-                        this.game.stateVars.score = this.score;
+                        this.game.nextState = States.GAMEOVER;
                         return;
                     }
                     this.player.active = true;
@@ -96,6 +95,7 @@ var GameState = State.extend(
             }
         },
         update: function () {
+            var _score = this.game.score;
             for (var i = 0; i < this.asteroids.length; i++) {
                 var a = this.asteroids[i];
                 a.update();
@@ -117,13 +117,13 @@ var GameState = State.extend(
                     else{
                         switch (a.size) {
                             case this.asterSize:
-                                this.score += 20;
+                                _score += 20;
                                 break;
                             case this.asterSize/2:
-                                this.score += 50;
+                                _score += 50;
                                 break;
                             case this.asterSize/4:
-                                this.score += 100;
+                                _score += 100;
                                 break;
                         }
 
@@ -162,13 +162,13 @@ var GameState = State.extend(
                         // update score depending on asteroid size
                         switch (a.size) {
                             case this.asterSize:
-                                this.score += 20;
+                                _score += 20;
                                 break;
                             case this.asterSize/2:
-                                this.score += 50;
+                                _score += 50;
                                 break;
                             case this.asterSize/4:
-                                this.score += 100;
+                                _score += 100;
                                 break;
                         }
 
@@ -202,6 +202,7 @@ var GameState = State.extend(
             this.player.update();
             for (var j = 0; j < this.bullets.length; j++)
                 this.bullets[j].update()
+            this.game.score = _score;
         },
         render: function (g) {
             g.clearAll();
@@ -240,7 +241,7 @@ var GameState = State.extend(
 
             ga.fillStyle = "white";
             ga.font = "25px sans-serif";
-            ga.fillText("SCORE: " + this.score,offset_nrg+410, offset_top+18);
+            ga.fillText("SCORE: " + this.game.score,offset_nrg+410, offset_top+18);
 
             // draw all asteroids and bullets
             for (var i = 0; i < this.asteroids.length; i++) {
@@ -252,7 +253,7 @@ var GameState = State.extend(
 
             // draw ship
             this.player.draw(g);
-
+/*
             if(this.gameOver){
                 ga.fillStyle = "red";
                 ga.font = "50px sans-serif";
@@ -260,12 +261,12 @@ var GameState = State.extend(
                 g.fillTextMultiLine(s,g.canvas.width/2-(s.length+110), g.canvas.height/2-80);
             }
             else {
-
+            */
                 if (!this.player.active) {
                     ga.fillStyle = "white";
                     ga.font = "25px sans-serif";
                     ga.fillText("Push spacebar for continue ", g.canvas.width/2 - 150, g.canvas.height / 2);
                 }
-            }
+
         }
     });
