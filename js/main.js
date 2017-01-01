@@ -1,5 +1,5 @@
 var Game = function () {
-    this.screen = new Canvas(800,600);
+    this.screen = new Canvas();
     this.currState = null;
     this.animationFrameID;
     this.nextState = States.MENU;

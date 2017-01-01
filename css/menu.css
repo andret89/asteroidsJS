@@ -13,12 +13,12 @@
     position: absolute;
     margin: auto;
     color: var(--primary-color);
-    top: 65%;
-    left: 70%;
 }
 
-#nemuId:nth-child(n)>p {
-    margin-right: 0px;
+#menucontainer{
+    position: relative;
+    left: 70%;
+    top: 70%;
 }
 
 #startGame {

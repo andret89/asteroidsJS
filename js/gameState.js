@@ -209,7 +209,7 @@ var GameState = State.extend(
             // barre
             var ga = g.ctx;
             var percent = this.hp / 100;
-            var offset_hp = g.canvas.offsetLeft +550;
+            var offset_hp = g.canvas.width/2 + 280;
             var offset_top = g.canvas.offsetTop +10;
             var barWidth = 150;
             var barHeight = 20;
@@ -240,7 +240,7 @@ var GameState = State.extend(
 
             ga.fillStyle = "white";
             ga.font = "25px sans-serif";
-            ga.fillText("SCORE: " + this.score,offset_nrg+285, offset_top+18);
+            ga.fillText("SCORE: " + this.score,offset_nrg+410, offset_top+18);
 
             // draw all asteroids and bullets
             for (var i = 0; i < this.asteroids.length; i++) {
@@ -257,14 +257,14 @@ var GameState = State.extend(
                 ga.fillStyle = "red";
                 ga.font = "50px sans-serif";
                 var s ="GAME OVER\n\npush spacebar";
-                g.fillTextMultiLine(s,g.canvas.width/2-(s.length+100), g.canvas.height/2-80);
+                g.fillTextMultiLine(s,g.canvas.width/2-(s.length+110), g.canvas.height/2-80);
             }
             else {
 
                 if (!this.player.active) {
                     ga.fillStyle = "white";
                     ga.font = "25px sans-serif";
-                    ga.fillText("Push spacebar for continue ", offset_nrg + 200, g.canvas.height / 2);
+                    ga.fillText("Push spacebar for continue ", g.canvas.width/2 - 150, g.canvas.height / 2);
                 }
             }
         }
