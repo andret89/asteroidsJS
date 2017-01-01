@@ -70,6 +70,7 @@ var GameState = State.extend(
             }
             if (input.isDown('KEY_DOWN') || input.isDown('KEY_S')) {
                 log("shield");
+                if(this.player.energy > 10)
                 this.player.shield = true;
             }
             if((input.isPressed('KEY_DOWN') || input.isPressed('KEY_S'))){
@@ -88,7 +89,6 @@ var GameState = State.extend(
             }
             if (input.isPressed('KEY_CTRL') || input.isPressed('KEY_SPACE')) {
                 if (this.player.energy > 10) {
-
                 this.bullets.push(this.player.addBullet(8));
                 log("SHOOT")
                 this.game.sm.playSound('shoot');

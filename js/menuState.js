@@ -35,6 +35,7 @@ var MenuState = State.extend(
                     utils.setVisibility("resumeGame", 'block');
                     this.menu.disable();
                     this.game.isPaused = false;
+                    this.game.isStart = false;
                     this.game.nextState = States.GAME;
                     break;
                 case Button.resumeGame:
