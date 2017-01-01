@@ -10,8 +10,8 @@
 }
 
 #menuId {
-    border-left: 750px solid transparent;
-    border-top: 450px solid transparent;
+    border-left: 720px solid transparent;
+    border-top: 470px solid transparent;
     position: absolute;
     margin: auto;
     color: var(--primary-color);

@@ -114,8 +114,36 @@ var GameState = State.extend(
                         this.lives--;
                         this.hp -= 100/3;
                     }
-                    else
-                        this.score += 50;
+                    else{
+                        switch (a.size) {
+                            case this.asterSize:
+                                this.score += 20;
+                                break;
+                            case this.asterSize/2:
+                                this.score += 50;
+                                break;
+                            case this.asterSize/4:
+                                this.score += 100;
+                                break;
+                        }
+
+                        // if asteroid splitted twice, then remove
+                        // else split in half
+                        if (a.size > this.asterSize/4) {
+                            for (var k = 0; k < 2; k++) {
+                                var n = Math.round(Math.random() * (Points.ASTEROIDS.length - 1));
+
+                                var astr = new Asteroid({
+                                    size: a.size/2,
+                                    x: a.x,
+                                    y: a.y,
+                                    typeAster: n,
+                                    parent: this.game.screen
+                                });
+                                this.asteroids.push(astr);
+                            }
+                        }
+                    }
 
                     if (this.lives <= 0) {
                         this.gameOver = true;
@@ -181,35 +209,38 @@ var GameState = State.extend(
             // barre
             var ga = g.ctx;
             var percent = this.hp / 100;
-            var offset_hp = 250;
+            var offset_hp = g.canvas.offsetLeft +550;
+            var offset_top = g.canvas.offsetTop +10;
+            var barWidth = 150;
+            var barHeight = 20;
 
             ga.fillStyle = "grey";
-            ga.fillRect(g.canvas.width/2+offset_hp,2, 100, 20);
+            ga.fillRect(offset_hp+30,offset_top, barWidth, barHeight);
 
             ga.fillStyle = "red";
-            ga.fillRect(g.canvas.width/2+offset_hp,2, 100 * percent, 20);
+            ga.fillRect(offset_hp+30,offset_top, barWidth * percent, barHeight);
 
             ga.fillStyle = "white";
             ga.font = "20px sans-serif";
-            ga.fillText("HP ", g.canvas.width/2+offset_hp+30, 20);
+            ga.fillText("HP ", offset_hp, offset_top + 18);
 
             percent = this.player.energy / 100;
-            var offset_nrg = 320;
+            var offset_nrg = g.canvas.offsetLeft + 60 ;
 
             ga.fillStyle = "grey";
-            ga.fillRect(g.canvas.width/ 2-offset_nrg,2, 100, 20);
+            ga.fillRect(offset_nrg+45,offset_top, barWidth, barHeight);
 
             ga.fillStyle = "#1569C7";
-            ga.fillRect(g.canvas.width/  2-offset_nrg,2, 100 * percent, 20);
+            ga.fillRect(offset_nrg+45,offset_top, barWidth * percent, barHeight);
 
             ga.fillStyle = "white";
             ga.font = "20px sans-serif";
-            ga.fillText("NRG ", g.canvas.width / 2-offset_nrg+30, 20);
+            ga.fillText("NRG ", offset_nrg, offset_top +18);
 
 
             ga.fillStyle = "white";
             ga.font = "25px sans-serif";
-            ga.fillText("SCORE: " + this.score, g.canvas.width / 2-50, 20);
+            ga.fillText("SCORE: " + this.score,offset_nrg+285, offset_top+18);
 
             // draw all asteroids and bullets
             for (var i = 0; i < this.asteroids.length; i++) {
@@ -223,11 +254,18 @@ var GameState = State.extend(
             this.player.draw(g);
 
             if(this.gameOver){
-                ga.fillStyle = "yellow";
+                ga.fillStyle = "red";
                 ga.font = "50px sans-serif";
                 var s ="GAME OVER\n\npush spacebar";
-                g.fillTextMultiLine(s,g.canvas.width/2-(s.length+100),100, g.canvas.height/2-20);
+                g.fillTextMultiLine(s,g.canvas.width/2-(s.length+100), g.canvas.height/2-80);
             }
+            else {
 
+                if (!this.player.active) {
+                    ga.fillStyle = "white";
+                    ga.font = "25px sans-serif";
+                    ga.fillText("Push spacebar for continue ", offset_nrg + 200, g.canvas.height / 2);
+                }
+            }
         }
     });

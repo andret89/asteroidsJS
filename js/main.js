@@ -101,7 +101,7 @@ var SoundManager = function () {
 SoundManager.prototype = {
     loadSound: function (url, key) {
         var s = new Audio(url);
-        if(key === 'shield' )
+        if(key === 'shield' && key === 'fire')
             s.volume = .06;
         this.sounds[key] = s;
     },

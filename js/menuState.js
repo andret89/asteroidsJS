@@ -71,7 +71,7 @@ var MenuState = State.extend(
             ga.fillStyle = "white";
             ga.font = "40px sans-serif";
             var s ="ASTEROIDS GAME";
-            g.fillTextMultiLine(s, g.canvas.width/2-(s.length+100),100);
+            g.fillTextMultiLine(s, g.canvas.width/2-(s.length+140),100);
         }
     });
 
