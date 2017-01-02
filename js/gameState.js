@@ -206,6 +206,9 @@ var GameState = State.extend(
         },
         render: function (g) {
             g.clearAll();
+           // var bg = new Image();
+           // bg.src = "img/bg3.png";
+           // g.ctx.drawImage(bg,0,0);
             //draw score and extra lives
             // barre
             var ga = g.ctx;

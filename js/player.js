@@ -121,7 +121,7 @@ var Player = GameObj.extend(
             }
             g.drawPlayer(this, this.x, this.y);
             if (this.jetFireActive) {
-                g.drawPolygon(this.jetFire, this.x, this.y);
+                g.drawPlayer(this.jetFire, this.x, this.y);
                 this.jetFireActive = false;
             }
             if (this.shield)

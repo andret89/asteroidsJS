@@ -80,13 +80,20 @@ Canvas.prototype = {
         // iterate thru all points and draw with stroke style
         g.save()
         g.beginPath();
+        g.strokeStyle = "black";
         g.fillStyle = polygon.color || "white";
+        var tmp = g.lineWidth;
+        g.lineWidth = 1.5;
         //g.translate(x, y);
         g.moveTo(p[0].x+x, p[0].y+y);
         for (var i = 1; i < p.length; i++)
             g.lineTo(p[i].x+x, p[i].y+y)
         g.fill()
+        if(polygon.type !== "Polygon")
+            g.stroke()
         g.restore()
+        g.lineWidth = tmp;
+
     },
     /**
      * Clears the complete canvas

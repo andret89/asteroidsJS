@@ -57,7 +57,7 @@ var Asteroid = GameObj.extend(
          * @param  {context2d} ctx augmented drawing conext
          */
         draw: function (g) {
-            g.drawPolygon(this, this.x, this.y);
+            g.drawPlayer(this, this.x, this.y);
         }
     }
 );
