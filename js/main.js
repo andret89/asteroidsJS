@@ -39,7 +39,12 @@ Game.prototype = {
         this.screen.clearAll();
     },
     pause : function () {
-        cancelAnimationFrame(this.animationFrameID);
+        if(!this.isPaused) {
+            cancelAnimationFrame(this.animationFrameID);
+            this.isPaused = !this.isPaused;
+        }
+        else
+            this.animationFrameID = window.requestAnimFrame(this)
     },
     run: function () {
         var self = this;
@@ -60,8 +65,6 @@ Game.prototype = {
                         }
                         break;
                     case States.GAMEOVER:
-                        log("game over")
-                        // TODO FIX menu game restart
                         self.currState = new GameOverState(self);
                         break;
                 }
@@ -86,7 +89,8 @@ Game.prototype = {
         this.animationFrameID = window.requestAnimFrame(gameLoop)
     }
 };
-var MOUSE_GAME = false;
+var MOUSE_GAME = true;
+var DEBUG_BOX = true;
 var DEBUG = false;
 if (!DEBUG) {
     window.addEventListener('load', function () {
@@ -101,15 +105,26 @@ else {
 }
 function test() {
     var game = new Game();
+    var aster = new Asteroid({
+        size: 8,
+        x: game.screen.width / 2,
+        y: game.screen.height / 2,
+        typeAster: 2,
+        parent: game.screen
+    });
     var ply = new Player({
         size: 4,
         x: game.screen.width / 4,
         y: game.screen.height / 4,
         parent: game.screen
     });
-    ply.direction(Math.radians(20))
-    ply.update();
-    ply.draw(game.screen)
+    game.menuManager = new MenuState(self);
+    game.menuManager.menu.disable();
+    //ply.addDirection(Math.radians(20));
+    aster.update();
+    //ply.update();
+    aster.draw(game.screen);
+    //ply.draw(game.screen);
 
 }
 

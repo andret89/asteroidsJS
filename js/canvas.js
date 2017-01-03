@@ -11,7 +11,7 @@
 function Canvas(width, height, canvasId) {
     var canvas_id = canvasId || "canvasId";
     var w = width || window.innerWidth;
-    var h = height ||  window.innerHeight;
+    var h = height || window.innerHeight;
     // create and set dimension of internal canvas
     var _canvas = document.getElementById(canvas_id);
     if (_canvas === null) {
@@ -24,7 +24,7 @@ function Canvas(width, height, canvasId) {
     this.ctx = _canvas.getContext("2d");
     //context 2d
     if (!this.ctx) {
-        alert("Il tuo browser non supporta HTML5, aggiornalo!");
+        alert("Il tuo browser non supporta HTML5");
     }
     _canvas.width = w;
     _canvas.height = h;
@@ -34,8 +34,8 @@ function Canvas(width, height, canvasId) {
     this.ctx.height = h;
     this.width = w;
     this.height = h;
-    var self= this;
-    window.addEventListener('resize', function(evt) {
+    var self = this;
+    window.addEventListener('resize', function (evt) {
         //TODO resize
         self.canvas.width = window.innerWidth;
         self.canvas.height = window.innerHeight;
@@ -48,9 +48,6 @@ function Canvas(width, height, canvasId) {
 }
 
 Canvas.prototype = {
-    toString: function () {
-        return ("Canvas w:" + this.canvas.width + " , h:" + this.canvas.height)
-    },
     /**
      * Draws a polygon object
      *
@@ -58,7 +55,7 @@ Canvas.prototype = {
      * @param  {number}  x the x coordinate
      * @param  {number}  y draw y coordinate
      */
-    drawPolygon: function (polygon, x, y) {
+    drawStrokePolygon: function (polygon, x, y) {
         // NOTE: this => ctx
         var g = this.ctx,
             p = polygon.points;
@@ -66,15 +63,16 @@ Canvas.prototype = {
         g.save()
         g.beginPath();
         g.strokeStyle = polygon.color || "white";
-        //g.translate(x, y);
-        g.moveTo(p[0].x+x, p[0].y+y);
+        g.translate(x, y);
+        g.rotate(polygon.angle);
+        g.moveTo(p[0].x, p[0].y);
         for (var i = 1; i < p.length; i++)
-            g.lineTo(p[i].x+x, p[i].y+y)
+            g.lineTo(p[i].x, p[i].y)
         g.stroke()
         g.restore()
 
     },
-    drawPlayer : function (polygon,x,y) {
+    drawfillPolygon: function (polygon, x, y) {
         var g = this.ctx,
             p = polygon.points;
         // iterate thru all points and draw with stroke style
@@ -84,14 +82,15 @@ Canvas.prototype = {
         g.fillStyle = polygon.color || "white";
         var tmp = g.lineWidth;
         g.lineWidth = 1.5;
-        //g.translate(x, y);
-        g.moveTo(p[0].x+x, p[0].y+y);
+        g.translate(x, y);
+        g.rotate(polygon.angle);
+        g.moveTo(p[0].x, p[0].y);
         for (var i = 1; i < p.length; i++)
-            g.lineTo(p[i].x+x, p[i].y+y)
+            g.lineTo(p[i].x, p[i].y)
         g.fill()
-        if(polygon.type !== "Polygon")
-            g.stroke()
-        g.restore()
+        if (!(polygon instanceof Polygon))
+            g.stroke();
+        g.restore();
         g.lineWidth = tmp;
 
     },
@@ -104,19 +103,59 @@ Canvas.prototype = {
     drawCircle: function (c, x, y) {
         var g = this.ctx
         g.beginPath();
-        g.strokeStyle = c.color || "red";
-        var tmp=g.lineWidth;
-        g.lineWidth = 3;
+        g.fillStyle = c.color || "red";
+        //var tmp=g.lineWidth;
+        //g.lineWidth = 3;
         g.arc(c.center.x + x, c.center.y + y, c.radius, 0, 2 * Math.PI, false);
+        g.closePath();
+        g.fill()
+        //g.lineWidth = tmp;
+    },
+    drawCircleBox: function (x, y, r) {
+        var g = this.ctx
+        g.beginPath();
+        g.strokeStyle = "yellow";
+        var tmp = g.lineWidth;
+        g.lineWidth = 1;
+        g.arc(x, y, r, 0, 2 * Math.PI, false);
         g.closePath();
         g.stroke()
         g.lineWidth = tmp;
+    },
+    drawRectBox: function (x, y, w, h) {
+        var g = this.ctx
+        g.strokeStyle = "yellow";
+        var tmp = g.lineWidth;
+        g.lineWidth = 1;
+        g.rect(x, y, w, h);
+        g.stroke()
+        g.lineWidth = tmp;
+    },
+    drawPlayer: function (p, x, y) {
+        var g = this.ctx;
+        g.save();
+        g.translate(x, y);
+        g.rotate(p.angle + Math.radians(90));
+        var r = p.radius * 2;
+        g.drawImage(p.img, -r / 2, -r / 2, r, r);
+        g.restore()
+
+    },
+    drawAster: function (p, x, y) {
+        var g = this.ctx;
+        g.save();
+        g.translate(x, y);
+        g.rotate(p.angle);
+        var r = p.radius * 4;
+        g.drawImage(p.img, -r / 2, -r / 2, r, r);
+        g.restore()
+
     },
     drawLine: function (x1, y1, x2, y2, color) {
         var g = this.ctx
         g.beginPath();
         g.strokeStyle = color || "green";
-        var tmp=g.lineWidth;
+        var tmp = g.lineWidth;
         g.lineWidth = 3;
         g.moveTo(x1, y1);
         g.lineTo(x2, y2);
@@ -124,7 +163,7 @@ Canvas.prototype = {
         g.lineWidth = tmp;
 
     },
-    fillTextMultiLine : function(text, x, y) {
+    fillTextMultiLine: function (text, x, y) {
         var lineHeight = this.ctx.measureText("M").width * 1.2;
         var lines = text.split("\n");
         for (var i = 0; i < lines.length; ++i) {

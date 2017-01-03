@@ -5,11 +5,10 @@ var GameState = State.extend(
         this.gameOver = false;
         this.game.score = 0;
         this.lvl = 1;
-        this.lives = 3;
-        this.hp = 100;
-        this.asterSize = 8;
+        this.n_life = 4;
+        this.asterSize = 10;
         this.player = new Player({
-            size: 3,
+            size: 6,
             x: game.screen.width / 2,
             y: game.screen.height / 2,
             parent: game.screen
@@ -19,7 +18,7 @@ var GameState = State.extend(
         genLevel: function () {
             this.bullets = [];
             this.asteroids = [];
-            var n_asteroids = Math.round(4 +( this.lvl/2));
+            var n_asteroids = Math.round(2 +( this.lvl/2));
             for (var i = 0; i < n_asteroids; i++) {
                 // choose asteroid polygon randomly
                 var n = Math.round(Math.random() * (Points.ASTEROIDS.length - 1));
@@ -63,33 +62,29 @@ var GameState = State.extend(
             }
             this.player.shield = false;
             if (input.isDown('KEY_UP') || input.isDown('KEY_W')) {
-                log("go");
                 this.player.addSpeed()
                 this.game.sm.playSound('fire')
             }
             if (input.isDown('KEY_DOWN') || input.isDown('KEY_S')) {
-                log("shield");
-                if(this.player.energy > 10)
-                this.player.shield = true;
+                if(this.player.energy >= 10)
+                    this.player.shield = true;
             }
             if((input.isPressed('KEY_DOWN') || input.isPressed('KEY_S'))){
                 this.game.sm.playSound('shield')
             }
-            else
-                if(this.player.energy <= 0)
+           /* else
+                if(!this.player.shield)
                     this.game.sm.stopSound('shield')
+            */
             if (input.isDown('KEY_RIGHT') || input.isDown('KEY_D')) {
                 this.player.addDirection(Math.radians(4));
-                log("RIGHT")
             }
             if (input.isDown('KEY_LEFT') || input.isDown('KEY_A')) {
                 this.player.addDirection(Math.radians(-4));
-                log("LEFT")
             }
             if (input.isPressed('KEY_CTRL') || input.isPressed('KEY_SPACE')) {
-                if (this.player.energy > 10) {
+                if (this.player.energy >= 10) {
                 this.bullets.push(this.player.addBullet(8));
-                log("SHOOT")
                 this.game.sm.playSound('shoot');
             }
             }
@@ -100,8 +95,8 @@ var GameState = State.extend(
                 var a = this.asteroids[i];
                 a.update();
 
-                // if ship collids reset position and decrement lives
-                if (this.player.collide(a)) {
+                // if ship collids reset position and decrement n_life
+                if (this.player.isCollision(a)) {
                     this.game.sm.playSound('explosion')
                     if(!this.player.shield) {
                         this.player.active = false;
@@ -111,8 +106,7 @@ var GameState = State.extend(
                             x: 0,
                             y: 0
                         };
-                        this.lives--;
-                        this.hp -= 100/3;
+                        this.player.hp -= 100/this.n_life;
                     }
                     else{
                         switch (a.size) {
@@ -145,7 +139,7 @@ var GameState = State.extend(
                         }
                     }
 
-                    if (this.lives <= 0) {
+                    if (this.player.hp <= 0) {
                         this.gameOver = true;
                     }
                     this.asteroids.splice(i, 1);
@@ -155,7 +149,7 @@ var GameState = State.extend(
                 for (var j = 0; j < this.bullets.length; j++) {
                     var b = this.bullets[j];
 
-                    if (a.isContains(b.x, b.y)) {
+                    if (a.isCollision(b.x, b.y)) {
                         this.bullets.splice(j, 1);
                         this.asteroids.splice(i, 1);
                         this.game.sm.playSound('explosion')
@@ -195,6 +189,8 @@ var GameState = State.extend(
             // check if lvl completed
             if (this.asteroids.length === 0) {
                 this.lvl++;
+                if(this.player.hp < 100)
+                    this.player.hp += 100/this.n_life;
                 this.genLevel();
             }
 
@@ -206,13 +202,33 @@ var GameState = State.extend(
         },
         render: function (g) {
             g.clearAll();
-           // var bg = new Image();
-           // bg.src = "img/bg3.png";
-           // g.ctx.drawImage(bg,0,0);
-            //draw score and extra lives
             // barre
+            this.drawProgressBar(g);
+
+            // draw all asteroids and bullets
+            for (var i = 0; i < this.asteroids.length; i++) {
+                this.asteroids[i].draw(g);
+            }
+            for (var i = 0; i < this.bullets.length; i++) {
+                this.bullets[i].draw(g);
+            }
+
+            // draw ship
+            this.player.draw(g);
+
+                if (!this.player.active) {
+                    var ga = g.ctx;
+
+                    ga.fillStyle = "white";
+                    ga.font = "25px sans-serif";
+                    ga.fillText("Push spacebar for continue ", g.canvas.width/2 - 150, g.canvas.height / 2);
+                }
+
+        }
+        ,
+        drawProgressBar:function (g) {
             var ga = g.ctx;
-            var percent = this.hp / 100;
+            var percent = this.player.hp / 100;
             var offset_hp = g.canvas.width/2 + 280;
             var offset_top = g.canvas.offsetTop +10;
             var barWidth = 150;
@@ -245,31 +261,6 @@ var GameState = State.extend(
             ga.fillStyle = "white";
             ga.font = "25px sans-serif";
             ga.fillText("SCORE: " + this.game.score,offset_nrg+410, offset_top+18);
-
-            // draw all asteroids and bullets
-            for (var i = 0; i < this.asteroids.length; i++) {
-                this.asteroids[i].draw(g);
-            }
-            for (var i = 0; i < this.bullets.length; i++) {
-                this.bullets[i].draw(g);
-            }
-
-            // draw ship
-            this.player.draw(g);
-/*
-            if(this.gameOver){
-                ga.fillStyle = "red";
-                ga.font = "50px sans-serif";
-                var s ="GAME OVER\n\npush spacebar";
-                g.fillTextMultiLine(s,g.canvas.width/2-(s.length+110), g.canvas.height/2-80);
-            }
-            else {
-            */
-                if (!this.player.active) {
-                    ga.fillStyle = "white";
-                    ga.font = "25px sans-serif";
-                    ga.fillText("Push spacebar for continue ", g.canvas.width/2 - 150, g.canvas.height / 2);
-                }
 
         }
     });

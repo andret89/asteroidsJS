@@ -38,16 +38,14 @@ var utils = {
         }
         return false;
     },
-    colisionCircle: function (c1, c2) {
-        return utils.distance(c1.center, c2.center) < c1.radius + c2.radius;
+    collisionC: function (c1x, c1y, r1, c2x, c2y, r2) {
+        var _r2 = r2 || 0; // 0 per distanza da un punto
+        return utils.distance({x:c1x,y:c1y},{x:c2x,y:c2y}) < r1 + _r2;
     },
     distance: function (ent1, ent2) {
         var dx = ent2.x - ent1.x;
         var dy = ent2.y - ent1.y;
         return Math.sqrt(dx * dx + dy * dy);
-    },
-    distaceCircle: function (c1, c2) {
-        return utils.distace(c1.center, c2.center);
     },
     setVisibility: function (id, value) {
         document.getElementById(id).style.display = value;

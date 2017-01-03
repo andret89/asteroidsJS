@@ -17,8 +17,12 @@ var Asteroid = GameObj.extend(
         this.type = "Asteroid";
         this.color = "grey";
         this.active = true;
+        this.img = new Image();
+        this.img.src = "img/aster.png";
+        this.radius = this.size*4;
         // Set rotation angle used in each update
-        this.angle = 0.02 * (Math.random() * 2 - 1);
+        this.rotation = 0.02 * (Math.random() * 2 - 1);
+        this.angle = this.rotation;
 
         // Generate and calculate velocity
         var r = Math.PI * Math.random();
@@ -27,7 +31,6 @@ var Asteroid = GameObj.extend(
             x: v * Math.cos(r),
             y: v * Math.sin(r)
         }
-        utils.isUndifinedParam(this)
     }, {
         /**
          * Translate and rotate the asteroid
@@ -48,8 +51,7 @@ var Asteroid = GameObj.extend(
             } else if (this.y < 0) {
                 this.y = this.maxY;
             }
-            // rotate asteroids
-            this.rotate(this.angle);
+            this.angle += this.rotation;
         },
         /**
          * Draw the polygon with an augmented drawing context
@@ -57,7 +59,13 @@ var Asteroid = GameObj.extend(
          * @param  {context2d} ctx augmented drawing conext
          */
         draw: function (g) {
-            g.drawPlayer(this, this.x, this.y);
+            g.drawAster(this, this.x, this.y);
+            if(DEBUG_BOX) {
+                g.drawCircleBox(this.x,this.y,this.radius);
+            }
+        },
+        isCollision: function (x,y) {
+            return this.collisionCircle(x,y);
         }
     }
 );

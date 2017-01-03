@@ -6,6 +6,10 @@ var Player = GameObj.extend(
         this.active = true;
         this.angle = 0;
         this.jetFireActive = false;
+        this.img = new Image();
+        this.img.src ="img/ship2.png";
+        this.radius = this.size*4;
+        this.hp = 100;
         this.energy = 100;
         this.shield = false;
         // create, init and scale flame polygon
@@ -28,8 +32,8 @@ var Player = GameObj.extend(
             if(this.energy > 10)
                 this.energy -= 10;
             var b = new Bullet({
-                x: this.points[0].x + this.x,
-                y: this.points[0].y + this.y,
+                x: this.x,
+                y: this.y,
                 angle: this.angle,
                 size: size,
                 parent: this.parent
@@ -45,7 +49,7 @@ var Player = GameObj.extend(
             // length of veloctity vector estimated with pythagoras
             // theorem, i.e.
             // 		a*a + b*b = c*c
-            if (this.vel.x * this.vel.x + this.vel.y * this.vel.y < 20 * 20) {
+            if (this.vel.x + this.vel.y < 20 ) {
                 this.vel.x += 0.2 * Math.cos(this.angle);
                 this.vel.y += 0.2 * Math.sin(this.angle);
             }
@@ -60,9 +64,7 @@ var Player = GameObj.extend(
          * @override Polygon.rotate
          */
         addDirection: function (theta) {
-            this.jetFire.rotate(theta);
             this.angle += theta;
-            this.rotate(theta)
         },
         /**
          * Returns whether ship is colling with asteroid
@@ -70,20 +72,12 @@ var Player = GameObj.extend(
          * @param  {Asteroid} astr asteroid to test
          * @return {Boolean}       result from test
          */
-        collide: function (astr) {
-            // don't test if not visible
+        isCollision: function (astr) {
             if (!this.active) {
                 return false;
             }
-            for (var i = 0; i < this.points.length; i++) {
-                var x = this.points[i].x + this.x;
-                var y = this.points[i].y + this.y;
+            return this.collisionCircle(astr.x,astr.y, astr.radius);
 
-                if (astr.isContains(x, y)) {
-                    return true;
-                }
-            }
-            return false;
         },
         update: function () {
             // update position
@@ -119,17 +113,20 @@ var Player = GameObj.extend(
             if (!this.active) {
                 return;
             }
-            g.drawPlayer(this, this.x, this.y);
-            if (this.jetFireActive) {
-                g.drawPlayer(this.jetFire, this.x, this.y);
-                this.jetFireActive = false;
-            }
             if (this.shield)
                 g.drawCircle({
                         center: {x: this.x, y: this.y},
-                        radius: this.size * 6, color: "#1569C7"
+                        radius: this.radius+4, color: "#1569C7"
                     }
-                    , 0, 0)
+                    , 0, 0);
+            g.drawPlayer(this, this.x, this.y);
+            if (this.jetFireActive) {
+                this.jetFire.angle = this.angle;
+                g.drawfillPolygon(this.jetFire, this.x, this.y);
+                this.jetFireActive = false;
+            }
+            if(DEBUG_BOX)
+                g.drawCircleBox(this.x,this.y,this.radius);
 
         }
     }

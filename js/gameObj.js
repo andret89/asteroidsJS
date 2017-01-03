@@ -3,9 +3,9 @@ var GameObj = Polygon.extend(
         Polygon.call(this, param.points, param.size);
         this.parent = param.parent;
         this.size = param.size || 10;
+        this.radius = this.size*4;
         this.x = param.x;
         this.y = param.y;
-        this.type = "GameObj";
         /**
          * Bounds for the asteroid
          */
@@ -15,29 +15,14 @@ var GameObj = Polygon.extend(
         this.scale(this.size);
 
     }, {
-
-        toString: function () {
-            return (this.type + ": " +
-            this.x + ", " + this.y + ", " + this.size);
+        collisionCircle: function (cx, cy, r) {
+            var _r = r || 0; // 0 per distanza da un punto
+            return this.distance(this,{x:cx,y:cy}) < this.radius + _r;
         },
-        /**
-         * Useful point in polygon check, taken from:
-         *
-         * @param  {number}  x test x coordinate
-         * @param  {number}  y test y coordinate
-         * @return {Boolean}   result from check
-         *
-         * @override Polygon.hasPoint
-         */
-        isContainsAngle: function (x, y) {
-            var c = Math.cos(this.angle);
-            var s = Math.sin(this.angle);
-            var xc = c * x - s * y, yc = s * x + c * y;
-
-            return this.pnPoly(this.x, this.y, xc, yc);
-        },
-        isContains: function (x, y) {
-            return this.isContainsPoint(x - this.x, y - this.y);
+        distance: function (ent1, ent2) {
+            var dx = ent2.x - ent1.x;
+            var dy = ent2.y - ent1.y;
+            return Math.sqrt(dx * dx + dy * dy);
         }
     }
-)
+);
