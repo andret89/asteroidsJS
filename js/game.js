@@ -102,10 +102,8 @@ Game.prototype = {
         if ((input.isPressed('KEY_DOWN') || input.isPressed('KEY_S'))) {
             this.main.sm.playSound('shield')
         }
-        /* else
-         if(!this.player.shield)
-         this.main.sm.stopSound('shield')
-         */
+        else if (!this.player.shield)
+            this.main.sm.stopSound('shield')
         if (input.isDown('KEY_RIGHT') || input.isDown('KEY_D')) {
             this.player.addDirection(Math.radians(4));
         }
@@ -118,44 +116,40 @@ Game.prototype = {
                 this.main.sm.playSound('shoot');
             }
         }
-        //TODO controllare foreach
         var self = this;
-        for (var i = 0; i < this.asteroids.length; i++) {
-            var a = this.asteroids[i];
+        this.asteroids.forEach(function (a) {
             a.update(dt);
 
             // check if bullets hits the current asteroid
-            for (var j = 0; j < this.bullets.length; j++) {
-                var b = this.bullets[j];
+            self.bullets.forEach(function (b) {
                 if (a.isCollision(b.x, b.y)) {
-                    this.bullets[j].active = false;
-                    this.asteroids[i].active = false;
+                    b.active = false;
+                    a.active = false;
                     self.main.sm.playSound('explosion')
                     self.updateScore(a)
                 }
-                // if ship collids reset position and decrement n_life
-                if (a.active && self.player.isCollision(a)) {
-                    self.main.sm.playSound('explosion')
-                    if (!self.player.shield) {
-                        self.player.active = false;
-                        self.player.x = self.screen.width / 2;
-                        self.player.y = self.screen.height / 2;
-                        self.player.vel = {
-                            x: 0,
-                            y: 0
-                        };
-                        self.player.hp -= 100 / self.n_life;
-                    }
-                    self.updateScore(a)
-                    this.asteroids[i].active = false;
+            });
+            // if ship collids reset position and decrement n_life
+            if (a.active && self.player.isCollision(a)) {
+                self.main.sm.playSound('explosion')
+                if (!self.player.shield) {
+                    self.player.active = false;
+                    self.player.x = self.screen.width / 2;
+                    self.player.y = self.screen.height / 2;
+                    self.player.vel = {
+                        x: 0,
+                        y: 0
+                    };
+                    self.player.hp -= 100 / self.n_life;
                 }
-
-                if (self.player.hp <= 0) {
-                    self.gameOver = true;
-                }
-
+                self.updateScore(a);
+                a.active = false;
             }
-        }
+
+            if (self.player.hp <= 0) {
+                self.gameOver = true;
+            }
+        });
 
         // check if lvl completed
         if (this.asteroids.length === 0) {
@@ -168,20 +162,16 @@ Game.prototype = {
         // update ship
         this.player.update(dt);
 
-        for(var i in this.bullets){
-            var b = this.bullets[i];
-            if (b.active)
+        this.bullets = self.bullets.filter(function (b) {
+            var _active = b.active;
+            if (_active)
                 b.update(dt);
-            else
-                this.bullets.splice(i,1);
-        }
+            return _active;
+        });
 
-        for(var i in this.ateroids) {
-            var a = this.asteroids[i];
-            if (!a.active)
-                this.asteroids.splice(i,1);
-        }
-
+        this.asteroids = self.asteroids.filter(function (a) {
+            return a.active;
+        });
 
         if (this.gameOver) {
             Main.state = States.GAMEOVER;
@@ -197,15 +187,6 @@ Game.prototype = {
         this.bullets.forEach(function (b) {
             b.draw(g);
         });
-
-        /*
-         enemies.forEach(function(enemy) {
-         if (collides(enemy, player)) {
-         enemy.explode();
-         player.explode();
-         }
-         });
-         */
 
         // draw ship
         this.player.draw(g);
