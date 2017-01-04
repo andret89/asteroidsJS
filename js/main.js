@@ -49,7 +49,7 @@ Main.prototype = {
             if (self.nextState !== States.NO_CHANGE) {
                 switch (self.nextState) {
                     case States.INFO:
-                        self.currState = new StartInfo(self);
+                        self.currState = new Info(self);
                         break;
                     case States.GAME:
                         self.currState = new Game(self);

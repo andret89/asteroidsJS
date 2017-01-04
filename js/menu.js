@@ -70,13 +70,12 @@ Menu.prototype = {
                     this.setVisibility("startGame", 'block');
                     this.main.nextState = States.GAMEOVER;
                     this.disable();
-                }else{
-                    if(Main.endGame) {
+                }else
+                    if(Main.endGame){
                         this.setVisibility("resumeGame", 'none');
                         this.setVisibility("startGame", 'block');
                         this.main.nextState = States.INFO;
-                        this.disable();
-                    }
+                    this.disable();
                 }
                 break;
         }

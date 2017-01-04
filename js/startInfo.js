@@ -1,10 +1,10 @@
 /**
  * Created by andre on 28/12/16.
  */
-var StartInfo = function(main){
+var Info = function(main){
         this.main = main;
 }
-StartInfo.prototype = {
+Info.prototype = {
         update: function (input,dt) {
             if(this.main.menu.active)
                 return;
