@@ -5,12 +5,14 @@ var StartInfo = function(main){
         this.main = main;
 }
 StartInfo.prototype = {
-        update: function (input) {
+        update: function (input,dt) {
+            if(this.main.menu.active)
+                return;
+
             if (input.isPressed('KEY_SPACE') || input.isPressed('KEY_ENTER')) {
-                if(!this.main.menu.active)
                     log("start");
                     this.main.menu.enable();
-                    Main.state = States.PAUSE;
+                    return;
             }
 
         },

@@ -8,8 +8,12 @@ var GameOver = function (game) {
 GameOver.prototype =
     {
         update: function (input) {
+            if(this.main.menu.active)
+                return;
+
             if (input.isPressed('KEY_SPACE') || input.isPressed('KEY_ENTER')) {
                 this.main.menu.enable();
+                return;
             }
         },
         draw: function (g) {

@@ -42,8 +42,11 @@ Menu.prototype = {
         this.setVisibility("menuId", 'none');
     },
     update: function (input) {
+        if(!this.active)
+            return;
+
         if (input.isPressed('KEY_ESC') || input.isPressed('KEY_P')) {
-            if (this.active) {
+            if(Main.startGame) {
                 log("pause");
                 Menu.menuChoice = Button.resumeGame;
             }
@@ -54,18 +57,26 @@ Menu.prototype = {
                 this.setVisibility("startGame", 'none');
                 this.setVisibility("resumeGame", 'block');
                 this.disable();
-                Main.startGame = false;
-                Main.state = States.GAME;
+                this.main.nextState = States.GAME;
                 break;
             case Button.resumeGame:
                 console.log("resumeGame");
                 this.disable();
                 break;
             case Button.exitGame:
-                if (Main.startGame || Main.startGameOver) {
+                if (Main.startGame) {
                     console.log("exitGame");
                     this.setVisibility("resumeGame", 'none');
                     this.setVisibility("startGame", 'block');
+                    this.main.nextState = States.GAMEOVER;
+                    this.disable();
+                }else{
+                    if(Main.endGame) {
+                        this.setVisibility("resumeGame", 'none');
+                        this.setVisibility("startGame", 'block');
+                        this.main.nextState = States.INFO;
+                        this.disable();
+                    }
                 }
                 break;
         }

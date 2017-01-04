@@ -113,8 +113,8 @@ Inputs.prototype ={
         document.addEventListener("mousemove", function (event) {
             self.mousePos.x = event.clientX;
             self.mousePos.y = event.clientY;
-            if(MOUSE_GAME && !utils.isUndefined(self.main.game)) {
-                var player = self.main.game.player;
+            if(MOUSE_GAME && !utils.isUndefined(self.main.currState.player)) {
+                var player = self.main.currState.player;
                 var dx = (self.mousePos.x - player.x);
                 var dy = (self.mousePos.y - player.y);
                 var angle = Math.atan2(dy, dx); //+ toRadians(90

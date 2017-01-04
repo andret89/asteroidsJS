@@ -73,9 +73,13 @@ Game.prototype = {
         }
     },
     update: function (input, dt) {
+        if(this.main.menu.active || Main.paused)
+            return;
+
         if (input.isPressed('KEY_ESC') || input.isPressed('KEY_P')) {
             log("pause");
             this.main.menu.enable();
+            return;
         }
         if (!this.player.active) {
             if (input.isPressed("KEY_SPACE")) {
@@ -174,8 +178,7 @@ Game.prototype = {
         });
 
         if (this.gameOver) {
-            Main.state = States.GAMEOVER;
-            Main.startGameOver = false;
+            this.main.nextState = States.GAMEOVER;
         }
     },
     draw: function (g) {
