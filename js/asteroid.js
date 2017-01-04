@@ -20,13 +20,14 @@ var Asteroid = GameObj.extend(
         this.img = new Image();
         this.img.src = "img/aster.png";
         this.radius = this.size*4;
+        this.active = true;
         // Set rotation angle used in each update
-        this.rotation = 0.02 * (Math.random() * 2 - 1);
+        this.rotation = 0.02 * (Math.random()*2 - 1);
         this.angle = this.rotation;
 
         // Generate and calculate velocity
         var r = Math.PI * Math.random();
-        var v = Math.random() + 1;
+        var v = Math.random() * 12 + 1;
         this.vel = {
             x: v * Math.cos(r),
             y: v * Math.sin(r)
@@ -35,10 +36,10 @@ var Asteroid = GameObj.extend(
         /**
          * Translate and rotate the asteroid
          */
-        update: function () {
+        update: function (dt) {
             // update position
-            this.x += this.vel.x;
-            this.y += this.vel.y;
+            this.x += this.vel.x * dt;
+            this.y += this.vel.y * dt;
 
             // keep within bounds
             if (this.x > this.maxX) {

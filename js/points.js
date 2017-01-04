@@ -12,7 +12,7 @@ function Point(x,y) {
 	}
 }
 /**
- * Global object containing all verticies for the game graphics,
+ * Global object containing all verticies for the main graphics,
  * see. polygondraw.html
  */
 var Points = {

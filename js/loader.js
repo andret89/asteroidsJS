@@ -14,10 +14,10 @@ function loadScripts() {
         'player',
         'asteroid',
         'canvas',
-        'state',
-        'gameState',
-        'menuState',
-        'gameOverState',
+        'menu',
+        'game',
+        'startInfo',
+        'gameOver',
         'main'
     ];
     // aggiunge elementi script al tag html head

@@ -49,9 +49,9 @@ var Player = GameObj.extend(
             // length of veloctity vector estimated with pythagoras
             // theorem, i.e.
             // 		a*a + b*b = c*c
-            if (this.vel.x + this.vel.y < 20 ) {
-                this.vel.x += 0.2 * Math.cos(this.angle);
-                this.vel.y += 0.2 * Math.sin(this.angle);
+            if (this.vel.x + this.vel.y < 40 ) {
+                this.vel.x += 0.8 * Math.cos(this.angle);
+                this.vel.y += 0.8 * Math.sin(this.angle);
             }
             this.jetFireActive = true;
         },
@@ -79,10 +79,10 @@ var Player = GameObj.extend(
             return this.collisionCircle(astr.x,astr.y, astr.radius);
 
         },
-        update: function () {
+        update: function (dt) {
             // update position
-            this.x += this.vel.x;
-            this.y += this.vel.y;
+            this.x += this.vel.x * dt;
+            this.y += this.vel.y * dt;
 
             // friction
             this.vel.x *= 0.98;

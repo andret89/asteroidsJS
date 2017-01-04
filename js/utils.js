@@ -1,21 +1,3 @@
-/**
- * Wrapper around window.requestAnimationFrame (rAF)
- *
- * @param  {function} callback the function to animate
- */
-// handle multiple browsers for requestAnimationFrame()
-window.requestAnimFrame = (function (callback) {
-
-    return window.requestAnimationFrame     ||
-        window.webkitRequestAnimationFrame  ||
-        window.mozRequestAnimationFrame     ||
-        window.oRequestAnimationFrame       ||
-        window.msRequestAnimationFrame      ||
-
-        function (callback) {
-            window.setTimeout(callback, 1000 / 60);
-        };
-})();
 
 function log(s) {
     console.log(s + '')
@@ -25,7 +7,8 @@ var utils = {
     isUndefined: function (obj, s) {
         var ret = obj === void 0 || obj === null;
         if (ret)
-            log(s + " undefined");
+            if(DEBUG)
+              log(s + " undefined");
         return ret
     },
     isUndifinedParam: function (param) {
@@ -46,9 +29,6 @@ var utils = {
         var dx = ent2.x - ent1.x;
         var dy = ent2.y - ent1.y;
         return Math.sqrt(dx * dx + dy * dy);
-    },
-    setVisibility: function (id, value) {
-        document.getElementById(id).style.display = value;
     }
 }
 
@@ -103,8 +83,7 @@ var Key = {
 };
 
 
-var Inputs = function(game) {
-    this.game = game;
+var Inputs = function() {
     this.mousePos = {x: 0, y: 0};
     this.keys = {};
     this.down = {};
@@ -118,8 +97,9 @@ var Inputs = function(game) {
     }
 }
 Inputs.prototype ={
-    init:function () {
+    init:function (main) {
         var self = this;
+        self.main = main;
 
 // add eventlisteners to monitor presses
         document.addEventListener("keydown", function (evt) {
@@ -131,31 +111,15 @@ Inputs.prototype ={
                 log("keyup")
         });
         document.addEventListener("mousemove", function (event) {
-
             self.mousePos.x = event.clientX;
             self.mousePos.y = event.clientY;
-            if(MOUSE_GAME && self.game.currState instanceof GameState) {
-                var gameCurr = self.game.currState;
-                var dx = (self.mousePos.x - gameCurr.player.x);
-                var dy = (self.mousePos.y - gameCurr.player.y);
+            if(MOUSE_GAME && !utils.isUndefined(self.main.game)) {
+                var player = self.main.game.player;
+                var dx = (self.mousePos.x - player.x);
+                var dy = (self.mousePos.y - player.y);
                 var angle = Math.atan2(dy, dx); //+ toRadians(90
-                gameCurr.player.angle = angle;
-/*
-                if(gameCurr.player.angle-angle !==0 ) {
-                    gameCurr.player.addDirection(gameCurr.player.angle - angle);
-                    gameCurr.player.angle = angle
-                }
-*/                    // if(gameCurr.player.angle-angle !==0 ) {
-                //     if(dx > 0)
-                //         gameCurr.player.addDirection(-gameCurr.player.angle + angle);
-                //     else
-                //         gameCurr.player.addDirection(gameCurr.player.angle - angle);
-                //
-                //     gameCurr.player.angle = angle
-
-
+                player.angle = angle;
             }
-            //console.log(Inputs.mousePos.x + ', ' + Inputs.mousePos.y)
         });
         document.addEventListener("mousedown", function (evt) {
             self.down['KEY_SPACE'] = true;
