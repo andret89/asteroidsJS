@@ -2,6 +2,7 @@
  * Created by andre on 28/12/16.
  */
 var GameOver = function (game) {
+    this.type = "GameOver";
     this.main = game;
     this.hs = this.main.saveScore(this.main.score);
 }

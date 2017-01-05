@@ -1,5 +1,5 @@
 var States = {
-    INFO:0, GAME:1, GAMEOVER:2, NO_CHANGE:3
+    INFO: 0, GAME: 1, GAMEOVER: 2, NO_CHANGE: 3
 };
 
 var Main = function () {
@@ -40,7 +40,7 @@ Main.prototype = {
     /*
      * Runs the actual loop inside browser
      */
-    run:function () {
+    run: function () {
         var self = this;
         var prevTime = new Date().getTime();
         var currTime = new Date().getTime();
@@ -67,18 +67,38 @@ Main.prototype = {
             prevTime = currTime;
             currTime = new Date().getTime();
             var dt = currTime - prevTime;
-            if(dt > 0.15)
+            if (dt > 0.15)
                 dt = 0.15;
 
-            if(self.menu.active)
+            if (self.menu.active || self.menu.activeInfo) {
                 self.menu.update(self.input);
+                self.screen.clearAll();
+            }
+            if (!self.menu.activeInfo) {
+                switch (self.currState.type) {
+                    case "Info":
+                        self.currState = new Info(self);
+                        break;
+                    case "Game":
+                        self.screen.clearAll();
+                        if (!self.menu.active)
+                            self.currState.update(self.input, dt);
+                        self.currState.draw(self.screen);
+                        break;
+                    case "GameOver":
+                        self.screen.clearAll();
+                        if (!self.menu.active) {
+                            self.currState.update(self.input, dt);
+                            self.currState.draw(self.screen);
+                        }
+                        break;
+                }
+            }
 
-            self.currState.update(self.input,dt);
-            self.screen.clearAll();
-            self.currState.draw(self.screen);
 
             window.requestAnimFrame(gameLoop)
         }
+
         window.requestAnimFrame(gameLoop)
     }
 };
@@ -107,10 +127,10 @@ var DEBUG_BOX = false;
 var DEBUG = false;
 
 window.addEventListener('load', function () {
-        var main = new Main();
-        main.init();
-        main.run();
-    }, false);
+    var main = new Main();
+    main.init();
+    main.run();
+}, false);
 
 var SoundManager = function () {
     this.sounds = [];

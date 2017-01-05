@@ -1,4 +1,5 @@
 var Game = function (main) {
+    this.type = "Game";
     this.gameOver = false;
     this.screen = main.screen;
     this.main = main;
@@ -83,13 +84,6 @@ Game.prototype = {
         }
         if (!this.player.active) {
             if (input.isPressed("KEY_SPACE")) {
-                // change state if main over
-                if (this.mainOver) {
-                    this.menu.setVisibility("resumeGame", 'none');
-                    this.menu.setVisibility("startGame", 'block');
-                    Main.state = States.GAMEOVER;
-                    return;
-                }
                 this.player.active = true;
             }
             return;
@@ -176,10 +170,12 @@ Game.prototype = {
         this.asteroids = self.asteroids.filter(function (a) {
             return a.active;
         });
-
         if (this.gameOver) {
+            this.main.menu.setVisibility("resumeGame", 'none');
+            this.main.menu.setVisibility("startGame", 'block');
             this.main.nextState = States.GAMEOVER;
         }
+
     },
     draw: function (g) {
         // barre

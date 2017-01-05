@@ -55,6 +55,24 @@
     border-radius: var(--bt-radius);
 }
 
+#infoGame {
+    display: block;
+    height: var(--bt-height);
+    width: var(--bt-width);
+    background: var(--primary-color);
+    position: relative;
+    bottom: 360px;
+    right: 300px;
+    font-size: 30px;
+    text-align: center;
+    font-family: shadows into light;
+    color: var(--text-color);
+    transition: 0.5s;
+    cursor: pointer;
+    border-radius: var(--bt-radius);
+}
+
+
 #exitGame {
     display: block;
     height: var(--bt-height);
@@ -74,6 +92,7 @@
 
 #startGame:hover,
 #resumeGame:hover,
+#infoGame:hover,
 #exitGame:hover {
     background: var(--hover-color);
     color: var(--text-color);

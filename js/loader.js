@@ -16,7 +16,7 @@ function loadScripts() {
         'canvas',
         'menu',
         'game',
-        'startInfo',
+        'info',
         'gameOver',
         'main'
     ];
