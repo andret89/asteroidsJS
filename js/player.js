@@ -6,7 +6,6 @@ var Player = GameObj.extend(
         this.jetFireActive = false;
         this.img = new Image();
         this.img.src ="img/ship2.png";
-        this.radius = this.size*4;
         this.hp = 100;
         this.energy = 100;
         this.shield = false;

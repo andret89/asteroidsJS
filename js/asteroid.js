@@ -16,7 +16,6 @@ var Asteroid = GameObj.extend(
         this.color = "grey";
         this.img = new Image();
         this.img.src = "img/aster.png";
-        this.radius = this.size*4;
         // Set rotation angle used in each update
         this.rotation = 0.02 * (Math.random()*2 - 1);
         this.angle = this.rotation;
