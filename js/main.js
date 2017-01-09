@@ -1,5 +1,5 @@
 var States = {
-    INFO: 0, GAME: 1, GAMEOVER: 2, NO_CHANGE: 3
+    START: 0, GAME: 1, GAMEOVER: 2, NO_CHANGE: 3
 };
 
 var Main = function () {
@@ -22,7 +22,7 @@ Main.prototype = {
         this.sm.loadSound('audio/explosion.wav', 'explosion');
         this.sm.loadSound('audio/shield.wav', 'shield');
         this.currState = null;
-        this.nextState = States.INFO;
+        this.nextState = States.START;
     },
     saveScore: function (score) {
         var hs = null;
@@ -48,8 +48,8 @@ Main.prototype = {
         function gameLoop() {
             if (self.nextState !== States.NO_CHANGE) {
                 switch (self.nextState) {
-                    case States.INFO:
-                        self.currState = new Info(self);
+                    case States.START:
+                                            self.currState = new Start(self);
                         break;
                     case States.GAME:
                         self.currState = new Game(self);
@@ -76,8 +76,8 @@ Main.prototype = {
             }
             if (!self.menu.activeInfo) {
                 switch (self.currState.type) {
-                    case "Info":
-                        self.currState = new Info(self);
+                    case "Start":
+                        self.currState = new Start(self);
                         break;
                     case "Game":
                         self.screen.clearAll();

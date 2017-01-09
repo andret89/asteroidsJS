@@ -1,8 +1,7 @@
 /**
  * Asteroid
- * Asteroid class, extends Polygon see polygon.js
+ * Asteroid class, extends GameObj
  *
- * @param  {Array<number>} points list of verticies
  * @param  {number}        size scalefactor, size of asteroid
  * @param  {number}        x start x coordinate
  * @param  {number}        y start y coordinate
@@ -12,15 +11,12 @@
 var Asteroid = GameObj.extend(
     // constructor
     function Asteroid(arguments) {
-        arguments.points = Points.ASTEROIDS[arguments.typeAster];
         GameObj.call(this, arguments); // Superclass()
         this.type = "Asteroid";
         this.color = "grey";
-        this.active = true;
         this.img = new Image();
         this.img.src = "img/aster.png";
         this.radius = this.size*4;
-        this.active = true;
         // Set rotation angle used in each update
         this.rotation = 0.02 * (Math.random()*2 - 1);
         this.angle = this.rotation;
@@ -34,7 +30,7 @@ var Asteroid = GameObj.extend(
         }
     }, {
         /**
-         * Translate and rotate the asteroid
+         * update position with translate and rotate
          */
         update: function (dt) {
             // update position
@@ -55,9 +51,9 @@ var Asteroid = GameObj.extend(
             this.angle += this.rotation;
         },
         /**
-         * Draw the polygon with an augmented drawing context
+         * Draw the asteroid with an augmented drawing context
          *
-         * @param  {context2d} ctx augmented drawing conext
+         * @param  {context2d} g augmented drawing conext
          */
         draw: function (g) {
             g.drawAster(this, this.x, this.y);

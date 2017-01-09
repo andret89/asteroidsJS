@@ -1,11 +1,11 @@
 /**
  * Created by andre on 28/12/16.
  */
-var Info = function(main){
-    this.type = "Info";
+var Start = function(main){
+    this.type = "Start";
         this.main = main;
 }
-Info.prototype = {
+Start.prototype = {
         update: function (input,dt) {
             if(this.main.menu.active)
                 return;

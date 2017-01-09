@@ -22,8 +22,6 @@ Game.prototype = {
         this.asteroids = [];
         var n_asteroids = Math.round(2 + ( this.lvl / 2));
         for (var i = 0; i < n_asteroids; i++) {
-            // choose asteroid polygon randomly
-            var n = Math.round(Math.random() * (Points.ASTEROIDS.length - 1));
 
             // set position close to edges of canvas
             var x = 0, y = 0;
@@ -36,7 +34,6 @@ Game.prototype = {
                 size: this.asterSize,
                 x: x,
                 y: y,
-                typeAster: n,
                 parent: this.screen
             });
             this.asteroids.push(aster);
@@ -60,13 +57,11 @@ Game.prototype = {
         // else split in half
         if (a.size > this.asterSize / 4) {
             for (var k = 0; k < 2; k++) {
-                var n = Math.round(Math.random() * (Points.ASTEROIDS.length - 1));
 
                 var astr = new Asteroid({
                     size: a.size / 2,
                     x: a.x,
                     y: a.y,
-                    typeAster: n,
                     parent: this.main.screen
                 });
                 this.asteroids.push(astr);

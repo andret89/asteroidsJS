@@ -1,9 +1,7 @@
 var Player = GameObj.extend(
     function Player(param) {
-        param.points = Points.SHIP;
         GameObj.call(this, param);
         this.color = "green";
-        this.active = true;
         this.angle = 0;
         this.jetFireActive = false;
         this.img = new Image();
