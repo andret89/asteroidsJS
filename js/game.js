@@ -1,4 +1,4 @@
-var Game = function (main) {
+var Game = function(main) {
     this.type = "Game";
     this.gameOver = false;
     this.screen = main.screen;
@@ -12,24 +12,26 @@ var Game = function (main) {
         size: 6,
         x: screen.width / 2,
         y: screen.height / 2,
-        parent: screen
+        parent: this.screen
     })
     this.genLevel();
 };
 Game.prototype = {
-    genLevel: function () {
+    genLevel: function() {
         this.bullets = [];
         this.asteroids = [];
-        var n_asteroids = Math.round(2 + ( this.lvl / 2));
+        var n_asteroids = Math.round(2 + (this.lvl / 2));
         for (var i = 0; i < n_asteroids; i++) {
 
             // set position close to edges of canvas
-            var x = 0, y = 0;
-            if (Math.random() > 0.5) {
+            var x = 0,
+                y = 0;
+            randomPos = (Math.random() > 0.5);
+            if (randomPos)
                 x = Math.random() * this.screen.width;
-            } else {
+            else
                 y = Math.random() * this.screen.height;
-            }
+
             var aster = new Asteroid({
                 size: this.asterSize,
                 x: x,
@@ -39,7 +41,7 @@ Game.prototype = {
             this.asteroids.push(aster);
         }
     },
-    updateScore: function (a) {
+    updateScore: function(a) {
         // update score depending on asteroid size
         switch (a.size) {
             case this.asterSize:
@@ -62,14 +64,14 @@ Game.prototype = {
                     size: a.size / 2,
                     x: a.x,
                     y: a.y,
-                    parent: this.main.screen
+                    parent: this.screen
                 });
                 this.asteroids.push(astr);
             }
         }
     },
-    update: function (input, dt) {
-        if(this.main.menu.active || Main.paused)
+    update: function(input, dt) {
+        if (this.main.menu.active || Main.paused)
             return;
 
         if (input.isPressed('KEY_ESC') || input.isPressed('KEY_P')) {
@@ -83,6 +85,10 @@ Game.prototype = {
             }
             return;
         }
+        if (input.isPressed('KEY_M')) {
+            Main.mute = !Main.mute;
+        }
+
         this.player.shield = false;
         if (input.isDown('KEY_UP') || input.isDown('KEY_W')) {
             this.player.addSpeed()
@@ -94,14 +100,13 @@ Game.prototype = {
         }
         if ((input.isPressed('KEY_DOWN') || input.isPressed('KEY_S'))) {
             this.main.sm.playSound('shield')
-        }
-        else if (!this.player.shield)
+        } else if (!this.player.shield)
             this.main.sm.stopSound('shield')
         if (input.isDown('KEY_RIGHT') || input.isDown('KEY_D')) {
-            this.player.addDirection(Math.radians(4));
+            this.player.addDirection(Math.radians(2));
         }
         if (input.isDown('KEY_LEFT') || input.isDown('KEY_A')) {
-            this.player.addDirection(Math.radians(-4));
+            this.player.addDirection(Math.radians(-2));
         }
         if (input.isPressed('KEY_CTRL') || input.isPressed('KEY_SPACE')) {
             if (this.player.energy >= 10) {
@@ -110,11 +115,11 @@ Game.prototype = {
             }
         }
         var self = this;
-        this.asteroids.forEach(function (a) {
+        this.asteroids.forEach(function(a) {
             a.update(dt);
 
             // check if bullets hits the current asteroid
-            self.bullets.forEach(function (b) {
+            self.bullets.forEach(function(b) {
                 if (a.isCollision(b.x, b.y)) {
                     b.active = false;
                     a.active = false;
@@ -155,14 +160,14 @@ Game.prototype = {
         // update ship
         this.player.update(dt);
 
-        this.bullets = self.bullets.filter(function (b) {
+        this.bullets = self.bullets.filter(function(b) {
             var _active = b.active;
             if (_active)
                 b.update(dt);
             return _active;
         });
 
-        this.asteroids = self.asteroids.filter(function (a) {
+        this.asteroids = self.asteroids.filter(function(a) {
             return a.active;
         });
         if (this.gameOver) {
@@ -172,13 +177,13 @@ Game.prototype = {
         }
 
     },
-    draw: function (g) {
+    draw: function(g) {
         // barre
         this.drawProgressBar(g);
-        this.asteroids.forEach(function (a) {
+        this.asteroids.forEach(function(a) {
             a.draw(g)
         });
-        this.bullets.forEach(function (b) {
+        this.bullets.forEach(function(b) {
             b.draw(g);
         });
 
@@ -194,7 +199,7 @@ Game.prototype = {
         }
 
     },
-    drawProgressBar: function (g) {
+    drawProgressBar: function(g) {
         var ga = g.ctx;
         var percent = this.player.hp / 100;
         var offset_hp = g.canvas.width / 2 + 280;

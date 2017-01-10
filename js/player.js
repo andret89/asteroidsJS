@@ -5,28 +5,27 @@ var Player = GameObj.extend(
         this.angle = 0;
         this.jetFireActive = false;
         this.img = new Image();
-        this.img.src ="img/ship2.png";
+        this.img.src = "img/ship2.png";
         this.hp = 100;
         this.energy = 100;
         this.shield = false;
         // create, init and scale flame polygon
-        this.jetFire = new Polygon(Points.JETFIRE);
+        this.jetFire = new Polygon([-2, 0, -3, -1, -5, 0, -3, 1, -2, 0]);
         this.jetFire.color = "red";
         this.jetFire.scale(param.size);
         this.vel = {
             x: 0,
             y: 0
-        }
-    },
-    {
+        };
+    }, {
         /**
          * Create and return bullet with arguments from current
          * direction and position
          *
          * @return {Bullet} the initated bullet
          */
-        addBullet: function (size) {
-            if(this.energy > 10)
+        addBullet: function(size) {
+            if (this.energy > 10)
                 this.energy -= 10;
             var b = new Bullet({
                 x: this.x,
@@ -42,11 +41,11 @@ var Player = GameObj.extend(
          * Update the velocity of the bullet depending on facing
          * direction
          */
-        addSpeed: function () {
+        addSpeed: function() {
             // length of veloctity vector estimated with pythagoras
             // theorem, i.e.
             // 		a*a + b*b = c*c
-            if (this.vel.x + this.vel.y < 40 ) {
+            if (this.vel.x + this.vel.y < 40) {
                 this.vel.x += 0.8 * Math.cos(this.angle);
                 this.vel.y += 0.8 * Math.sin(this.angle);
             }
@@ -57,10 +56,8 @@ var Player = GameObj.extend(
          * Rotate the ship and flame polygon clockwise
          *
          * @param  {number} theta angle to rotate with
-         *
-         * @override Polygon.rotate
          */
-        addDirection: function (theta) {
+        addDirection: function(theta) {
             this.angle += theta;
         },
         /**
@@ -69,14 +66,20 @@ var Player = GameObj.extend(
          * @param  {Asteroid} astr asteroid to test
          * @return {Boolean}       result from test
          */
-        isCollision: function (astr) {
+        isCollision: function(astr) {
             if (!this.active) {
                 return false;
             }
-            return this.collisionCircle(astr.x,astr.y, astr.radius);
+            return this.collisionCircle(astr.x, astr.y, astr.radius);
 
         },
-        update: function (dt) {
+        update: function(dt) {
+            //update for resize
+            if (this.maxX !== this.parent.width)
+                this.maxX = this.parent.width;
+            if (this.maxY !== this.parent.height)
+                this.maxY = this.parent.height;
+
             // update position
             this.x += this.vel.x * dt;
             this.y += this.vel.y * dt;
@@ -106,24 +109,28 @@ var Player = GameObj.extend(
                 if (this.energy > 100) this.energy = 100;
             }
         },
-        draw: function (g) {
+        /**
+         * Disegna il player
+         * @param  {Canvas} g
+         */
+        draw: function(g) {
             if (!this.active) {
                 return;
             }
             if (this.shield)
                 g.drawCircle({
-                        center: {x: this.x, y: this.y},
-                        radius: this.radius+4, color: "#1569C7"
-                    }
-                    , 0, 0);
+                    center: { x: this.x, y: this.y },
+                    radius: this.radius + 4,
+                    color: "#1569C7"
+                }, 0, 0);
             g.drawPlayer(this, this.x, this.y);
             if (this.jetFireActive) {
                 this.jetFire.angle = this.angle;
                 g.drawfillPolygon(this.jetFire, this.x, this.y);
                 this.jetFireActive = false;
             }
-            if(DEBUG_BOX)
-                g.drawCircleBox(this.x,this.y,this.radius);
+            if (Main.DEBUGBOX)
+                g.drawCircleBox(this.x, this.y, this.radius);
 
         }
     }

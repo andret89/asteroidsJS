@@ -7,17 +7,15 @@ function loadScripts() {
     var type = "text/javascript";
     var files = [
         'utils',
-        'points',
-        'polygon',
-        'gameObj',
+        'inputs',
+        'entity',
         'bullet',
         'player',
         'asteroid',
         'canvas',
         'menu',
         'game',
-        'start',
-        'gameOver',
+        'state',
         'main'
     ];
     // aggiunge elementi script al tag html head
@@ -33,4 +31,3 @@ function loadScripts() {
 }
 // invocazione al momento della lettuta
 loadScripts()
-

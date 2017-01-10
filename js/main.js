@@ -1,16 +1,21 @@
 var States = {
-    START: 0, GAME: 1, GAMEOVER: 2, NO_CHANGE: 3
+    START: 0,
+    GAME: 1,
+    GAMEOVER: 2,
+    NO_CHANGE: 3
 };
 
-var Main = function () {
+var Main = function() {
     Main.fps = 60;
     Main.paused = false;
     Main.startGame = false;
     Main.endGame = false;
+    Main.MUTE = false;
+    Main.DEBUGBOX = false;
 };
 
 Main.prototype = {
-    init: function () {
+    init: function() {
         this.screen = new Canvas();
         this.score = 0;
         this.input = new Inputs();
@@ -24,9 +29,10 @@ Main.prototype = {
         this.currState = null;
         this.nextState = States.START;
     },
-    saveScore: function (score) {
+    saveScore: function(score) {
         var hs = null;
         var state = window.localStorage.getItem("highScore");
+
         if (state)
             hs = JSON.parse(state);
         if (hs === null)
@@ -40,7 +46,7 @@ Main.prototype = {
     /*
      * Runs the actual loop inside browser
      */
-    run: function () {
+    run: function() {
         var self = this;
         var prevTime = new Date().getTime();
         var currTime = new Date().getTime();
@@ -49,7 +55,7 @@ Main.prototype = {
             if (self.nextState !== States.NO_CHANGE) {
                 switch (self.nextState) {
                     case States.START:
-                                            self.currState = new Start(self);
+                        self.currState = new Start(self);
                         break;
                     case States.GAME:
                         self.currState = new Game(self);
@@ -109,7 +115,7 @@ Main.prototype = {
  * @param  {function} callback the function to animate
  */
 // handle multiple browsers for requestAnimationFrame()
-window.requestAnimFrame = (function (callback) {
+window.requestAnimFrame = (function(callback) {
 
     return window.requestAnimationFrame ||
         window.webkitRequestAnimationFrame ||
@@ -117,38 +123,39 @@ window.requestAnimFrame = (function (callback) {
         window.oRequestAnimationFrame ||
         window.msRequestAnimationFrame ||
 
-        function (callback) {
+        function(callback) {
             window.setTimeout(callback, 1000 / Main.fps);
         };
 })();
 
 var MOUSE_GAME = true;
-var DEBUG_BOX = false;
 var DEBUG = false;
 
-window.addEventListener('load', function () {
+window.addEventListener('load', function() {
     var main = new Main();
     main.init();
     main.run();
 }, false);
 
-var SoundManager = function () {
+var SoundManager = function() {
     this.sounds = [];
 };
 SoundManager.prototype = {
-    loadSound: function (url, key) {
+    loadSound: function(url, key) {
         var s = new Audio(url);
         if (key === 'shield' && key === 'fire')
             s.volume = .06;
         this.sounds[key] = s;
     },
-    stopSound: function (type) {
+    stopSound: function(type) {
         var s = this.sounds[type];
         s.pause();
         s.currentTime = 0;
 
     },
-    playSound: function (type) {
+    playSound: function(type) {
+        if (Main.MUTE)
+            return;
         var s = this.sounds[type];
         if (type !== 'fire')
             s.load();

@@ -19,19 +19,25 @@ Bullet.prototype = {
     /**
      * Update position of bullet
      */
-    update:function(dt) {
+    update: function(dt) {
+        //update for resize
+        if (this.maxX !== this.parent.width)
+            this.maxX = this.parent.width;
+        if (this.maxY !== this.parent.height)
+            this.maxY = this.parent.height;
+
         // saves previous position, used when rendering
         this.oldx = this.x;
         this.oldy = this.y;
 
-// inside bounds check
+        // inside bounds check
         if (0 > this.x || this.x > this.maxX ||
             0 > this.y || this.y > this.maxY
         ) {
             this.active = false;
         }
 
-// translate position
+        // translate position
         this.x += this.vel.x * dt;
         this.y += this.vel.y * dt;
     },
