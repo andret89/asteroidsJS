@@ -12,7 +12,8 @@ var Key = {
     KEY_S: 83,
     KEY_D: 68,
     KEY_P: 80,
-    KEY_M: 77
+    KEY_M: 77,
+    KEY_G: 71
 };
 
 
@@ -46,7 +47,7 @@ Inputs.prototype = {
             self.mousePos.x = event.clientX;
             self.mousePos.y = event.clientY;
             if (MOUSE_GAME && Main.paused === false &&
-                !utils.isUndefined(self.main.currState.player)) {
+                self.main.currState.player !== void 0) {
                 var player = self.main.currState.player;
                 var dx = (self.mousePos.x - player.x);
                 var dy = (self.mousePos.y - player.y);

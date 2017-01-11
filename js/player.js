@@ -45,7 +45,7 @@ var Player = GameObj.extend(
             // length of veloctity vector estimated with pythagoras
             // theorem, i.e.
             // 		a*a + b*b = c*c
-            if (this.vel.x + this.vel.y < 40) {
+            if (this.vel.x + this.vel.y < 50) {
                 this.vel.x += 0.8 * Math.cos(this.angle);
                 this.vel.y += 0.8 * Math.sin(this.angle);
             }

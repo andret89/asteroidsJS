@@ -154,7 +154,7 @@ SoundManager.prototype = {
 
     },
     playSound: function(type) {
-        if (Main.MUTE)
+        if(Main.MUTE)
             return;
         var s = this.sounds[type];
         if (type !== 'fire')

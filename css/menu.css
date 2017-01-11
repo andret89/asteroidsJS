@@ -9,48 +9,40 @@
     --font-size: 30px;
 }
 
-#menuId {
+#menucontainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: absolute;
-    margin: auto;
-    color: var(--primary-color);
+    height: 100%;
+    width: 100%;
+
 }
 
-#menucontainer{
+#menuId {
+    width: 200px;
     position: relative;
-    left: 70%;
-    top: 80%;
+    height: 400px;
 }
 
 #startGame {
-    position: relative;
     display: block;
-    bottom: 333px;
-    right: 300px;
     height: var(--bt-height);
     width: var(--bt-width);
-    text-align: center;
-    font-size: 30px;
     transition: 0.5s;
     background: var(--primary-color);
     color: var( --text-color);
-    font-family: shadows into light;
     cursor: pointer;
     border-radius: var(--bt-radius);
 }
 
 #resumeGame {
-    position: relative;
     display: none;
-    bottom: 333px;
-    right: 300px;
     height: var(--bt-height);
     width: var(--bt-width);
-    text-align: center;
-    font-size: 30px;
     transition: 0.5s;
     background: var(--primary-color);
     color: var( --text-color);
-    font-family: shadows into light;
     cursor: pointer;
     border-radius: var(--bt-radius);
 }
@@ -59,33 +51,20 @@
     display: block;
     height: var(--bt-height);
     width: var(--bt-width);
-    background: var(--primary-color);
-    position: relative;
-    bottom: 360px;
-    right: 300px;
-    font-size: 30px;
-    text-align: center;
-    font-family: shadows into light;
-    color: var(--text-color);
     transition: 0.5s;
+    background: var(--primary-color);
+    color: var( --text-color);
     cursor: pointer;
     border-radius: var(--bt-radius);
 }
-
 
 #exitGame {
     display: block;
     height: var(--bt-height);
     width: var(--bt-width);
-    background: var(--primary-color);
-    position: relative;
-    bottom: 345px;
-    right: 300px;
-    text-align: center;
-    font-size: 30px;
-    font-family: shadows into light;
-    color: var(--text-color);
     transition: 0.5s;
+    background: var(--primary-color);
+    color: var( --text-color);
     cursor: pointer;
     border-radius: var(--bt-radius);
 }
@@ -95,23 +74,29 @@
 #infoGame:hover,
 #exitGame:hover {
     background: var(--hover-color);
-    color: var(--text-color);
+}
+
+#menuId p:hover {
+    color: black;
 }
 
 #menuId p {
-    padding: 10px;
+    font-size: 30px;
+    padding: 8px;
     position: relative;
-    color: white;
+    text-align: center;
+    margin: var(--bt-offset);
+    color: var(--text-color);
+    transition: 0.5s;
+
 }
 
-#startGame p {
-    right: 4px;
-}
-
-#resumeGame p {
-    right: 4px;
-}
-
-#exitGame p {
-    top: 0px;
+#info {
+    color: #FFC107;
+    width: 540px;
+    position: relative;
+    height: 349px;
+    top: 16%;
+    margin: auto;
+    font-size: 31px;
 }

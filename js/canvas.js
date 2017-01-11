@@ -43,7 +43,6 @@ function Canvas(width, height, canvasId) {
         self.height = window.innerHeight;
         self.ctx.width = window.innerWidth;
         self.ctx.height = window.innerHeight;
-        log("resize")
     });
 }
 

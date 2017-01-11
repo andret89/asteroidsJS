@@ -39,17 +39,17 @@ Menu.prototype = {
     },
     enable: function () {
         this.active = true;
-        this.main.paused = true;
+        Main.paused = true;
         this.setVisibility("menuId", 'block');
     },
     disable: function () {
         this.active = false;
-        this.main.paused = false;
+        Main.paused = false;
         this.setVisibility("menuId", 'none');
     },
     enableInfo: function () {
         this.activeInfo = true;
-        this.main.paused = true;
+        Main.paused = true;
         this.setVisibility("info", 'block');
     },
     disableInfo: function () {

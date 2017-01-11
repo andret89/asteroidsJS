@@ -22,10 +22,19 @@ var Asteroid = GameObj.extend(
 
         // Generate and calculate velocity
         var r = Math.PI * Math.random();
-        var v = Math.random() * 12 + 1;
+        var v = (Math.random() * 14 )+6;
+        var vx = v;
+        var vy = v;
+
+        if(Math.random() > 0.5)
+            vx *= -1;
+
+        if(Math.random() > 0.5)
+            vy *= -1;
+
         this.vel = {
-            x: v * Math.cos(r),
-            y: v * Math.sin(r)
+            x: vx * Math.cos(r),
+            y: vy * Math.sin(r)
         };
     }, {
         /**

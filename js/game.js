@@ -6,12 +6,12 @@ var Game = function(main) {
     this.main.score = 0;
 
     this.lvl = 1;
-    this.n_life = 4;
+    this.n_life = 3;
     this.asterSize = 10;
     this.player = new Player({
         size: 6,
-        x: screen.width / 2,
-        y: screen.height / 2,
+        x: this.screen.width / 2,
+        y: this.screen.height / 2,
         parent: this.screen
     })
     this.genLevel();
@@ -86,7 +86,11 @@ Game.prototype = {
             return;
         }
         if (input.isPressed('KEY_M')) {
-            Main.mute = !Main.mute;
+            Main.MUTE = !Main.MUTE;
+        }
+
+        if (input.isPressed('KEY_G')) {
+            Main.DEBUGBOX = !Main.DEBUGBOX;
         }
 
         this.player.shield = false;
@@ -103,10 +107,10 @@ Game.prototype = {
         } else if (!this.player.shield)
             this.main.sm.stopSound('shield')
         if (input.isDown('KEY_RIGHT') || input.isDown('KEY_D')) {
-            this.player.addDirection(Math.radians(2));
+            this.player.addDirection(Math.radians(4));
         }
         if (input.isDown('KEY_LEFT') || input.isDown('KEY_A')) {
-            this.player.addDirection(Math.radians(-2));
+            this.player.addDirection(Math.radians(-4));
         }
         if (input.isPressed('KEY_CTRL') || input.isPressed('KEY_SPACE')) {
             if (this.player.energy >= 10) {
@@ -202,7 +206,7 @@ Game.prototype = {
     drawProgressBar: function(g) {
         var ga = g.ctx;
         var percent = this.player.hp / 100;
-        var offset_hp = g.canvas.width / 2 + 280;
+        var offset_hp = g.canvas.width*3 / 4 + 80;
         var offset_top = g.canvas.offsetTop + 10;
         var barWidth = 150;
         var barHeight = 20;
@@ -218,22 +222,23 @@ Game.prototype = {
         ga.fillText("HP ", offset_hp, offset_top + 18);
 
         percent = this.player.energy / 100;
-        var offset_nrg = g.canvas.offsetLeft + 60;
+        var offset_nrg = 80;
 
         ga.fillStyle = "grey";
-        ga.fillRect(offset_nrg + 45, offset_top, barWidth, barHeight);
+        ga.fillRect(offset_nrg, offset_top, barWidth, barHeight);
 
         ga.fillStyle = "#1569C7";
-        ga.fillRect(offset_nrg + 45, offset_top, barWidth * percent, barHeight);
+        ga.fillRect(offset_nrg, offset_top, barWidth * percent, barHeight);
 
         ga.fillStyle = "white";
         ga.font = "20px sans-serif";
-        ga.fillText("NRG ", offset_nrg, offset_top + 18);
+        ga.fillText("NRG ", offset_nrg-45, offset_top + 18);
 
 
         ga.fillStyle = "white";
-        ga.font = "25px sans-serif";
-        ga.fillText("SCORE: " + this.main.score, offset_nrg + 410, offset_top + 18);
+        ga.font = "30px sans-serif";
+        var s = "SCORE: ";
+        ga.fillText(s+this.main.score, g.canvas.width / 2  -(s.length+70), offset_top + 18);
 
     }
 }
