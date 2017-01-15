@@ -3,6 +3,7 @@ var Game = function(main) {
     this.gameOver = false;
     this.screen = main.screen;
     this.main = main;
+    this.menu = main.menu;
     this.main.score = 0;
 
     this.lvl = 1;
@@ -71,8 +72,10 @@ Game.prototype = {
         }
     },
     update: function(input, dt) {
-        if (this.main.menu.active || Main.paused)
+        if (this.menu.active || this.menu.activeInfo) {
+            this.menu.update(input);
             return;
+        }
 
         if (input.isPressed('KEY_ESC') || input.isPressed('KEY_P')) {
             log("pause");
@@ -183,6 +186,9 @@ Game.prototype = {
     },
     draw: function(g) {
         // barre
+        if(this.menu.activeInfo)
+            return;
+
         this.drawProgressBar(g);
         this.asteroids.forEach(function(a) {
             a.draw(g)

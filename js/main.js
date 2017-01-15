@@ -70,42 +70,21 @@ Main.prototype = {
                 }
                 self.nextState = States.NO_CHANGE;
             }
-            prevTime = currTime;
-            currTime = new Date().getTime();
-            var dt = currTime - prevTime;
-            if (dt > 0.15)
-                dt = 0.15;
-
-            if (self.menu.active || self.menu.activeInfo) {
-                self.menu.update(self.input);
-                self.screen.clearAll();
+            if (!Main.paused) {
+                prevTime = currTime;
+                currTime = new Date().getTime();
+                var dt = currTime - prevTime;
+                if (dt > 0.15)
+                    dt = 0.15;
             }
-            if (!self.menu.activeInfo) {
-                switch (self.currState.type) {
-                    case "Start":
-                        self.currState = new Start(self);
-                        break;
-                    case "Game":
-                        self.screen.clearAll();
-                        if (!self.menu.active)
-                            self.currState.update(self.input, dt);
-                        self.currState.draw(self.screen);
-                        break;
-                    case "GameOver":
-                        self.screen.clearAll();
-                        if (!self.menu.active) {
-                            self.currState.update(self.input, dt);
-                            self.currState.draw(self.screen);
-                        }
-                        break;
-                }
-            }
+            self.currState.update(self.input, dt);
+            self.screen.clearAll();
+            self.currState.draw(self.screen);
 
-
-            window.requestAnimFrame(gameLoop)
+            window.requestAnimFrame(gameLoop);
         }
 
-        window.requestAnimFrame(gameLoop)
+        window.requestAnimFrame(gameLoop);
     }
 };
 
@@ -156,9 +135,11 @@ SoundManager.prototype = {
     playSound: function(type) {
         if(Main.MUTE)
             return;
+
         var s = this.sounds[type];
-        if (type !== 'fire')
+        if (type !== 'fire') {
             s.load();
+        }
         s.play();
     }
 };
