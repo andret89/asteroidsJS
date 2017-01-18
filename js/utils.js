@@ -2,26 +2,6 @@ function log(s) {
     console.log(s + '')
 }
 
-var utils = {
-    isUndefined: function(obj, s) {
-        var ret = obj === void 0 || obj === null;
-        if (ret)
-            if (DEBUG)
-                log(s + " undefined");
-        return ret
-    },
-    isUndifinedParam: function(param) {
-        for (key in param) {
-            if (param[key] !== 0) {
-                if (utils.isUndefined(param[key], key)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-}
-
 // Converts from degrees to radians.
 Math.radians = function(degrees) {
     return degrees * Math.PI / 180;

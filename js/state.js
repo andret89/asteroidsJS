@@ -1,5 +1,9 @@
 /**
- * Created by andre on 28/12/16.
+ * Start
+ *
+ * @class
+ * @param main
+ * @constructor
  */
 var Start = function(main) {
     this.type = "Start";
@@ -25,7 +29,11 @@ Start.prototype = {
 }
 
 /**
- * Created by andre on 28/12/16.
+ * GameOver
+ *
+ * @class
+ * @param game
+ * @constructor
  */
 var GameOver = function(game) {
     this.type = "GameOver";
@@ -34,6 +42,10 @@ var GameOver = function(game) {
     this.hs = this.main.saveScore(this.main.score);
 }
 GameOver.prototype = {
+    /**
+     *
+     * @param input
+     */
     update: function(input) {
         if (this.menu.active || this.menu.activeInfo) {
             this.menu.update(input);
@@ -45,6 +57,10 @@ GameOver.prototype = {
             return;
         }
     },
+    /**
+     *
+     * @param g
+     */
     draw: function(g) {
         if (this.menu.active || this.menu.activeInfo) {
             return;

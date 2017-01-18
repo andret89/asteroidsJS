@@ -1,15 +1,19 @@
 /**
  * Asteroid
- * Asteroid class, extends GameObj
  *
- * @param  {number}        size scalefactor, size of asteroid
- * @param  {number}        x start x coordinate
- * @param  {number}        y start y coordinate
- * @param  {Canvas}        parent window parent
-
+ * @param  {number} size   - dimensione dell'asteroide
+ * @param  {number} x      - x coordinate
+ * @param  {number} y      - y coordinate
+ * @param  {Canvas} parent - componente canvas
+ * @class Rappresenta un Asteroide
+ * @extends GameObj
  */
 var Asteroid = GameObj.extend(
-    // constructor
+    /**
+     *
+     * @param param
+     * @constructor
+     */
     function Asteroid(param) {
         GameObj.call(this, param); // Superclass()
         this.type = "Asteroid";
@@ -39,6 +43,7 @@ var Asteroid = GameObj.extend(
     }, {
         /**
          * update position with translate and rotate
+         * @param dt
          */
         update: function(dt) {
             //update for resize
@@ -65,9 +70,9 @@ var Asteroid = GameObj.extend(
             this.angle += this.rotation;
         },
         /**
-         * Draw the asteroid with an augmented drawing context
+         * Disegna un asteroide
          *
-         * @param  {context2d} g augmented drawing conext
+         * @param  {Canvas} g - oggetto per disegnare sul canvas
          */
         draw: function(g) {
             g.drawAster(this, this.x, this.y);
@@ -75,6 +80,12 @@ var Asteroid = GameObj.extend(
                 g.drawCircleBox(this.x, this.y, this.radius);
             }
         },
+        /**
+         * Verifica se c'è collisione con un missile
+         * @param {number} x - coordinate x
+         * @param {number} y - coordinate y
+         * @returns {Bollean} Risultato test di collisione
+         */
         isCollision: function(x, y) {
             return this.collisionCircle(x, y);
         }

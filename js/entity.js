@@ -1,10 +1,9 @@
 /**
  * Polygon
- * Polygon class, simple polygon class with method as rotation and
- * scaling
  *
- * @param  {Array<number>} points list of verticies
- * @param  {number} size of polygon
+ * @class Rappresenta un poligono
+ * @param  {Array<number>} points - lista di punti del poligono
+ * @constructor
  */
 function Polygon(points) {
     this.color = "white";
@@ -20,17 +19,15 @@ function Polygon(points) {
 }
 Polygon.prototype = {
     /**
-     * Rotate the polygon clockwise
+     * Ruota il poligono
      *
-     * @param  {number} theta angle to ratate with
+     * @param  {number} theta - angolo di rotazione
      */
     rotate: function(theta) {
         // simplifying computition of 2x2 matrix
-        // for more information see slides in part 1
         var c = Math.cos(theta);
         var s = Math.sin(theta);
 
-        // iterate thru each vertex and change position
         for (var i = 0, len = this.points.length; i < len; i++) {
             var x = this.points[i].x;
             var y = this.points[i].y;
@@ -41,38 +38,46 @@ Polygon.prototype = {
     },
 
     /**
-     * Scale the polygon with the scalefactor
+     * Scala il poligono
      *
-     * @param  {number} c scalefactor
+     * @param  {number} c - fattore di scala
      */
     scale: function(c) {
-        // ordinary vector multiplication
         for (var i = 0; i < this.points.length; i++) {
             this.points[i].x *= c;
             this.points[i].y *= c;
         }
     }
 };
-
+/**
+ * GameObj class, oggetto che rappresenta un oggetto animabile
+ * @class
+ * @constructor
+ * @param  {} param
+ */
 var GameObj = function(param) {
     this.parent = param.parent;
-    this.size = param.size || 10;
+    this.size = param.size;
     this.radius = this.size * 4;
     this.x = param.x;
     this.y = param.y;
     this.active = true;
-    /**
-     * Bounds for the asteroid
-     */
-    this.maxX = param.parent.width;
-    this.maxY = param.parent.height;
 
 };
 GameObj.prototype = {
+    /**
+     * @param  {} cx
+     * @param  {} cy
+     * @param  {} r
+     */
     collisionCircle: function(cx, cy, r) {
         var _r = r || 0; // 0 per distanza da un punto
         return this.distance(this, { x: cx, y: cy }) < this.radius + _r;
     },
+    /**
+     * @param  {} ent1
+     * @param  {} ent2
+     */
     distance: function(ent1, ent2) {
         var dx = ent2.x - ent1.x;
         var dy = ent2.y - ent1.y;

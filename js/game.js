@@ -1,4 +1,11 @@
-var Game = function(main) {
+/**
+ * Game
+ *
+ * @class Rappresenta le entità in gioco
+ * @param {Main} main
+ * @constructor
+ */
+var Game = function (main) {
     this.type = "Game";
     this.gameOver = false;
     this.screen = main.screen;
@@ -14,11 +21,13 @@ var Game = function(main) {
         x: this.screen.width / 2,
         y: this.screen.height / 2,
         parent: this.screen
-    })
-    this.genLevel();
+    });
 };
 Game.prototype = {
-    genLevel: function() {
+    /**
+     * Genera un nuovo livello di gioco
+     */
+    genLevel: function () {
         this.bullets = [];
         this.asteroids = [];
         var n_asteroids = Math.round(2 + (this.lvl / 2));
@@ -42,18 +51,24 @@ Game.prototype = {
             this.asteroids.push(aster);
         }
     },
-    updateScore: function(a) {
+    /**
+     * Aggiorna gli oggetti in caso di collisioni
+     * @param {Asteroids} a - asterode che collide
+     */
+    updateScore: function (a, shield) {
         // update score depending on asteroid size
-        switch (a.size) {
-            case this.asterSize:
-                this.main.score += 20;
-                break;
-            case this.asterSize / 2:
-                this.main.score += 50;
-                break;
-            case this.asterSize / 4:
-                this.main.score += 100;
-                break;
+        if (!shield) {
+            switch (a.size) {
+                case this.asterSize:
+                    this.main.score += 20;
+                    break;
+                case this.asterSize / 2:
+                    this.main.score += 50;
+                    break;
+                case this.asterSize / 4:
+                    this.main.score += 100;
+                    break;
+            }
         }
 
         // if asteroid splitted twice, then remove
@@ -71,7 +86,15 @@ Game.prototype = {
             }
         }
     },
-    update: function(input, dt) {
+    init: function () {
+        this.genLevel();
+    },
+    /**
+     * Aggiorna gli oggetti in gioco secondo gli input e delta del tempo
+     * @param input
+     * @param dt
+     */
+    update: function (input, dt) {
         if (this.menu.active || this.menu.activeInfo) {
             this.menu.update(input);
             return;
@@ -122,16 +145,16 @@ Game.prototype = {
             }
         }
         var self = this;
-        this.asteroids.forEach(function(a) {
+        this.asteroids.forEach(function (a) {
             a.update(dt);
 
             // check if bullets hits the current asteroid
-            self.bullets.forEach(function(b) {
+            self.bullets.forEach(function (b) {
                 if (a.isCollision(b.x, b.y)) {
                     b.active = false;
                     a.active = false;
                     self.main.sm.playSound('explosion')
-                    self.updateScore(a)
+                    self.updateScore(a, false)
                 }
             });
             // if ship collids reset position and decrement n_life
@@ -147,7 +170,7 @@ Game.prototype = {
                     };
                     self.player.hp -= 100 / self.n_life;
                 }
-                self.updateScore(a);
+                self.updateScore(a, self.player.shield);
                 a.active = false;
             }
 
@@ -161,20 +184,20 @@ Game.prototype = {
             this.lvl++;
             if (this.player.hp < 100)
                 this.player.hp += 100 / this.n_life;
-            this.genLevel();
+            self.genLevel();
         }
 
         // update ship
         this.player.update(dt);
 
-        this.bullets = self.bullets.filter(function(b) {
+        this.bullets = self.bullets.filter(function (b) {
             var _active = b.active;
             if (_active)
                 b.update(dt);
             return _active;
         });
 
-        this.asteroids = self.asteroids.filter(function(a) {
+        this.asteroids = self.asteroids.filter(function (a) {
             return a.active;
         });
         if (this.gameOver) {
@@ -184,16 +207,20 @@ Game.prototype = {
         }
 
     },
-    draw: function(g) {
+    /**
+     * Disegna gli oggetti del gioco
+     * @param {Canvas} g
+     */
+    draw: function (g) {
         // barre
-        if(this.menu.activeInfo)
+        if (this.menu.activeInfo)
             return;
 
         this.drawProgressBar(g);
-        this.asteroids.forEach(function(a) {
+        this.asteroids.forEach(function (a) {
             a.draw(g)
         });
-        this.bullets.forEach(function(b) {
+        this.bullets.forEach(function (b) {
             b.draw(g);
         });
 
@@ -209,10 +236,15 @@ Game.prototype = {
         }
 
     },
-    drawProgressBar: function(g) {
+    /**
+     *
+     * @param g
+     * @private
+     */
+    drawProgressBar: function (g) {
         var ga = g.ctx;
         var percent = this.player.hp / 100;
-        var offset_hp = g.canvas.width*3 / 4 + 80;
+        var offset_hp = g.canvas.width * 3 / 4 + 80;
         var offset_top = g.canvas.offsetTop + 10;
         var barWidth = 150;
         var barHeight = 20;
@@ -238,13 +270,13 @@ Game.prototype = {
 
         ga.fillStyle = "white";
         ga.font = "20px sans-serif";
-        ga.fillText("NRG ", offset_nrg-45, offset_top + 18);
+        ga.fillText("NRG ", offset_nrg - 45, offset_top + 18);
 
 
         ga.fillStyle = "white";
         ga.font = "30px sans-serif";
         var s = "SCORE: ";
-        ga.fillText(s+this.main.score, g.canvas.width / 2  -(s.length+70), offset_top + 18);
+        ga.fillText(s + this.main.score, g.canvas.width / 2 - (s.length + 70), offset_top + 18);
 
     }
 }

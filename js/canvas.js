@@ -1,18 +1,18 @@
 /**
  * Canvas
  *
- * Canvas class, meant to make life easier by abstracting out
- * rendering and animation code
- *
- * @param  {number} width  width of the canvas
- * @param  {number} height height of the canvas
- * @param  {string} id of the canvas
+ * @class Rappresenta la finestra di disegno
+ * @param  {number} width - lunghezza del canvas
+ * @param  {number} height - altezza del canvas
+ * @param  {string} canvasId - id dell'elemento canvas
+ * @constructor
  */
 function Canvas(width, height, canvasId) {
     var canvas_id = canvasId || "canvasId";
     var w = width || window.innerWidth;
     var h = height || window.innerHeight;
-    // create and set dimension of internal canvas
+
+    // crea o recupera l'elemento canvas
     var _canvas = document.getElementById(canvas_id);
     if (_canvas === null) {
         _canvas = document.createElement('canvas');
@@ -20,23 +20,25 @@ function Canvas(width, height, canvasId) {
         document.getElementById("gamecontainer").appendChild(_canvas);
     }
 
-    // create augmented drawing context
+    //recupera il contesto 2d del canvas
     this.ctx = _canvas.getContext("2d");
-    //context 2d
     if (!this.ctx) {
         alert("Il tuo browser non supporta HTML5");
     }
-    _canvas.width = w;
-    _canvas.height = h;
-    this.canvas = _canvas;
+
+    // setta le dimensioni della finestra di disegno
     this.ctx.lineWidth = 2;
     this.ctx.width = w;
     this.ctx.height = h;
+
+    _canvas.width = w;
+    _canvas.height = h;
+    this.canvas = _canvas;
     this.width = w;
     this.height = h;
+
     var self = this;
     window.addEventListener('resize', function (evt) {
-        //TODO resize
         self.canvas.width = window.innerWidth;
         self.canvas.height = window.innerHeight;
         self.width = window.innerWidth;
@@ -48,29 +50,12 @@ function Canvas(width, height, canvasId) {
 
 Canvas.prototype = {
     /**
-     * Draws a polygon object
+     * Disegna i contorni di un oggetto Polygon
      *
-     * @param  {Polygon} Polygon the polygon to draw
-     * @param  {number}  x the x coordinate
-     * @param  {number}  y draw y coordinate
+     * @param  {Polygon} Polygon - poligono
+     * @param  {number}  x - x coordinate
+     * @param  {number}  y - y coordinate
      */
-    drawStrokePolygon: function (polygon, x, y) {
-        // NOTE: this => ctx
-        var g = this.ctx,
-            p = polygon.points;
-        // iterate thru all points and draw with stroke style
-        g.save()
-        g.beginPath();
-        g.strokeStyle = polygon.color || "white";
-        g.translate(x, y);
-        g.rotate(polygon.angle);
-        g.moveTo(p[0].x, p[0].y);
-        for (var i = 1; i < p.length; i++)
-            g.lineTo(p[i].x, p[i].y)
-        g.stroke()
-        g.restore()
-
-    },
     drawfillPolygon: function (polygon, x, y) {
         var g = this.ctx,
             p = polygon.points;
@@ -94,11 +79,14 @@ Canvas.prototype = {
 
     },
     /**
-     * Clears the complete canvas
+     * Pulisce la finestra da disegno
      */
     clearAll: function () {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     },
+    /*
+
+     */
     drawCircle: function (c, x, y) {
         var g = this.ctx
         g.beginPath();
@@ -110,6 +98,12 @@ Canvas.prototype = {
         g.fill()
         //g.lineWidth = tmp;
     },
+    /**
+     *
+     * @param x
+     * @param y
+     * @param r
+     */
     drawCircleBox: function (x, y, r) {
         var g = this.ctx
         g.beginPath();
@@ -121,25 +115,32 @@ Canvas.prototype = {
         g.stroke()
         g.lineWidth = tmp;
     },
-    drawRectBox: function (x, y, w, h) {
-        var g = this.ctx
-        g.strokeStyle = "yellow";
-        var tmp = g.lineWidth;
-        g.lineWidth = 1;
-        g.rect(x, y, w, h);
-        g.stroke()
-        g.lineWidth = tmp;
-    },
+    /**
+     *
+     * @param p
+     * @param x
+     * @param y
+     */
     drawPlayer: function (p, x, y) {
         var g = this.ctx;
         g.save();
         g.translate(x, y);
         g.rotate(p.angle + Math.radians(90));
-        var r = p.radius * 2;
+        var r = p.radius * p.size;
         g.drawImage(p.img, -r / 2, -r / 2, r, r);
+        if(p.jetFireActive) {
+            g.rotate(Math.radians(-5));
+            g.drawImage(p.jetFire.img, -r / 2 + p.jetFire.offsetX, -r / 4 + p.jetFire.offsetY, r, r/2);
+        }
         g.restore()
 
     },
+    /**
+     *
+     * @param p
+     * @param x
+     * @param y
+     */
     drawAster: function (p, x, y) {
         var g = this.ctx;
         g.save();
@@ -150,8 +151,16 @@ Canvas.prototype = {
         g.restore()
 
     },
+    /**
+     *
+     * @param x1
+     * @param y1
+     * @param x2
+     * @param y2
+     * @param color
+     */
     drawLine: function (x1, y1, x2, y2, color) {
-        var g = this.ctx
+        var g = this.ctx;
         g.beginPath();
         g.strokeStyle = color || "green";
         var tmp = g.lineWidth;
@@ -162,6 +171,12 @@ Canvas.prototype = {
         g.lineWidth = tmp;
 
     },
+    /**
+     *
+     * @param text
+     * @param x
+     * @param y
+     */
     fillTextMultiLine: function (text, x, y) {
         var lineHeight = this.ctx.measureText("M").width * 1.2;
         var lines = text.split("\n");
@@ -170,4 +185,4 @@ Canvas.prototype = {
             y += lineHeight;
         }
     }
-}
+};

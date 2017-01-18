@@ -1,5 +1,5 @@
 /**
- * Created by andre on 03/01/17.
+ * Tipo di bottone scelto
  */
 var Button = {
     startGame: 0,
@@ -9,6 +9,12 @@ var Button = {
     noChoice: 4
 };
 
+/**
+ * Menu Oggetto, gestore dei bottoni del menu
+ *
+ * @param {Main} main - controllo principale
+ * @constructor
+ */
 var Menu = function (main) {
     menuChoice = Button.noChoice;
     this.main = main;

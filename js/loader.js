@@ -1,5 +1,6 @@
 /*
  * caricameto file javascript nella pagina html in modo dinamico
+ * @function
  */
 function loadScripts() {
     var directory = 'js/';

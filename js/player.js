@@ -1,28 +1,59 @@
+/**
+ * Player
+ *
+ * @param  {number} size   - dimensione del player
+ * @param  {number} x      - x coordinate
+ * @param  {number} y      - y coordinate
+ * @param  {Canvas} parent - componente canvas
+ * @class Rappresenta un Player
+ * @extends GameObj
+ */
 var Player = GameObj.extend(
+    /**
+     *
+     * @param param
+     * @constructor
+     */
     function Player(param) {
         GameObj.call(this, param);
         this.color = "green";
         this.angle = 0;
-        this.jetFireActive = false;
         this.img = new Image();
-        this.img.src = "img/ship2.png";
+        this.img.src = "img/ship2.jpg";
         this.hp = 100;
         this.energy = 100;
         this.shield = false;
-        // create, init and scale flame polygon
-        this.jetFire = new Polygon([-2, 0, -3, -1, -5, 0, -3, 1, -2, 0]);
-        this.jetFire.color = "red";
-        this.jetFire.scale(param.size);
+        this.jetFireActive = false;
+        this.jetFire = {
+            img: new Image(),
+            offsetY:30,
+            offsetX: -2
+        };
+        this.jetFire.img.src = "img/jetfire.png";
+//new Polygon([-2, 0, -3, -1, -5, 0, -3, 1, -2, 0]);
+
+
+        var self = this;
         this.vel = {
             x: 0,
             y: 0
         };
+        document.addEventListener("mousemove", function(event) {
+            var mousePos = {
+                x : event.clientX,
+                y : event.clientY
+            };
+            if (Main.MOUSE_GAME && !Main.paused){
+                var dx = (mousePos.x - self.x);
+                var dy = (mousePos.y - self.y);
+                self.angle = Math.atan2(dy, dx);
+            }
+        });
     }, {
         /**
-         * Create and return bullet with arguments from current
-         * direction and position
-         *
-         * @return {Bullet} the initated bullet
+         * Ritorna un missile
+         * @param {Number} size - dimensione del missile
+         * @returns {Bullet} missile del player
          */
         addBullet: function(size) {
             if (this.energy > 10)
@@ -36,14 +67,11 @@ var Player = GameObj.extend(
             });
             return b;
         },
-
         /**
-         * Update the velocity of the bullet depending on facing
-         * direction
+         * Aggiorna velocità in caso di accelerazione
          */
         addSpeed: function() {
-            // length of veloctity vector estimated with pythagoras
-            // theorem, i.e.
+
             // 		a*a + b*b = c*c
             if (this.vel.x + this.vel.y < 50) {
                 this.vel.x += 0.8 * Math.cos(this.angle);
@@ -51,20 +79,19 @@ var Player = GameObj.extend(
             }
             this.jetFireActive = true;
         },
-
         /**
-         * Rotate the ship and flame polygon clockwise
+         * Ruota l'astronave nella direzione indicata dell'angolo
          *
-         * @param  {number} theta angle to rotate with
+         * @param  {Number} theta - angolo di rotazione
          */
         addDirection: function(theta) {
             this.angle += theta;
         },
         /**
-         * Returns whether ship is colling with asteroid
+         * Verifica se un asteroide ha una collisione con il player
          *
-         * @param  {Asteroid} astr asteroid to test
-         * @return {Boolean}       result from test
+         * @param  {Asteroid} astr - asteroide da testare
+         * @return {Boolean}   risultato
          */
         isCollision: function(astr) {
             if (!this.active) {
@@ -73,6 +100,10 @@ var Player = GameObj.extend(
             return this.collisionCircle(astr.x, astr.y, astr.radius);
 
         },
+        /**
+         * Aggionarna la posizione del player
+         * @param {Number} dt - delta del tempo per frame
+         */
         update: function(dt) {
             //update for resize
             if (this.maxX !== this.parent.width)
@@ -124,11 +155,7 @@ var Player = GameObj.extend(
                     color: "#1569C7"
                 }, 0, 0);
             g.drawPlayer(this, this.x, this.y);
-            if (this.jetFireActive) {
-                this.jetFire.angle = this.angle;
-                g.drawfillPolygon(this.jetFire, this.x, this.y);
-                this.jetFireActive = false;
-            }
+            this.jetFireActive = false;
             if (Main.DEBUGBOX)
                 g.drawCircleBox(this.x, this.y, this.radius);
 
