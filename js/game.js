@@ -1,8 +1,6 @@
 /**
- * Game
- *
- * @class Rappresenta le entità in gioco
- * @param {Main} main
+ * @class Gestisce le entità in gioco
+ * @param {Main} main - gestore gioco
  * @constructor
  */
 var Game = function (main) {
@@ -12,28 +10,29 @@ var Game = function (main) {
     this.main = main;
     this.menu = main.menu;
     this.main.score = 0;
-
     this.lvl = 1;
     this.n_life = 3;
     this.asterSize = 10;
-    this.player = new Player({
-        size: 6,
-        x: this.screen.width / 2,
-        y: this.screen.height / 2,
-        parent: this.screen
-    });
+    this.player = new Player(
+        this.screen.width / 2, // x
+        this.screen.height / 2, // y
+        6, //size
+        this.screen // parent
+    );
 };
 Game.prototype = {
     /**
      * Genera un nuovo livello di gioco
      */
     genLevel: function () {
-        this.bullets = [];
-        this.asteroids = [];
+        this.bullets = []; // missili del giocatore
+        this.asteroids = []; // astoroidi in gioco
+
+        // n di asteroidi secondo il livello attuale
         var n_asteroids = Math.round(2 + (this.lvl / 2));
         for (var i = 0; i < n_asteroids; i++) {
 
-            // set position close to edges of canvas
+            // definisce la posizione del asteroide nel canvas in modo casuale
             var x = 0,
                 y = 0;
             randomPos = (Math.random() > 0.5);
@@ -42,12 +41,12 @@ Game.prototype = {
             else
                 y = Math.random() * this.screen.height;
 
-            var aster = new Asteroid({
-                size: this.asterSize,
-                x: x,
-                y: y,
-                parent: this.screen
-            });
+            var aster = new Asteroid(
+                x,
+                y,
+                this.asterSize,
+                this.screen
+            );
             this.asteroids.push(aster);
         }
     },
@@ -56,7 +55,8 @@ Game.prototype = {
      * @param {Asteroids} a - asterode che collide
      */
     updateScore: function (a) {
-        // update score depending on asteroid size
+        // aggiorna il puntaggio se il giocatore è attivo
+        // il punteggio assegnato dipende dalla dim dell'astreroide distrutto
         if (this.player.active) {
             switch (a.size) {
                 case this.asterSize:
@@ -71,17 +71,17 @@ Game.prototype = {
             }
         }
 
-        // if asteroid splitted twice, then remove
-        // else split in half
+        // se l'asteoride è stato colpito al massimo 2 volte
+        // viene diviso altrimenti viene eliminato
         if (a.size > this.asterSize / 4) {
             for (var k = 0; k < 2; k++) {
 
-                var astr = new Asteroid({
-                    size: a.size / 2,
-                    x: a.x,
-                    y: a.y,
-                    parent: this.screen
-                });
+                var astr = new Asteroid(
+                    a.x,
+                    a.y,
+                    a.size / 2,
+                    this.screen
+                );
                 this.asteroids.push(astr);
             }
         }
@@ -90,16 +90,19 @@ Game.prototype = {
         this.genLevel();
     },
     /**
-     * Aggiorna gli oggetti in gioco secondo gli input e delta del tempo
+     * Aggiorna gli oggetti in gioco secondo gli input e il tick del tempo
      * @param input
      * @param dt
      */
     update: function (input, dt) {
+        // aggiorna solo gli eventi dei menu se sono attivi
         if (this.menu.active || this.menu.activeInfo) {
             this.menu.update(input);
             return;
         }
 
+        // verifica i comandi impartiti dell'utente
+        // e aggiorna lo stato di conseguenza
         if (input.isPressed('KEY_ESC') || input.isPressed('KEY_P')) {
             log("pause");
             this.main.menu.enable();
@@ -148,26 +151,25 @@ Game.prototype = {
         this.asteroids.forEach(function (a) {
             a.update(dt);
 
-            // check if bullets hits the current asteroid
+            // verifica se i missili colpiscono un asteroide
             self.bullets.forEach(function (b) {
                 if (a.isCollision(b.x, b.y)) {
                     b.active = false;
                     a.active = false;
-                    self.main.sm.playSound('explosion')
+                    self.main.sm.playSound('explosion');
                     self.updateScore(a)
                 }
             });
-            // if ship collids reset position and decrement n_life
+            // se il player collide con un astreroide e lo scudo non è attivo
+            // viene riposizionato al centro dello schermo
+            // e decrementa la  sua vita
             if (a.active && self.player.isCollision(a)) {
-                self.main.sm.playSound('explosion')
+                self.main.sm.playSound('explosion');
                 if (!self.player.shield) {
                     self.player.active = false;
                     self.player.x = self.screen.width / 2;
                     self.player.y = self.screen.height / 2;
-                    self.player.vel = {
-                        x: 0,
-                        y: 0
-                    };
+                    self.player.vel = { x: 0,y: 0 };
                     self.player.hp -= 100 / self.n_life;
                 }
                 self.updateScore(a);
@@ -179,7 +181,7 @@ Game.prototype = {
             }
         });
 
-        // check if lvl completed
+        // se gli astoridi sono stati tutti distrutti si avenza di livello
         if (this.asteroids.length === 0) {
             this.lvl++;
             if (this.player.hp < 100)
@@ -187,9 +189,10 @@ Game.prototype = {
             self.genLevel();
         }
 
-        // update ship
         this.player.update(dt);
 
+        // aggiorna solo i missili attivi
+        // gli altri vengono eliminati
         this.bullets = self.bullets.filter(function (b) {
             var _active = b.active;
             if (_active)
@@ -197,9 +200,11 @@ Game.prototype = {
             return _active;
         });
 
+        // elimina gli astoroidi colpiti
         this.asteroids = self.asteroids.filter(function (a) {
             return a.active;
         });
+        // se fine gioco il prossimo stato è game over
         if (this.gameOver) {
             this.main.menu.setVisibility("resumeGame", 'none');
             this.main.menu.setVisibility("startGame", 'block');
@@ -208,53 +213,27 @@ Game.prototype = {
 
     },
     /**
-     * Disegna gli oggetti del gioco
-     * @param {Canvas} g
+     * Disegna le entità in gioco
+     * @param  {Canvas} g - oggetto per disegnare sul canvas
      */
     draw: function (g) {
-        // barre
-        if (this.menu.activeInfo)
+        if (this.menu.activeInfo) {
             return;
-
-        this.drawProgressBar(g);
-        this.asteroids.forEach(function (a) {
-            a.draw(g)
-        });
-        this.bullets.forEach(function (b) {
-            b.draw(g);
-        });
-
-        // draw ship
-        this.player.draw(g);
-
-        if (!this.player.active) {
-            var ga = g.ctx;
-
-            ga.fillStyle = "white";
-            ga.font = "25px sans-serif";
-            ga.fillText("Push spacebar for continue ", g.canvas.width / 2 - 150, g.canvas.height / 2);
         }
 
-    },
-    /**
-     *
-     * @param g
-     * @private
-     */
-    drawProgressBar: function (g) {
+        // disegna progressbar dell'energia e dalla vita
+
         var ga = g.ctx;
         var percent = this.player.hp / 100;
-        var offset_hp = g.canvas.width * 3 / 4 + 50;
-        var offset_top = g.canvas.offsetTop + 10;
         var barWidth = 150;
         var barHeight = 20;
+        var offset_top = g.canvas.offsetTop + 10;
+        var offset_hp = g.canvas.width - barWidth-50;
 
         ga.fillStyle = "grey";
         ga.fillRect(offset_hp + 30, offset_top, barWidth, barHeight);
-
         ga.fillStyle = "red";
         ga.fillRect(offset_hp + 30, offset_top, barWidth * percent, barHeight);
-
         ga.fillStyle = "white";
         ga.font = "20px sans-serif";
         ga.fillText("HP ", offset_hp, offset_top + 18);
@@ -264,10 +243,8 @@ Game.prototype = {
 
         ga.fillStyle = "grey";
         ga.fillRect(offset_nrg, offset_top, barWidth, barHeight);
-
         ga.fillStyle = "#1569C7";
         ga.fillRect(offset_nrg, offset_top, barWidth * percent, barHeight);
-
         ga.fillStyle = "white";
         ga.font = "20px sans-serif";
         ga.fillText("NRG ", offset_nrg - 45, offset_top + 18);
@@ -278,5 +255,26 @@ Game.prototype = {
         var s = "SCORE: ";
         ga.fillText(s + this.main.score, g.canvas.width / 2 - (s.length + 70), offset_top + 18);
 
+
+        this.asteroids.forEach(function (a) {
+            a.draw(g)
+        });
+        this.bullets.forEach(function (b) {
+            b.draw(g);
+        });
+
+        this.player.draw(g);
+
+        /// se il player ha avuto una collisione
+        // informa l'utente sulle azioni da compiere per riprendere il gioco
+        if (!this.player.active) {
+            var ga = g.ctx;
+
+            ga.fillStyle = "white";
+            ga.font = "25px sans-serif";
+            ga.fillText("Push spacebar for continue ", g.canvas.width / 2 - 150, g.canvas.height / 2);
+        }
+
     }
-}
+
+};

@@ -1,6 +1,4 @@
 /**
- * Canvas
- *
  * @class Rappresenta la finestra di disegno
  * @param  {number} width - lunghezza del canvas
  * @param  {number} height - altezza del canvas
@@ -20,64 +18,28 @@ function Canvas(width, height, canvasId) {
         document.getElementById("gamecontainer").appendChild(_canvas);
     }
 
-    //recupera il contesto 2d del canvas
+    // recupera il contesto 2d del canvas
     this.ctx = _canvas.getContext("2d");
     if (!this.ctx) {
         alert("Il tuo browser non supporta HTML5");
     }
 
-    // setta le dimensioni della finestra di disegno
     this.ctx.lineWidth = 2;
-    this.ctx.width = w;
-    this.ctx.height = h;
 
-    _canvas.width = w;
-    _canvas.height = h;
+    // setta le dimensioni della finestra di disegno
+    this.width =_canvas.width = w;
+    this.height =_canvas.height = h;
     this.canvas = _canvas;
-    this.width = w;
-    this.height = h;
 
     var self = this;
+    // gestione evento di ridimenzionamenbto della finestra
     window.addEventListener('resize', function (evt) {
-        self.canvas.width = window.innerWidth;
-        self.canvas.height = window.innerHeight;
-        self.width = window.innerWidth;
-        self.height = window.innerHeight;
-        self.ctx.width = window.innerWidth;
-        self.ctx.height = window.innerHeight;
+        self.width = self.canvas.width = window.innerWidth;
+        self.height = self.canvas.height = window.innerHeight;
     });
 }
 
 Canvas.prototype = {
-    /**
-     * Disegna i contorni di un oggetto Polygon
-     *
-     * @param  {Polygon} Polygon - poligono
-     * @param  {number}  x - x coordinate
-     * @param  {number}  y - y coordinate
-     */
-    drawfillPolygon: function (polygon, x, y) {
-        var g = this.ctx,
-            p = polygon.points;
-        // iterate thru all points and draw with stroke style
-        g.save()
-        g.beginPath();
-        g.strokeStyle = "black";
-        g.fillStyle = polygon.color || "white";
-        var tmp = g.lineWidth;
-        g.lineWidth = 1.5;
-        g.translate(x, y);
-        g.rotate(polygon.angle);
-        g.moveTo(p[0].x, p[0].y);
-        for (var i = 1; i < p.length; i++)
-            g.lineTo(p[i].x, p[i].y)
-        g.fill()
-        if (!(polygon instanceof Polygon))
-            g.stroke();
-        g.restore();
-        g.lineWidth = tmp;
-
-    },
     /**
      * Pulisce la finestra da disegno
      */

@@ -1,21 +1,17 @@
 /**
- * Player
- *
- * @param  {number} size   - dimensione del player
- * @param  {number} x      - x coordinate
- * @param  {number} y      - y coordinate
- * @param  {Canvas} parent - componente canvas
- * @class Rappresenta un Player
+ * @param  {number} x      - posizione in coordinate x
+ * @param  {number} y      - posizione in coordinate y
+ * @param  {number} size   - dimensione dell'astronave
+ * @param  {Canvas} parent - componente per il disegno
+ * @class Rappresenta l'astronave del Player
  * @extends GameObj
  */
 var Player = GameObj.extend(
     /**
-     *
-     * @param param
-     * @constructor
+     * * @constructor
      */
-    function Player(param) {
-        GameObj.call(this, param);
+    function Player(x, y, size, parent) {
+        GameObj.call(this, x, y, size, parent);
         this.color = "green";
         this.angle = 0;
         this.img = new Image();
@@ -23,27 +19,29 @@ var Player = GameObj.extend(
         this.hp = 100;
         this.energy = 100;
         this.shield = false;
+
+        // oggetto per rappresentare il jet fire
         this.jetFireActive = false;
         this.jetFire = {
             img: new Image(),
-            offsetY:30,
+            offsetY: 30,
             offsetX: -2
         };
         this.jetFire.img.src = "img/jetfire.png";
-//new Polygon([-2, 0, -3, -1, -5, 0, -3, 1, -2, 0]);
-
 
         var self = this;
         this.vel = {
             x: 0,
             y: 0
         };
-        document.addEventListener("mousemove", function(event) {
+        // gestione evento movimento mouse
+        // e aggiornamento angolo di rotazione player
+        document.addEventListener("mousemove", function (event) {
             var mousePos = {
-                x : event.clientX,
-                y : event.clientY
+                x: event.clientX,
+                y: event.clientY
             };
-            if (Main.MOUSE_GAME && !Main.paused){
+            if (Main.MOUSE_GAME && !Main.paused) {
                 var dx = (mousePos.x - self.x);
                 var dy = (mousePos.y - self.y);
                 self.angle = Math.atan2(dy, dx);
@@ -53,9 +51,9 @@ var Player = GameObj.extend(
         /**
          * Ritorna un missile
          * @param {Number} size - dimensione del missile
-         * @returns {Bullet} missile del player
+         * @return {Bullet} missile del player
          */
-        addBullet: function(size) {
+        addBullet: function (size) {
             if (this.energy > 10)
                 this.energy -= 10;
             var b = new Bullet({
@@ -70,10 +68,10 @@ var Player = GameObj.extend(
         /**
          * Aggiorna velocità in caso di accelerazione
          */
-        addSpeed: function() {
+        addSpeed: function () {
 
             // 		a*a + b*b = c*c
-            if (this.vel.x*this.vel.x + this.vel.y*this.vel.y < 30*30) {
+            if (this.vel.x * this.vel.x + this.vel.y * this.vel.y < 30 * 30) {
                 this.vel.x += 1.6 * Math.cos(this.angle);
                 this.vel.y += 1.6 * Math.sin(this.angle);
             }
@@ -84,16 +82,16 @@ var Player = GameObj.extend(
          *
          * @param  {Number} theta - angolo di rotazione
          */
-        addDirection: function(theta) {
+        addDirection: function (theta) {
             this.angle += theta;
         },
         /**
          * Verifica se un asteroide ha una collisione con il player
          *
          * @param  {Asteroid} astr - asteroide da testare
-         * @return {Boolean}   risultato
+         * @return {Boolean}  Risultato collisione
          */
-        isCollision: function(astr) {
+        isCollision: function (astr) {
             if (!this.active) {
                 return false;
             }
@@ -104,22 +102,22 @@ var Player = GameObj.extend(
          * Aggionarna la posizione del player
          * @param {Number} dt - delta del tempo per frame
          */
-        update: function(dt) {
-            //update for resize
+        update: function (dt) {
+            // aggiornameto secondo le dimesioni del componente padre
             if (this.maxX !== this.parent.width)
                 this.maxX = this.parent.width;
             if (this.maxY !== this.parent.height)
                 this.maxY = this.parent.height;
 
-            // update position
+            // aggioranemto posizione secondo la velocità
             this.x += this.vel.x * dt;
             this.y += this.vel.y * dt;
 
-            // friction
+            // frizione
             this.vel.x *= 0.98;
             this.vel.y *= 0.98;
 
-            // keep within bounds
+            // movimento player nel canvas
             if (this.x > this.maxX) {
                 this.x = 0;
             } else if (this.x < 0) {
@@ -130,6 +128,7 @@ var Player = GameObj.extend(
             } else if (this.y < 0) {
                 this.y = this.maxY;
             }
+            // gestione quantità di energia usata
             if (this.shield) {
                 if (this.energy > 0 && this.energy <= 100)
                     this.energy -= 1.5;
@@ -142,15 +141,15 @@ var Player = GameObj.extend(
         },
         /**
          * Disegna il player
-         * @param  {Canvas} g
+         * @param  {Canvas} g - oggetto per disegnare sul canvas
          */
-        draw: function(g) {
+        draw: function (g) {
             if (!this.active) {
                 return;
             }
             if (this.shield)
                 g.drawCircle({
-                    center: { x: this.x, y: this.y },
+                    center: {x: this.x, y: this.y},
                     radius: this.radius + 4,
                     color: "#1569C7"
                 }, 0, 0);

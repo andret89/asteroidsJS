@@ -1,30 +1,28 @@
 /**
- * Asteroid
- *
+ * @param  {number} x      - posizione in coordinate x
+ * @param  {number} y      - posizione in coordinate y
  * @param  {number} size   - dimensione dell'asteroide
- * @param  {number} x      - x coordinate
- * @param  {number} y      - y coordinate
- * @param  {Canvas} parent - componente canvas
+ * @param  {Canvas} parent - componente per il disegno
  * @class Rappresenta un Asteroide
  * @extends GameObj
  */
 var Asteroid = GameObj.extend(
     /**
-     *
-     * @param param
      * @constructor
      */
-    function Asteroid(param) {
-        GameObj.call(this, param); // Superclass()
+    function Asteroid(x, y, size, parent) {
+        GameObj.call(this, x, y, size, parent);
         this.type = "Asteroid";
         this.color = "grey";
         this.img = new Image();
         this.img.src = "img/aster.png";
-        // Set rotation angle used in each update
+
+
+        // imposta l'angolo di rotazione utilizzato in ogni aggiornamento
         this.rotation = 0.02 * (Math.random() * 2 - 1);
         this.angle = this.rotation;
 
-        // Generate and calculate velocity
+        // calcolare la velocità
         var r = Math.PI * Math.random();
         var v = (Math.random() * 14 )+6;
         var vx = v;
@@ -42,21 +40,21 @@ var Asteroid = GameObj.extend(
         };
     }, {
         /**
-         * update position with translate and rotate
+         * Aggiornamento posizione e ruotazione
          * @param dt
          */
         update: function(dt) {
-            //update for resize
+            // aggiornameto per il ridimenzionamento
             if (this.maxX !== this.parent.width)
                 this.maxX = this.parent.width;
             if (this.maxY !== this.parent.height)
                 this.maxY = this.parent.height;
 
-            // update position
+            // aggioranemto posizione secondo la velocità
             this.x += this.vel.x * dt;
             this.y += this.vel.y * dt;
 
-            // keep within bounds
+            // movimento player nel canvas
             if (this.x > this.maxX) {
                 this.x = 0;
             } else if (this.x < 0) {

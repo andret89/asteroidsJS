@@ -50,37 +50,43 @@ Polygon.prototype = {
     }
 };
 /**
- * GameObj class, oggetto che rappresenta un oggetto animabile
- * @class
+ * @class Rappresenta un entità animabile
+ * @param  {number} x      - posizione in coordinate x
+ * @param  {number} y      - posizione in coordinate y
+ * @param  {number} size   - dimensione
+ * @param  {Canvas} parent - componente padre
  * @constructor
- * @param  {} param
+ *
  */
-var GameObj = function(param) {
-    this.parent = param.parent;
-    this.size = param.size;
-    this.radius = this.size * 4;
-    this.x = param.x;
-    this.y = param.y;
+var GameObj = function(x,y,size,parent) {
+    this.size = size;
+    this.radius = size * 4;
+    this.x = x;
+    this.y = y;
+    this.parent = parent;
     this.active = true;
 
 };
 GameObj.prototype = {
     /**
-     * @param  {} cx
-     * @param  {} cy
-     * @param  {} r
+     * Verifica intersezione con un oggetto di gioco
+     * @param  {number} cx - centro in coordinate x
+     * @param  {number} cy - centro in coordinate y
+     * @param  {number} r - raggio
+     * @return {Boolean} Risultato intersezione
      */
     collisionCircle: function(cx, cy, r) {
         var _r = r || 0; // 0 per distanza da un punto
-        return this.distance(this, { x: cx, y: cy }) < this.radius + _r;
+        return this.distance({ x: cx, y: cy }) < this.radius + _r;
     },
     /**
-     * @param  {} ent1
-     * @param  {} ent2
+     * Distanza con un oggetto di gioco utilizzando il teorema di Pitagora
+     * @param  {GameObj} otherObj - oggetto
+     * @return {number} Distanza
      */
-    distance: function(ent1, ent2) {
-        var dx = ent2.x - ent1.x;
-        var dy = ent2.y - ent1.y;
+    distance: function(otherObj) {
+        var dx = otherObj.x - this.x;
+        var dy = otherObj.y - this.y;
         return Math.sqrt(dx * dx + dy * dy);
     }
 };

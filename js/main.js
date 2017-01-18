@@ -9,8 +9,7 @@ var States = {
 };
 
 /**
- * Main
- * @class Gestione stati del gioco
+ * @class Gestore stati del gioco
  */
 var Main = function () {
     // variabili statiche
@@ -31,7 +30,7 @@ Main.prototype = {
         // funzioni per disegnare su canvas
         this.screen = new Canvas();
         this.score = 0;
-        // gestore eventi
+        // gestore eventi in input
         this.input = new Inputs();
         this.input.init(this);
         // menu rappresentato da div html
@@ -94,7 +93,7 @@ Main.prototype = {
     /**
      * Salva in memoria il punteggio più alto
      *
-     * @param  {Number} score - punteggio del giocatore
+     * @param  {Number} score - punteggio finale del giocatore
      * @returns {Number} highscore
      */
     saveScore: function (score) {
