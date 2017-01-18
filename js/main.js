@@ -30,6 +30,7 @@ Main.prototype = {
         // funzioni per disegnare su canvas
         this.screen = new Canvas();
         this.score = 0;
+        this.levelDifficulty = 2;
         // gestore eventi in input
         this.input = new Inputs();
         this.input.init(this);

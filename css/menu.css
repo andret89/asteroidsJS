@@ -25,6 +25,7 @@
     height: 400px;
 }
 
+
 #startGame {
     display: block;
     height: var(--bt-height);

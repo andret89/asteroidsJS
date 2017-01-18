@@ -1,26 +1,40 @@
 <!DOCTYPE html>
 <html>
-<title>Script-based animation using requestAnimationFrame</title>
+<link rel="stylesheet" href="css/style.css">
+<title>Tester</title>
 <style>
-    canvas {
-        position: absolute;
-        background: white;
-        width: 400px;
-        height: 500px;
-    }
 </style>
-<script >
+<body>
 
-    // Create the canvas
-    var canvas = document.createElement("canvas");
-    var ctx = canvas.getContext("2d");
-    canvas.width = 512;
-    canvas.height = 480;
-    document.body.appendChild(canvas);
+<script>
+    var Debug = false;
+    if (Debug) {
+        (function () {
+            var menu = new Menu();
 
+        })()
+    }
 </script>
 
-<body>
+<div id="gameContainer">
+    <div id="menuContainer">
+        <p id="titleOptionMenu">
+            <strong>Menu</strong></p>
+        <a id="startGame" class="btnOption"><p>Start</p></a>
+        <a id="resumeGame" class="btnOption"><p>Continue</p></a>
+        <a id="infoGame" class="btnOption"><p>Info</p></a>
+        <a id="exitGame" class="btnOption"><p>Exit</p></a>
+    </div>
+    <div id="difficultyContainer">
+        <p id="titleDifficultyMenu">
+            <strong>Select difficulty level</strong></p>
+        <a id="easy" class="btnDifficulty"><p>Easy</p></a>
+        <a id="normal" class="btnDifficulty"><p>Normal</p></a>
+        <a id="hard" class="btnDifficulty"><p>Hard</p></a>
+    </div>
+
+</div>
 </body>
+
 
 </html>

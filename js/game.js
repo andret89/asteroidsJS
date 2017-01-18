@@ -34,8 +34,8 @@ Game.prototype = {
 
             // definisce la posizione del asteroide nel canvas in modo casuale
             var x = 0,
-                y = 0;
-            randomPos = (Math.random() > 0.5);
+                y = 0,
+                randomPos = (Math.random() > 0.5);
             if (randomPos)
                 x = Math.random() * this.screen.width;
             else
@@ -200,7 +200,7 @@ Game.prototype = {
             return _active;
         });
 
-        // elimina gli astoroidi colpiti
+        // elimina gli asteroidi colpiti
         this.asteroids = self.asteroids.filter(function (a) {
             return a.active;
         });

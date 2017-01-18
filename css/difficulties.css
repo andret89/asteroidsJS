@@ -1,29 +1,3 @@
-body,
-html {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-image: url("../img/bg.png");
-    text-rendering: optimizelegibility;
-}
-
-canvas{
-    width: 100%;
-    height: 100%;
-    display: block;
-}
-
-#gameContainer {
-    width: 100%;
-    height: 100%;
-    align-items: center;
-    margin: inherit;
-    justify-content: center;
-    display: flex;
-}
-
 :root {
     --primary-color: #006680;
     --hover-color: darkgoldenrod;
@@ -35,27 +9,45 @@ canvas{
     --font-size: 40px;
 }
 
-
-#difficultyContainer {
-    font-size: var(--font-size);
-    display: flex;
-    /* width: 100%; */
+#difficultyMenu {
+    display: none;
+    width: 100%;
 }
 
-#menuContainer{
-    font-size: var(--font-size);
+
+.difficultyMenuContainer{
     display: none;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    text-align: center;
+    font-size: var(--font-size);
+    height: 100%;
+    width: 100%;
+}
+
+#optionMenu {
+    display: block;
     width: 250px;
     position: relative;
     height: 400px;
 }
 
+.menuContainer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    font-size: var(--font-size);
+    height: 100%;
+    width: 100%;
+}
+
 #titleDifficultyMenu {
     color: white;
     position: absolute;
-    font-size: 50px;
-    top: 23%;
-    left: 31%;
+    font-size: 70px;
+    top: 20%;
 }
 
 #titleOptionMenu {
@@ -63,6 +55,7 @@ canvas{
     position: relative;
     font-size: 40px;
     text-align: center;
+
 
 }
 

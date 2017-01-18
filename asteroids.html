@@ -7,6 +7,7 @@
 
     <!-- Stylesheets -->
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/difficulties.css">
     <link rel="stylesheet" href="css/menu.css">
 
     <!-- Script di caricamento file javascipt -->
@@ -16,7 +17,13 @@
 </head>
 
 <body>
-
+<div id="livelChoice" class="difficulties" style="display: none;">
+    <p id="titleDifficultyMenu"><strong>
+        Select Livel difficult</strong></p>
+    <a id="easy" class="myButton"><p>Easy</p></a>
+    <a id="normal" class="myButton"><p>Normal</p></a>
+    <a id="hard" class="myButton"><p>Hard</p></a>
+</div>
 <div id="gamecontainer">
     <div id="info" style="none: none;">
         <p id="titleInfo">
@@ -51,7 +58,7 @@
     </div>
 
     <div id="menucontainer">
-        <div id="menuId" style="display: block;">
+        <div id="menuId" style="display: none;">
             <p style="color:darkgoldenrod;">
                 <strong>Menu</strong></p>
             <div id="resumeGame" >
