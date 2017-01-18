@@ -73,9 +73,9 @@ var Player = GameObj.extend(
         addSpeed: function() {
 
             // 		a*a + b*b = c*c
-            if (this.vel.x + this.vel.y < 50) {
-                this.vel.x += 0.8 * Math.cos(this.angle);
-                this.vel.y += 0.8 * Math.sin(this.angle);
+            if (this.vel.x*this.vel.x + this.vel.y*this.vel.y < 30*30) {
+                this.vel.x += 1.6 * Math.cos(this.angle);
+                this.vel.y += 1.6 * Math.sin(this.angle);
             }
             this.jetFireActive = true;
         },

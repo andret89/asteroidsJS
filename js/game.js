@@ -55,9 +55,9 @@ Game.prototype = {
      * Aggiorna gli oggetti in caso di collisioni
      * @param {Asteroids} a - asterode che collide
      */
-    updateScore: function (a, shield) {
+    updateScore: function (a) {
         // update score depending on asteroid size
-        if (!shield) {
+        if (this.player.active) {
             switch (a.size) {
                 case this.asterSize:
                     this.main.score += 20;
@@ -154,7 +154,7 @@ Game.prototype = {
                     b.active = false;
                     a.active = false;
                     self.main.sm.playSound('explosion')
-                    self.updateScore(a, false)
+                    self.updateScore(a)
                 }
             });
             // if ship collids reset position and decrement n_life
@@ -170,7 +170,7 @@ Game.prototype = {
                     };
                     self.player.hp -= 100 / self.n_life;
                 }
-                self.updateScore(a, self.player.shield);
+                self.updateScore(a);
                 a.active = false;
             }
 
@@ -244,7 +244,7 @@ Game.prototype = {
     drawProgressBar: function (g) {
         var ga = g.ctx;
         var percent = this.player.hp / 100;
-        var offset_hp = g.canvas.width * 3 / 4 + 80;
+        var offset_hp = g.canvas.width * 3 / 4 + 50;
         var offset_top = g.canvas.offsetTop + 10;
         var barWidth = 150;
         var barHeight = 20;
