@@ -10,8 +10,7 @@ var Button = {
 };
 
 /**
- * Menu Oggetto, gestore dei bottoni del menu
- *
+ * @class Gestore dei bottoni del menu
  * @param {Main} main - controllo principale
  * @constructor
  */

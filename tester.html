@@ -5,14 +5,22 @@
     canvas {
         position: absolute;
         background: white;
-        width: 400 px;
-        height: 500 px;
+        width: 400px;
+        height: 500px;
     }
 </style>
-<script src="logs/game.js"></script>
+<script >
+
+    // Create the canvas
+    var canvas = document.createElement("canvas");
+    var ctx = canvas.getContext("2d");
+    canvas.width = 512;
+    canvas.height = 480;
+    document.body.appendChild(canvas);
+
+</script>
 
 <body>
-    <canvas id="screen" width="400" height="600" />
 </body>
 
 </html>

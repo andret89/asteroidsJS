@@ -56,13 +56,12 @@ var Player = GameObj.extend(
         addBullet: function (size) {
             if (this.energy > 10)
                 this.energy -= 10;
-            var b = new Bullet({
-                x: this.x,
-                y: this.y,
-                angle: this.angle,
-                size: size,
-                parent: this.parent
-            });
+            var b = new Bullet(
+                this.x,
+                this.y,
+                this.angle,
+                this.parent
+            );
             return b;
         },
         /**
@@ -71,9 +70,9 @@ var Player = GameObj.extend(
         addSpeed: function () {
 
             // 		a*a + b*b = c*c
-            if (this.vel.x * this.vel.x + this.vel.y * this.vel.y < 30 * 30) {
-                this.vel.x += 1.6 * Math.cos(this.angle);
-                this.vel.y += 1.6 * Math.sin(this.angle);
+            if (this.vel.x * this.vel.x + this.vel.y * this.vel.y < 400 * 400) {
+                this.vel.x += 15 * Math.cos(this.angle);
+                this.vel.y += 15 * Math.sin(this.angle);
             }
             this.jetFireActive = true;
         },
@@ -114,8 +113,8 @@ var Player = GameObj.extend(
             this.y += this.vel.y * dt;
 
             // frizione
-            this.vel.x *= 0.98;
-            this.vel.y *= 0.98;
+            this.vel.x *= 0.96;
+            this.vel.y *= 0.96;
 
             // movimento player nel canvas
             if (this.x > this.maxX) {
@@ -135,7 +134,7 @@ var Player = GameObj.extend(
                 if (this.energy <= 0)
                     this.shield = false;
             } else {
-                if (this.energy < 100) this.energy += 0.25;
+                if (this.energy < 100) this.energy += 0.5;
                 if (this.energy > 100) this.energy = 100;
             }
         },

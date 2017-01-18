@@ -50,8 +50,8 @@ Main.prototype = {
      */
     run: function () {
         var self = this;
-        var prevTime = new Date().getTime();
-        var currTime = new Date().getTime();
+        var prevTime = 0;
+        var currTime = 0;
 
         function gameLoop() {
             if (self.nextState !== States.NO_CHANGE) {
@@ -73,17 +73,18 @@ Main.prototype = {
                 }
                 self.nextState = States.NO_CHANGE;
             }
+
             var dt = 0;
             if (!Main.paused) {
-                prevTime = currTime;
                 currTime = new Date().getTime();
-                dt = currTime - prevTime;
-                if (dt > 0.15)
-                    dt = 0.15;
+                dt = (currTime - prevTime) / 1000;
             }
+
             self.currState.update(self.input, dt);
             self.screen.clearAll();
             self.currState.draw(self.screen);
+
+            prevTime = currTime;
 
             window.requestAnimFrame(gameLoop);
         }

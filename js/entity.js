@@ -1,55 +1,4 @@
 /**
- * Polygon
- *
- * @class Rappresenta un poligono
- * @param  {Array<number>} points - lista di punti del poligono
- * @constructor
- */
-function Polygon(points) {
-    this.color = "white";
-    var makePoints = function(points) {
-        var p = [],
-            j = 0;
-        for (var i = 0; i < points.length - 1; i += 2)
-            p[j++] = ({ x: points[i], y: points[i + 1] });
-        return p;
-    };
-    var l = makePoints(points);
-    this.points = l;
-}
-Polygon.prototype = {
-    /**
-     * Ruota il poligono
-     *
-     * @param  {number} theta - angolo di rotazione
-     */
-    rotate: function(theta) {
-        // simplifying computition of 2x2 matrix
-        var c = Math.cos(theta);
-        var s = Math.sin(theta);
-
-        for (var i = 0, len = this.points.length; i < len; i++) {
-            var x = this.points[i].x;
-            var y = this.points[i].y;
-
-            this.points[i].x = c * x - s * y;
-            this.points[i].y = s * x + c * y;
-        }
-    },
-
-    /**
-     * Scala il poligono
-     *
-     * @param  {number} c - fattore di scala
-     */
-    scale: function(c) {
-        for (var i = 0; i < this.points.length; i++) {
-            this.points[i].x *= c;
-            this.points[i].y *= c;
-        }
-    }
-};
-/**
  * @class Rappresenta un entità animabile
  * @param  {number} x      - posizione in coordinate x
  * @param  {number} y      - posizione in coordinate y
@@ -81,7 +30,7 @@ GameObj.prototype = {
     },
     /**
      * Distanza con un oggetto di gioco utilizzando il teorema di Pitagora
-     * @param  {GameObj} otherObj - oggetto
+     * @param  {Object} otherObj - oggetto
      * @return {number} Distanza
      */
     distance: function(otherObj) {

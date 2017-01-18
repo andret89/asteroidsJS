@@ -1,6 +1,5 @@
 /*
  * caricameto file javascript nella pagina html in modo dinamico
- * @function
  */
 function loadScripts() {
     var directory = 'js/';
@@ -27,8 +26,6 @@ function loadScripts() {
         elem.type = type;
         document.getElementsByTagName('head')[0].appendChild(elem);
     }
-    console.log("file javascript caricati");
-
 }
 // invocazione al momento della lettuta
-loadScripts()
+loadScripts();

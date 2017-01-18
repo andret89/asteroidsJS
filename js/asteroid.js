@@ -17,14 +17,16 @@ var Asteroid = GameObj.extend(
         this.img = new Image();
         this.img.src = "img/aster.png";
 
-
         // imposta l'angolo di rotazione utilizzato in ogni aggiornamento
         this.rotation = 0.02 * (Math.random() * 2 - 1);
         this.angle = this.rotation;
 
+
+        var maxSpeed = 140;
+        var minSpeed = 80;
         // calcolare la velocità
         var r = Math.PI * Math.random();
-        var v = (Math.random() * 14 )+6;
+        var v = (Math.random() * maxSpeed) + minSpeed;
         var vx = v;
         var vy = v;
 
@@ -40,7 +42,7 @@ var Asteroid = GameObj.extend(
         };
     }, {
         /**
-         * Aggiornamento posizione e ruotazione
+         * Aggiornamento posizione e rotazione
          * @param dt
          */
         update: function(dt) {

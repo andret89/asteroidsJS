@@ -1,6 +1,5 @@
 /**
- * Emunarizone dei codice e corrispondenti comandi
- * @type {{KEY_LEFT: number, KEY_RIGHT: number, KEY_UP: number, KEY_DOWN: number, KEY_ENTER: number, KEY_ESC: number, KEY_CTRL: number, KEY_SPACE: number, KEY_W: number, KEY_A: number, KEY_S: number, KEY_D: number, KEY_P: number, KEY_M: number, KEY_G: number}}
+ * Lista dei codice e corrispondenti tasti
  */
 var Key = {
     KEY_LEFT: 37,
@@ -63,21 +62,20 @@ Inputs.prototype = {
 
     },
     /**
-     * Tells if a monitored key is hold down
+     * indica se il tasto richesto è tentuto premuto
      *
-     * @param  {string}  key name of monitored key
-     * @return {Boolean}     result from check
+     * @param  {string} key - chiave di richiesta
+     * @return {Boolean}  Risultato del controllo
      */
     isDown: function(key) {
         return this.down[key];
     },
 
     /**
-     * Tells if a monitored key is pressed, returns true first time
-     * the key is pressed
+     * indica se è stasto premuto un tasto
      *
-     * @param  {string}  key name of monitored key
-     * @return {Boolean}     result from check
+     * @param  {string} key - chiave di richiesta
+     * @return {Boolean}  Risultato del controllo
      */
     isPressed: function(key) {
         if (this.pressed[key]) {
@@ -102,7 +100,7 @@ SoundManager.prototype = {
     /**
      *
      * @param {String} url - path del file
-     * @param {String} key - chiave associato
+     * @param {String} key - chiave associata
      */
     loadSound: function(url, key) {
         var s = new Audio(url);
@@ -112,7 +110,7 @@ SoundManager.prototype = {
     },
     /**
      *
-     * @param type
+     * @param {string} type - chiave di riferimanto audio
      */
     stopSound: function(type) {
         var s = this.sounds[type];
@@ -122,7 +120,7 @@ SoundManager.prototype = {
     },
     /**
      *
-     * @param type
+     * @param {string} type - chiave di riferimanto audio
      */
     playSound: function(type) {
         if (Main.MUTE)

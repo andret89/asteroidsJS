@@ -1,8 +1,7 @@
 /**
- * Start
  *
- * @class
- * @param main
+ * @class Rappresenta lo stato di inizio
+ * @param {Main} main - controllo principale
  * @constructor
  */
 var Start = function(main) {
@@ -12,7 +11,7 @@ var Start = function(main) {
 
 }
 Start.prototype = {
-    update: function(input) {
+    update: function (input) {
         if (this.menu.active || this.menu.activeInfo) {
             this.menu.update(input);
             return;
@@ -25,14 +24,13 @@ Start.prototype = {
         }
 
     },
-    draw: function(g) {}
-}
+    draw: function (g) {
+    }
+};
 
 /**
- * GameOver
- *
- * @class
- * @param game
+ * @class Rappresenta lo stato finale del gioco
+ * @param {Main} game - controllo principale
  * @constructor
  */
 var GameOver = function(game) {
