@@ -108,7 +108,7 @@ Game.prototype = {
         if (!this.player.active) {
             if (input.isPressed("KEY_SPACE")) {
                 this.player.active = true;
-            };
+            }
         }
         if (input.isPressed('KEY_M')) {
             Main.MUTE = !Main.MUTE;
@@ -141,8 +141,11 @@ Game.prototype = {
         }
         if (input.isPressed('KEY_CTRL') || input.isPressed('KEY_SPACE')) {
             if (this.player.energy >= 10) {
-                this.bullets.push(this.player.addBullet(8));
-                this.main.sm.playSound('shoot');
+                var b = this.player.addBullet();
+                if(b) {
+                    this.bullets.push(b);
+                    this.main.sm.playSound('shoot');
+                }
             }
         }
         var self = this;

@@ -18,6 +18,8 @@ var Player = GameObj.extend(
         this.img.src = "img/ship2.jpg";
         this.hp = 100;
         this.energy = 100;
+        this.timeLastShoot = 0;
+        this.timeoutShoot = 250;
 
         this.shieldActive = false;
         this.shield = {
@@ -57,19 +59,25 @@ var Player = GameObj.extend(
     }, {
         /**
          * Ritorna un missile
-         * @param {Number} size - dimensione del missile
          * @return {Bullet} missile del player
          */
-        addBullet: function (size) {
+        addBullet: function () {
+            var now = new Date().getTime();
+            if(this.timeLastShoot !==0 &&
+                now - this.timeLastShoot < this.timeoutShoot)
+                return null;
+            else
+                this.timeLastShoot = now;
+
             if (this.energy > 10)
                 this.energy -= 10;
-            var b = new Bullet(
+
+           return new Bullet(
                 this.x,
                 this.y,
                 this.angle,
                 this.parent
             );
-            return b;
         },
         /**
          * Aggiorna velocità in caso di accelerazione
