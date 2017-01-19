@@ -35,3 +35,9 @@ function defineSubclass(superclass, // Constructor of our superclass
 Function.prototype.extend = function(constructor, methods, statics) {
     return defineSubclass(this, constructor, methods, statics);
 };
+
+Array.prototype.forEachOptimized = function (a) {
+    var l = this.length;
+    for (var i = 0; i < l; i++)
+        a(this[i], i)
+};

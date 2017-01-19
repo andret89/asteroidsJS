@@ -3,6 +3,7 @@
  * @param  {number} y      - posizione in coordinate y
  * @param  {number} size   - dimensione dell'asteroide
  * @param  {Canvas} parent - componente per il disegno
+ * @param  {number} difficultly - livello di difficoltà
  * @class Rappresenta un Asteroide
  * @extends GameObj
  */
@@ -10,7 +11,7 @@ var Asteroid = GameObj.extend(
     /**
      * @constructor
      */
-    function Asteroid(x, y, size, parent) {
+    function Asteroid(x, y, size, parent, difficultly) {
         GameObj.call(this, x, y, size, parent);
         this.type = "Asteroid";
         this.color = "grey";
@@ -22,8 +23,10 @@ var Asteroid = GameObj.extend(
         this.angle = this.rotation;
 
 
-        var maxSpeed = 140;
+        var maxSpeed = 120 + 20* difficultly;
         var minSpeed = 80;
+        log("maxSpeed" + maxSpeed);
+
         // calcolare la velocità
         var r = Math.PI * Math.random();
         var v = (Math.random() * maxSpeed) + minSpeed;

@@ -109,6 +109,9 @@ var Player = GameObj.extend(
          * @param {Number} dt - delta del tempo per frame
          */
         update: function (dt) {
+            if(!this.active)
+                return;
+
             // aggiornameto secondo le dimesioni del componente padre
             if (this.maxX !== this.parent.width)
                 this.maxX = this.parent.width;
@@ -154,13 +157,6 @@ var Player = GameObj.extend(
                 return;
             }
             g.drawPlayer(this, this.x, this.y);
-           /*
-                g.drawCircle({
-                    center: {x: this.x, y: this.y},
-                    radius: this.radius + 4,
-                    color: "#1569C7"
-                }, 0, 0);
-            */
             this.jetFireActive = false;
             if (Main.DEBUGBOX)
                 g.drawCircleBox(this.x, this.y, this.radius);

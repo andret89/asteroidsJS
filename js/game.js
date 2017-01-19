@@ -27,7 +27,7 @@ Game.prototype = {
      */
     genLevel: function () {
         this.bullets = []; // missili del giocatore
-        this.asteroids = []; // astoroidi in gioco
+        this.asteroids = []; // asteroidi in gioco
 
         // n di asteroidi secondo il livello attuale
         var n_asteroids = Math.round(this.main.levelDifficulty + (this.lvl / 2));
@@ -46,7 +46,8 @@ Game.prototype = {
                 x,
                 y,
                 this.asterSize,
-                this.screen
+                this.screen,
+                this.main.levelDifficulty
             );
             this.asteroids.push(aster);
         }
@@ -81,7 +82,8 @@ Game.prototype = {
                     a.x,
                     a.y,
                     a.size / 2,
-                    this.screen
+                    this.screen,
+                    this.main.levelDifficulty
                 );
                 this.asteroids.push(astr);
             }
@@ -106,8 +108,7 @@ Game.prototype = {
         if (!this.player.active) {
             if (input.isPressed("KEY_SPACE")) {
                 this.player.active = true;
-            }
-            return;
+            };
         }
         if (input.isPressed('KEY_M')) {
             Main.MUTE = !Main.MUTE;
@@ -145,11 +146,11 @@ Game.prototype = {
             }
         }
         var self = this;
-        this.asteroids.forEach(function (a) {
+        this.asteroids.forEachOptimized(function (a) {
             a.update(dt);
 
             // verifica se i missili colpiscono un asteroide
-            self.bullets.forEach(function (b) {
+            self.bullets.forEachOptimized(function (b) {
                 if (a.isCollision(b.x, b.y)) {
                     b.active = false;
                     a.active = false;
