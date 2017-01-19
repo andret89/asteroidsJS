@@ -12,19 +12,25 @@ var Start = function(main) {
 }
 Start.prototype = {
     update: function (input) {
-        if (this.menu.active || this.menu.activeInfo) {
-            this.menu.update(input);
-            return;
-        }
-
         if (input.isPressed('KEY_SPACE') || input.isPressed('KEY_ENTER')) {
-            log("start");
-            this.main.menu.enable();
-            return;
+            this.main.menu.enableOptions();
         }
 
     },
     draw: function (g) {
+        if (this.menu.active || this.menu.activeInfo || this.menu.activeDifficultly) {
+            return;
+        }
+        var ga = g.ctx;
+        ga.fillStyle = "darkgoldenrod";
+        ga.font = "80px sans-serif";
+       /* ga.shadowOffsetX = 2;
+        ga.shadowOffsetY = 2;
+        ga.shadowBlur = 25;
+        ga.shadowColor = "green";
+       */
+        var s = "Asteroids game \n\npush spacebar";
+        g.fillTextMultiLine(s, g.canvas.width / 4  + 150, g.canvas.height / 2 - 80);
     }
 };
 
@@ -45,13 +51,8 @@ GameOver.prototype = {
      * @param input
      */
     update: function(input) {
-        if (this.menu.active || this.menu.activeInfo) {
-            this.menu.update(input);
-            return;
-        }
-
         if (input.isPressed('KEY_SPACE') || input.isPressed('KEY_ENTER')) {
-            this.main.menu.enable();
+            this.main.menu.enableOptions();
             return;
         }
     },
@@ -60,7 +61,7 @@ GameOver.prototype = {
      * @param g
      */
     draw: function(g) {
-        if (this.menu.active || this.menu.activeInfo) {
+        if (this.menu.active || this.menu.activeInfo || this.menu.activeDifficultly) {
             return;
         }
         var ga = g.ctx;

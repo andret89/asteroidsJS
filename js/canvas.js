@@ -15,7 +15,7 @@ function Canvas(width, height, canvasId) {
     if (_canvas === null) {
         _canvas = document.createElement('canvas');
         _canvas.id = canvas_id;
-        document.getElementById("gamecontainer").appendChild(_canvas);
+        document.getElementById("gameContainer").appendChild(_canvas);
     }
 
     // recupera il contesto 2d del canvas
@@ -25,6 +25,7 @@ function Canvas(width, height, canvasId) {
     }
 
     this.ctx.lineWidth = 2;
+    this.ctx.imageSmoothingEnabled = true;
 
     // setta le dimensioni della finestra di disegno
     this.width =_canvas.width = w;

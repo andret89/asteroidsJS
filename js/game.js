@@ -29,7 +29,7 @@ Game.prototype = {
         this.asteroids = []; // astoroidi in gioco
 
         // n di asteroidi secondo il livello attuale
-        var n_asteroids = Math.round(2 + (this.lvl / 2));
+        var n_asteroids = Math.round(this.main.levelDifficulty + (this.lvl / 2));
         for (var i = 0; i < n_asteroids; i++) {
 
             // definisce la posizione del asteroide nel canvas in modo casuale
@@ -95,17 +95,11 @@ Game.prototype = {
      * @param dt
      */
     update: function (input, dt) {
-        // aggiorna solo gli eventi dei menu se sono attivi
-        if (this.menu.active || this.menu.activeInfo) {
-            this.menu.update(input);
-            return;
-        }
-
         // verifica i comandi impartiti dell'utente
         // e aggiorna lo stato di conseguenza
         if (input.isPressed('KEY_ESC') || input.isPressed('KEY_P')) {
             log("pause");
-            this.main.menu.enable();
+            this.main.menu.enableOptions();
             return;
         }
         if (!this.player.active) {
@@ -217,7 +211,7 @@ Game.prototype = {
      * @param  {Canvas} g - oggetto per disegnare sul canvas
      */
     draw: function (g) {
-        if (this.menu.activeInfo) {
+        if (this.menu.activeInfo || this.menu.activeDifficultly) {
             return;
         }
 
@@ -252,7 +246,7 @@ Game.prototype = {
 
         ga.fillStyle = "white";
         ga.font = "30px sans-serif";
-        var s = "SCORE: ";
+        var s = "Liv: "+ this.lvl+"  SCORE: ";
         ga.fillText(s + this.main.score, g.canvas.width / 2 - (s.length + 70), offset_top + 18);
 
 

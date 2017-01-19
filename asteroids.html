@@ -7,8 +7,6 @@
 
     <!-- Stylesheets -->
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/difficulties.css">
-    <link rel="stylesheet" href="css/menu.css">
 
     <!-- Script di caricamento file javascipt -->
     <script src="js/loader.js"></script>
@@ -16,16 +14,9 @@
 
 </head>
 
-<body>
-<div id="livelChoice" class="difficulties" style="display: none;">
-    <p id="titleDifficultyMenu"><strong>
-        Select Livel difficult</strong></p>
-    <a id="easy" class="myButton"><p>Easy</p></a>
-    <a id="normal" class="myButton"><p>Normal</p></a>
-    <a id="hard" class="myButton"><p>Hard</p></a>
-</div>
-<div id="gamecontainer">
-    <div id="info" style="none: none;">
+<body oncontextmenu="{return false;}">
+<div id="gameContainer">
+    <div id="infoContainer">
         <p id="titleInfo">
             <strong>ASTEROIDS GAME</strong><br>
         </p>
@@ -56,24 +47,21 @@
             <tr height=50 align=center>
         </table>
     </div>
-
-    <div id="menucontainer">
-        <div id="menuId" style="display: none;">
-            <p style="color:darkgoldenrod;">
-                <strong>Menu</strong></p>
-            <div id="resumeGame" >
-                <p>CONTINUE</p>
-            </div>
-            <div id="startGame" >
-                <p>START</p>
-            </div>
-            <div id="infoGame" >
-                <p>INFO</p>
-            </div>
-            <div id="exitGame" >
-                <p>EXIT</p>
-            </div>
-        </div>
+    <div id="optionsContainer">
+        <p id="titleOptionMenu">
+            <strong>Menu</strong></p>
+        <a id="startGame" class="btnOption"><p>Start</p></a>
+        <a id="resumeGame" class="btnOption"><p>Continue</p></a>
+        <a id="difficultly" class="btnOption"><p>Difficultly</p></a>
+        <a id="infoGame" class="btnOption"><p>Commands</p></a>
+        <a id="exitGame" class="btnOption"><p>Exit</p></a>
+    </div>
+    <div id="difficultyContainer">
+        <p id="titleDifficultyMenu">
+            <strong>Select difficulty</strong></p>
+        <a id="easy" class="btnDifficulty"><p>Easy</p></a>
+        <a id="normal" class="btnDifficulty"><p>Normal</p></a>
+        <a id="hard" class="btnDifficulty"><p>Hard</p></a>
     </div>
 </div>
     <!--<canvas id="canvasID" width="600" height="400"></canvas>-->

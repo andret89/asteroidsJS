@@ -76,16 +76,26 @@ Main.prototype = {
             }
 
             var dt = 0;
+            currTime = new Date().getTime();
             if (!Main.paused) {
-                currTime = new Date().getTime();
+                // tick del tempo per movimento oggetti
                 dt = (currTime - prevTime) / 1000;
+                // se troppo grande si prende un valore ragionevole
+                if(dt > 0.15)
+                    dt = 0.15;
             }
+            // aggiorna solo gli eventi dei menu se sono attivi
+            if (self.menu.active || self.menu.activeInfo || self.menu.activeDifficultly) {
+                self.menu.update(self.input);
+            }
+            else
+                self.currState.update(self.input, dt);
 
-            self.currState.update(self.input, dt);
             self.screen.clearAll();
             self.currState.draw(self.screen);
 
             prevTime = currTime;
+
 
             window.requestAnimFrame(gameLoop);
         }

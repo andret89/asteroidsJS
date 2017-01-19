@@ -17,10 +17,11 @@ var Button = {
 var Menu = function (main) {
     menuChoice = Button.noChoice;
     this.main = main;
-    this.disable();
+    this.disableOptions();
     this.disableInfo();
-    this.setVisibility("difficultyMenu",'flex');
+    this.disableDifficultly();
     var self = this;
+    Main.paused = false;
 
     document.getElementById("startGame")
         .addEventListener('click', function () {
@@ -29,6 +30,11 @@ var Menu = function (main) {
     document.getElementById("resumeGame")
         .addEventListener('click', function () {
             Menu.menuChoice = Button.resumeGame;
+        }, false);
+    document.getElementById("difficultly")
+        .addEventListener('click', function () {
+            self.enableDifficultly();
+            self.disableOptions();
         }, false);
     document.getElementById("infoGame")
         .addEventListener('click', function () {
@@ -42,53 +48,84 @@ var Menu = function (main) {
     document.getElementById("easy")
         .addEventListener('click', function () {
             self.main.levelDifficulty = 1;
-            self.setVisibility("difficultyMenu",'none');
-            self.setVisibility("optionMenu",'block');
+            self.disableDifficultly();
+            self.enableOptions();
 
         }, false);
     document.getElementById("normal")
         .addEventListener('click', function () {
             self.main.levelDifficulty = 2;
-            self.setVisibility("difficultyMenu",'none');
-            self.setVisibility("optionMenu",'block');
+            self.disableDifficultly();
+            self.enableOptions();
 
         }, false);
     document.getElementById("hard")
         .addEventListener('click', function () {
             self.main.levelDifficulty = 3;
-            self.setVisibility("difficultyMenu",'none');
-            self.setVisibility("optionMenu",'block');
-
-
+            self.disableDifficultly();
+            self.enableOptions();
         }, false);
 };
 
-
-
-
 Menu.prototype = {
+    /**
+     *
+     * @param id
+     * @param value
+     */
     setVisibility: function (id, value) {
         document.getElementById(id).style.display = value;
     },
-    enable: function () {
+    /**
+     *
+     */
+    enableOptions: function () {
         this.active = true;
         Main.paused = true;
-        this.setVisibility("optionMenu", 'block');
+        this.setVisibility("optionsContainer", 'block');
+
     },
-    disable: function () {
+    /**
+     *
+     */
+    disableOptions: function () {
         this.active = false;
-        Main.paused = false;
-        this.setVisibility("optionMenu", 'none');
+        this.setVisibility("optionsContainer", 'none');
     },
+    /**
+     *
+     */
     enableInfo: function () {
         this.activeInfo = true;
         Main.paused = true;
-        this.setVisibility("info", 'block');
+        this.setVisibility("infoContainer", 'block');
     },
+    /**
+     *
+     */
     disableInfo: function () {
         this.activeInfo = false;
-        this.setVisibility("info", 'none');
+        this.setVisibility("infoContainer", 'none');
     },
+    /**
+     *
+     */
+    enableDifficultly: function () {
+        this.activeDifficultly = true;
+        Main.paused = true;
+        this.setVisibility("difficultyContainer", 'flex');
+    },
+    /**
+     *
+     */
+    disableDifficultly: function () {
+        this.activeDifficultly = false;
+        this.setVisibility("difficultyContainer", 'none');
+    },
+    /**
+     *
+     * @param input
+     */
     update: function (input) {
         if(!this.active && !this.activeInfo)
             return;
@@ -96,42 +133,39 @@ Menu.prototype = {
         if(this.activeInfo){
             if (input.isPressed('KEY_SPACE')){
                 this.disableInfo();
-                this.enable();
+                this.enableOptions();
                 return;
             }
         }
 
         if (input.isPressed('KEY_ESC') || input.isPressed('KEY_P')) {
             if(Main.startGame) {
-                log("pause");
                 Menu.menuChoice = Button.resumeGame;
             }
         }
         switch (Menu.menuChoice) {
             case Button.startGame:
-                console.log("startGame");
                 this.setVisibility("startGame", 'none');
                 this.setVisibility("resumeGame", 'block');
-                this.disable();
+                this.disableOptions();
+                Main.paused = false;
                 this.main.nextState = States.GAME;
                 break;
             case Button.resumeGame:
-                console.log("resumeGame");
-                this.disable();
+                this.disableOptions();
+                Main.paused = false;
                 break;
             case Button.infoGame:
-                console.log("infoGame");
-                this.disable();
+                this.disableOptions();
                 this.enableInfo();
                 break;
             case Button.exitGame:
-                console.log("exitGame");
                 this.setVisibility("resumeGame", 'none');
                 this.setVisibility("startGame", 'block');
 
                 if (Main.startGame) {
                     this.main.nextState = States.GAMEOVER;
-                    this.disable();
+                    this.disableOptions();
                 }
                 break;
         }
