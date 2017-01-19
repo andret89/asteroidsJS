@@ -18,7 +18,14 @@ var Player = GameObj.extend(
         this.img.src = "img/ship2.jpg";
         this.hp = 100;
         this.energy = 100;
-        this.shield = false;
+
+        this.shieldActive = false;
+        this.shield = {
+            img: new Image(),
+            offsetY: 34,
+            offsetX: -2
+        };
+        this.shield.img.src = "img/shield.png";
 
         // oggetto per rappresentare il jet fire
         this.jetFireActive = false;
@@ -128,11 +135,11 @@ var Player = GameObj.extend(
                 this.y = this.maxY;
             }
             // gestione quantità di energia usata
-            if (this.shield) {
+            if (this.shieldActive) {
                 if (this.energy > 0 && this.energy <= 100)
                     this.energy -= 1.5;
                 if (this.energy <= 0)
-                    this.shield = false;
+                    this.shieldActive = false;
             } else {
                 if (this.energy < 100) this.energy += 0.5;
                 if (this.energy > 100) this.energy = 100;
@@ -146,13 +153,14 @@ var Player = GameObj.extend(
             if (!this.active) {
                 return;
             }
-            if (this.shield)
+            g.drawPlayer(this, this.x, this.y);
+           /*
                 g.drawCircle({
                     center: {x: this.x, y: this.y},
                     radius: this.radius + 4,
                     color: "#1569C7"
                 }, 0, 0);
-            g.drawPlayer(this, this.x, this.y);
+            */
             this.jetFireActive = false;
             if (Main.DEBUGBOX)
                 g.drawCircleBox(this.x, this.y, this.radius);

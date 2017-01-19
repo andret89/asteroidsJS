@@ -51,15 +51,23 @@ Canvas.prototype = {
 
      */
     drawCircle: function (c, x, y) {
-        var g = this.ctx
+        var g = this.ctx;
         g.beginPath();
-        g.fillStyle = c.color || "red";
         //var tmp=g.lineWidth;
         //g.lineWidth = 3;
+
+        /*
+        ga.shadowOffsetX = 2;
+        ga.shadowOffsetY = 2;
+        */
+        g.save();
+        g.shadowBlur = 35;
+        g.globalAlpha = 0.1;
+        g.shadowColor = g.fillStyle = c.color || "red";
         g.arc(c.center.x + x, c.center.y + y, c.radius, 0, 2 * Math.PI, false);
         g.closePath();
-        g.fill()
-        //g.lineWidth = tmp;
+        g.fill();
+        g.restore();
     },
     /**
      *
@@ -68,14 +76,14 @@ Canvas.prototype = {
      * @param r
      */
     drawCircleBox: function (x, y, r) {
-        var g = this.ctx
+        var g = this.ctx;
         g.beginPath();
         g.strokeStyle = "yellow";
         var tmp = g.lineWidth;
         g.lineWidth = 1;
         g.arc(x, y, r, 0, 2 * Math.PI, false);
         g.closePath();
-        g.stroke()
+        g.stroke();
         g.lineWidth = tmp;
     },
     /**
@@ -93,9 +101,19 @@ Canvas.prototype = {
         g.drawImage(p.img, -r / 2, -r / 2, r, r);
         if(p.jetFireActive) {
             g.rotate(Math.radians(-5));
+            g.shadowBlur = 5;
+            g.shadowColor = "white";
             g.drawImage(p.jetFire.img, -r / 2 + p.jetFire.offsetX, -r / 4 + p.jetFire.offsetY, r, r/2);
         }
-        g.restore()
+        if(p.shieldActive){
+            g.shadowBlur = 25;
+            g.shadowColor = "blue";
+            g.globalAlpha = 0.8;
+            g.drawImage(p.shield.img, -r / 2 + p.shield.offsetX, -r / 2 + p.shield.offsetY, r, r/2+10);
+
+        }
+        g.restore();
+
 
     },
     /**
@@ -122,17 +140,17 @@ Canvas.prototype = {
      * @param y2
      * @param color
      */
-    drawLine: function (x1, y1, x2, y2, color) {
+    drawBullet: function (x1, y1, x2, y2, color) {
         var g = this.ctx;
+        g.save();
         g.beginPath();
-        g.strokeStyle = color || "green";
-        var tmp = g.lineWidth;
         g.lineWidth = 3;
+        g.shadowBlur = 10;
+        g.shadowColor = g.strokeStyle = color || "yellow";
         g.moveTo(x1, y1);
         g.lineTo(x2, y2);
         g.stroke();
-        g.lineWidth = tmp;
-
+        g.restore();
     },
     /**
      *

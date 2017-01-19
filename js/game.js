@@ -13,6 +13,7 @@ var Game = function (main) {
     this.lvl = 1;
     this.n_life = 3;
     this.asterSize = 10;
+
     this.player = new Player(
         this.screen.width / 2, // x
         this.screen.height / 2, // y
@@ -116,19 +117,21 @@ Game.prototype = {
             Main.DEBUGBOX = !Main.DEBUGBOX;
         }
 
-        this.player.shield = false;
+        this.player.shieldActive = false;
         if (input.isDown('KEY_UP') || input.isDown('KEY_W')) {
-            this.player.addSpeed()
+            this.player.addSpeed();
             this.main.sm.playSound('fire')
         }
         if (input.isDown('KEY_DOWN') || input.isDown('KEY_S')) {
             if (this.player.energy >= 10)
-                this.player.shield = true;
+                this.player.shieldActive = true;
         }
         if ((input.isPressed('KEY_DOWN') || input.isPressed('KEY_S'))) {
-            this.main.sm.playSound('shield')
-        } else if (!this.player.shield)
-            this.main.sm.stopSound('shield')
+            this.main.sm.playSound('shield');
+        } else
+            if (!this.player.shieldActive)
+                this.main.sm.stopSound('shield');
+
         if (input.isDown('KEY_RIGHT') || input.isDown('KEY_D')) {
             this.player.addDirection(Math.radians(4));
         }
@@ -159,7 +162,7 @@ Game.prototype = {
             // e decrementa la  sua vita
             if (a.active && self.player.isCollision(a)) {
                 self.main.sm.playSound('explosion');
-                if (!self.player.shield) {
+                if (!self.player.shieldActive) {
                     self.player.active = false;
                     self.player.x = self.screen.width / 2;
                     self.player.y = self.screen.height / 2;

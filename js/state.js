@@ -22,15 +22,19 @@ Start.prototype = {
             return;
         }
         var ga = g.ctx;
+        ga.save();
         ga.fillStyle = "darkgoldenrod";
         ga.font = "80px sans-serif";
-       /* ga.shadowOffsetX = 2;
-        ga.shadowOffsetY = 2;
-        ga.shadowBlur = 25;
-        ga.shadowColor = "green";
-       */
+
+        ga.shadowBlur = 8;
+        ga.shadowColor = "yellow";
+        var x = g.width / 2;
+        var y = g.height / 2;
+
+        ga.textAlign = 'center';
         var s = "Asteroids game \n\npush spacebar";
-        g.fillTextMultiLine(s, g.canvas.width / 4  + 150, g.canvas.height / 2 - 80);
+        g.fillTextMultiLine(s, x, y );
+        ga.restore();
     }
 };
 
@@ -39,12 +43,13 @@ Start.prototype = {
  * @param {Main} game - controllo principale
  * @constructor
  */
-var GameOver = function(game) {
+var GameOver = function (game) {
     this.type = "GameOver";
     this.main = game;
     this.menu = game.menu;
     this.hs = this.main.saveScore(this.main.score);
-}
+};
+
 GameOver.prototype = {
     /**
      *
@@ -53,7 +58,6 @@ GameOver.prototype = {
     update: function(input) {
         if (input.isPressed('KEY_SPACE') || input.isPressed('KEY_ENTER')) {
             this.main.menu.enableOptions();
-            return;
         }
     },
     /**
@@ -65,10 +69,15 @@ GameOver.prototype = {
             return;
         }
         var ga = g.ctx;
+        ga.save();
+        ga.shadowBlur = 8;
+        ga.shadowColor = "red";
         ga.fillStyle = "red";
+        ga.textAlign = "center";
         ga.font = "50px sans-serif";
-        var s = "   GAME OVER\n\n HighScore  " + this.hs + "\n\n  push spacebar";
-        g.fillTextMultiLine(s, g.canvas.width / 2 - (s.length + 130), g.canvas.height / 2 - 80);
+        var s = "   GAME OVER\n\n  HighScore  " + this.hs + "\n\n  push spacebar";
+        g.fillTextMultiLine(s, g.canvas.width / 2 , g.canvas.height / 2 - 60);
+        ga.restore();
 
     }
 }

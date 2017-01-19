@@ -105,8 +105,8 @@ Main.prototype = {
     /**
      * Salva in memoria il punteggio più alto
      *
-     * @param  {Number} score - punteggio finale del giocatore
-     * @returns {Number} highscore
+     * @param  {number} score - punteggio finale del giocatore
+     * @returns {number} highscore
      */
     saveScore: function (score) {
         var hs = null;
@@ -114,9 +114,11 @@ Main.prototype = {
 
         if (state)
             hs = JSON.parse(state);
+
         if (hs === null)
-            hs = score;
-        else if (hs <= score) {
+            hs = 0;
+
+        if (hs <= score) {
             window.localStorage.setItem("highScore", JSON.stringify(score));
             hs = score;
         }
