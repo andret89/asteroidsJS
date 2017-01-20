@@ -34,12 +34,13 @@ var Inputs = function() {
         this.down[i] = false;
         this.pressed[i] = false;
     }
-}
+};
 Inputs.prototype = {
     /**
      * registrazione hendler per i bottoni selezionati
      */
-    init: function() {
+    init: function(main) {
+        var main = main;
         var self = this;
 
         // add eventlisteners to monitor presses
@@ -58,6 +59,21 @@ Inputs.prototype = {
             self.down['KEY_SPACE'] = false;
             self.pressed['KEY_SPACE'] = false;
 
+        });
+
+        // gestione evento movimento mouse
+        document.addEventListener("mousemove", function (event) {
+            mousePos.x = event.clientX;
+            mousePos.y = event.clientY;
+
+            // e aggiornamento angolo di rotazione player
+            if (Main.MOUSE_GAME && !Main.paused) {
+                if(self.player) {
+                    var dx = (mousePos.x - self.player.x);
+                    var dy = (mousePos.y - self.player.y);
+                    self.player.angle = Math.atan2(dy, dx);
+                }
+            }
         });
 
     },

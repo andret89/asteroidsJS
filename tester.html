@@ -1,40 +1,141 @@
 <!DOCTYPE html>
 <html>
-<link rel="stylesheet" href="css/style.css">
+<header></header>
+<script src="js/loader.js"></script>
 <title>Tester</title>
 <style>
+    body{
+        background: grey;
+    }
+
+    canvas{
+        background: black;
+    }
+
+
 </style>
 <body>
 
 <script>
-    var Debug = false;
+    var Debug = true;
+    /*var canvas = document.createElementNS("http://www.w3.org/1999/xhtml","canvas");
+    canvas.width = canvas.height = 50;
+
+    var ctx = canvas.getContext("2d");
+    ctx.lineWidth = 4;
+    ctx.moveTo(0, 0);
+    ctx.lineTo(50, 50);
+    ctx.moveTo(0, 50);
+    ctx.lineTo(50, 0);
+    ctx.stroke();
+
+    var dt = event.dataTransfer;
+    dt.setData('text/plain', 'Data to Drag');
+    dt.setDragImage(canvas, 25, 25);
+*/
+
     if (Debug) {
         (function () {
-            var menu = new Menu();
+            var ca = document.createElement('canvas');
+            var g = ca.getContext("2d");
+            ca.width = 400;
+            ca.height = 300;
+            document.body.appendChild(ca);
 
+            ca.addEventListener("mousemove", mousemove, false);
+            ca.addEventListener("mousedown", mousedown, false);
+            ca.addEventListener("mouseup", mouseup, false);
+            var offsetX = ca.offsetLeft;
+            var offsetY = ca.offsetTop;
+            var mousePos = {x:0,y:0};
+            var canMouseX = mousePos.x;
+            var canMouseY = mousePos.y;
+
+
+            var isDragging=false;
+            function parseInt(notInt) {
+                return Math.round(notInt);
+            }
+
+
+            function mousedown(e){
+                canMouseX=parseInt(e.clientX-offsetX);
+                canMouseY=parseInt(e.clientY-offsetY);
+                // set the drag flag
+                isDragging=true;
+            }
+
+            function mouseup(e){
+                canMouseX=parseInt(e.clientX-offsetX);
+                canMouseY=parseInt(e.clientY-offsetY);
+                // clear the drag flag
+                isDragging=false;
+            }
+
+            function handleMouseOut(e){
+                canMouseX=parseInt(e.clientX-offsetX);
+                canMouseY=parseInt(e.clientY-offsetY);
+                // user has left the canvas, so clear the drag flag
+                //isDragging=false;
+            }
+
+            function mousemove(e){
+                canMouseX=parseInt(e.clientX-offsetX);
+                canMouseY=parseInt(e.clientY-offsetY);
+                // if the drag flag is set, clear the canvas and draw the image
+                if(isDragging){
+                    g.clearRect(0,0,ca.width,ca.height);
+                    g.drawImage(ship.img,canMouseX-128/2,canMouseY-120/2,100,100);
+                }
+            }
+
+
+//
+
+            //
+
+            function mousemovea(e) {
+                e.stopPropagation();
+                e.preventDefault();
+            }
+
+            function mousemovea(e) {
+                e.stopPropagation();
+                e.preventDefault();
+            }
+
+//
+            function mouseupa(e) {
+                e.stopPropagation();
+                e.preventDefault();
+
+                var dt = e;
+                var x = dt.x;
+                var y = dt.y;
+                console.log(x+" , "+y);
+
+            }
+
+            var ship ={
+                img : new Image(),
+                id : "img",
+                x:ca.width/2,
+                y:ca.height/2
+                /*isIn : function (p) {
+                 if(x || y || w || h)}
+*/
+            };
+            ship.img.onload = function() {
+
+                g.drawImage(ship.img, ship.x, ship.y, 100, 100);
+            };
+            ship.img.src = "img/ship2.png";
         })()
     }
 </script>
 
-<div id="gameContainer">
-    <div id="optionsContainer">
-        <p id="titleOptionMenu">
-            <strong>Menu</strong></p>
-        <a id="startGame" class="btnOption"><p>Start</p></a>
-        <a id="resumeGame" class="btnOption"><p>Continue</p></a>
-        <a id="infoGame" class="btnOption"><p>Info</p></a>
-        <a id="exitGame" class="btnOption"><p>Exit</p></a>
-    </div>
-    <div id="difficultyContainer">
-        <p id="titleDifficultyMenu">
-            <strong>Select difficulty level</strong></p>
-        <a id="easy" class="btnDifficulty"><p>Easy</p></a>
-        <a id="normal" class="btnDifficulty"><p>Normal</p></a>
-        <a id="hard" class="btnDifficulty"><p>Hard</p></a>
-    </div>
-
-</div>
 </body>
+
 
 
 </html>

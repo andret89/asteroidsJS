@@ -91,6 +91,7 @@ Game.prototype = {
     },
     init: function () {
         this.genLevel();
+
     },
     /**
      * Aggiorna gli oggetti in gioco secondo gli input e il tick del tempo

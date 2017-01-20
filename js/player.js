@@ -43,19 +43,7 @@ var Player = GameObj.extend(
             x: 0,
             y: 0
         };
-        // gestione evento movimento mouse
-        // e aggiornamento angolo di rotazione player
-        document.addEventListener("mousemove", function (event) {
-            var mousePos = {
-                x: event.clientX,
-                y: event.clientY
-            };
-            if (Main.MOUSE_GAME && !Main.paused) {
-                var dx = (mousePos.x - self.x);
-                var dy = (mousePos.y - self.y);
-                self.angle = Math.atan2(dy, dx);
-            }
-        });
+
     }, {
         /**
          * Ritorna un missile
