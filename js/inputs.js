@@ -27,6 +27,11 @@ var Inputs = function() {
     this.keys = {};
     this.down = {};
     this.pressed = {};
+    this.isDrag = false;
+    this.mousePos = {
+        x: 0,
+        y: 0
+    };
     // initiate private fields
     for (var i in Key) {
         var code = Key[i];
@@ -40,7 +45,7 @@ Inputs.prototype = {
      * registrazione hendler per i bottoni selezionati
      */
     init: function(main) {
-        var main = main;
+        this.main = main;
         var self = this;
 
         // add eventlisteners to monitor presses
@@ -53,25 +58,71 @@ Inputs.prototype = {
         });
 
         document.addEventListener("mousedown", function(evt) {
-            self.down['KEY_SPACE'] = true;
+            var btnCode = evt.button;
+
+            switch (btnCode) {
+                case 0:
+                   
+                    self.down['KEY_SPACE'] = true;
+                    break;
+
+                case 1:
+                    console.log('Middle button clicked.');
+                    break;
+
+                case 2:
+                  
+                    self.down['KEY_DOWN'] = true;
+
+                    break;
+
+                default:
+                    console.log('Unexpected code: ' + btnCode);
+            }
+
         });
         document.addEventListener('mouseup', function(evt) {
-            self.down['KEY_SPACE'] = false;
-            self.pressed['KEY_SPACE'] = false;
+
+
+            var btnCode = evt.button;
+
+            switch (btnCode) {
+                case 0:
+              
+                    self.down['KEY_SPACE'] = false;
+                    self.pressed['KEY_SPACE'] = false;
+                    break;
+
+                case 1:
+                    console.log('Middle button clicked.');
+                    break;
+
+                case 2:
+              
+                    self.down['KEY_DOWN'] = false;
+                    self.pressed['KEY_DOWN'] = false;
+                    break;
+
+                default:
+                    console.log('Unexpected code: ' + btnCode);
+            }
 
         });
 
         // gestione evento movimento mouse
         document.addEventListener("mousemove", function (event) {
-            mousePos.x = event.clientX;
-            mousePos.y = event.clientY;
+            var mouse =  self.mousePos = {x:event.clientX, y:event.clientY};
 
             // e aggiornamento angolo di rotazione player
             if (Main.MOUSE_GAME && !Main.paused) {
-                if(self.player) {
-                    var dx = (mousePos.x - self.player.x);
-                    var dy = (mousePos.y - self.player.y);
-                    self.player.angle = Math.atan2(dy, dx);
+                if(self.main.currState && self.main.currState instanceof Game) {
+                    var game = self.main.currState;
+                    var player = game.player;
+                    if (game && player) {
+                        var dx = (mouse.x - player.x);
+                        var dy = (mouse.y - player.y);
+                        player.angle = Math.atan2(dy, dx);
+                    }
                 }
             }
         });

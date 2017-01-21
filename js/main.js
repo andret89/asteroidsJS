@@ -20,10 +20,6 @@ var Main = function () {
     Main.MUTE = false;
     Main.DEBUGBOX = false;
     Main.MOUSE_GAME = true;
-    Main.mousePos = {
-        x: 0,
-        y: 0
-    };
 };
 
 Main.prototype = {
