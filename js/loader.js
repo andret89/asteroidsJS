@@ -11,6 +11,7 @@ function loadScripts() {
         'entity',
         'bullet',
         'player',
+        'powerUp',
         'asteroid',
         'canvas',
         'menu',

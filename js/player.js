@@ -13,13 +13,12 @@ var Player = GameObj.extend(
     function Player(x, y, size, parent) {
         GameObj.call(this, x, y, size, parent);
         this.color = "green";
-        this.angle = 0;
         this.img = new Image();
         this.img.src = "img/ship2.jpg";
         this.hp = 100;
         this.energy = 100;
         this.timeLastShoot = 0;
-        this.timeoutShoot = 250;
+        this.timeoutShoot = 400;
 
         this.shieldActive = false;
         this.shield = {
@@ -38,7 +37,6 @@ var Player = GameObj.extend(
         };
         this.jetFire.img.src = "img/jetfire.png";
 
-        var self = this;
         this.vel = {
             x: 0,
             y: 0
@@ -98,7 +96,6 @@ var Player = GameObj.extend(
                 return false;
             }
             return this.collisionCircle(astr.x, astr.y, astr.radius);
-
         },
         /**
          * Aggionarna la posizione del player

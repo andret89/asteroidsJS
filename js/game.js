@@ -13,6 +13,9 @@ var Game = function (main) {
     this.lvl = 1;
     this.n_life = 3;
     this.asterSize = 10;
+    this.timeLastBonus = new Date().getTime();
+    this.timeSpawnBonus = 10000;
+    this.debug = false;
 
     this.player = new Player(
         this.screen.width / 2, // x
@@ -28,6 +31,7 @@ Game.prototype = {
     genLevel: function () {
         this.bullets = []; // missili del giocatore
         this.asteroids = []; // asteroidi in gioco
+        this.bonus = []; // bonus per il giocatore
 
         // n di asteroidi secondo il livello attuale
         var n_asteroids = Math.round(this.main.levelDifficulty + (this.lvl / 2));
@@ -213,6 +217,29 @@ Game.prototype = {
             this.main.nextState = States.GAMEOVER;
         }
 
+        this.bonus = self.bonus.filter(function (b) {
+            b.update();
+            var _active = b.active;
+            if (_active && !b.selected && self.player.isCollision(b)){
+                _active = false;
+                self.main.score += b.bonus;
+            }
+            return _active;
+        });
+        var now = new Date().getTime();
+        if(now - this.timeLastBonus > this.timeSpawnBonus
+            && this.asteroids.length > 1){
+            if (!Main.paused) {
+                self.bonus.push(new PowerUp(
+                    Math.randInt(10, self.screen.width-10),
+                    Math.randInt(10, self.screen.height-10),
+                    4,
+                    self.screen
+                ));
+                this.timeLastBonus = now;
+                this.timeSpawnBonus += Math.randInt(0,35000);
+            }
+        }
     },
     /**
      * Disegna le entità in gioco
@@ -258,19 +285,24 @@ Game.prototype = {
         ga.fillText(s + this.main.score, g.canvas.width / 2 - (s.length + 70), offset_top + 18);
 
 
-        this.asteroids.forEach(function (a) {
+        this.asteroids.forEachOptimized(function (a) {
             a.draw(g)
-        });
-        this.bullets.forEach(function (b) {
-            b.draw(g);
         });
 
         this.player.draw(g);
 
+        this.bullets.forEachOptimized(function (b) {
+            b.draw(g);
+        });
+
+        this.bonus.forEachOptimized(function (b) {
+            b.draw(g);
+        });
+
+
         /// se il player ha avuto una collisione
         // informa l'utente sulle azioni da compiere per riprendere il gioco
         if (!this.player.active) {
-            var ga = g.ctx;
 
             ga.fillStyle = "white";
             ga.font = "25px sans-serif";

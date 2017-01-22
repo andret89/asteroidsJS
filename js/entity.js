@@ -10,6 +10,7 @@
 var GameObj = function(x,y,size,parent) {
     this.size = size;
     this.radius = size * 4;
+    this.angle = 0;
     this.x = x;
     this.y = y;
     this.parent = parent;

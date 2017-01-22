@@ -2,6 +2,14 @@ function log(s) {
     console.log(s + '')
 }
 
+/**
+ * Returns a random integer between min and max
+ * Using Math.round() will give you a non-uniform distribution!
+ */
+Math.randInt = function (min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
 // Converts from degrees to radians.
 Math.radians = function(degrees) {
     return degrees * Math.PI / 180;

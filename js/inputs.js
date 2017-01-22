@@ -23,11 +23,12 @@ var Key = {
  * @lass Rappresenta il gestore di comandi della keyboard e del mouse
  * @constructor
  */
-var Inputs = function() {
+var Inputs = function () {
     this.keys = {};
     this.down = {};
     this.pressed = {};
     this.isDrag = false;
+    this.selectObj = null;
     this.mousePos = {
         x: 0,
         y: 0
@@ -44,25 +45,40 @@ Inputs.prototype = {
     /**
      * registrazione hendler per i bottoni selezionati
      */
-    init: function(main) {
+    init: function (main) {
         this.main = main;
         var self = this;
 
         // add eventlisteners to monitor presses
-        document.addEventListener("keydown", function(evt) {
+        document.addEventListener("keydown", function (evt) {
             self.down[self.keys[evt.keyCode]] = true;
         });
-        document.addEventListener("keyup", function(evt) {
+        document.addEventListener("keyup", function (evt) {
             self.down[self.keys[evt.keyCode]] = false;
             self.pressed[self.keys[evt.keyCode]] = false;
         });
 
-        document.addEventListener("mousedown", function(evt) {
+        document.addEventListener("mousedown", function (evt) {
             var btnCode = evt.button;
+
+            var game = self.main.currState;
+            var inGame = game && game instanceof Game;
 
             switch (btnCode) {
                 case 0:
-                   
+                    if (inGame) {
+                        var b = game.bonus;
+                        b.forEachOptimized(function (a) {
+                            var mouseView = {x:evt.clientX - a.x,y:evt.clientY-a.y};
+                            log("mouse "+evt.clientX +","+evt.clientX );
+                            log("bonus "+a.x+","+a.y);
+                            if (a.hitTest(evt.clientX, evt.clientY)) {
+                                self.selectObj = a;
+                                a.selected = true;
+                                log("selected")
+                            }
+                        })
+                    }
                     self.down['KEY_SPACE'] = true;
                     break;
 
@@ -71,7 +87,7 @@ Inputs.prototype = {
                     break;
 
                 case 2:
-                  
+
                     self.down['KEY_DOWN'] = true;
 
                     break;
@@ -81,14 +97,17 @@ Inputs.prototype = {
             }
 
         });
-        document.addEventListener('mouseup', function(evt) {
-
-
+        document.addEventListener('mouseup', function (evt) {
             var btnCode = evt.button;
+            var game = self.main.currState;
+            var inGame = game && game instanceof Game;
 
             switch (btnCode) {
                 case 0:
-              
+                    if(self.selectObj !== null)
+                        self.selectObj.selected = false;
+
+                    self.selectObj = null;
                     self.down['KEY_SPACE'] = false;
                     self.pressed['KEY_SPACE'] = false;
                     break;
@@ -98,7 +117,7 @@ Inputs.prototype = {
                     break;
 
                 case 2:
-              
+
                     self.down['KEY_DOWN'] = false;
                     self.pressed['KEY_DOWN'] = false;
                     break;
@@ -111,17 +130,25 @@ Inputs.prototype = {
 
         // gestione evento movimento mouse
         document.addEventListener("mousemove", function (event) {
-            var mouse =  self.mousePos = {x:event.clientX, y:event.clientY};
+            var mouseView = self.getMouseView(event);
+
 
             // e aggiornamento angolo di rotazione player
             if (Main.MOUSE_GAME && !Main.paused) {
-                if(self.main.currState && self.main.currState instanceof Game) {
-                    var game = self.main.currState;
-                    var player = game.player;
-                    if (game && player) {
-                        var dx = (mouse.x - player.x);
-                        var dy = (mouse.y - player.y);
-                        player.angle = Math.atan2(dy, dx);
+                var game = self.main.currState;
+                var inGame = game && game instanceof Game;
+                if (inGame) {
+                    if (self.selectObj !== null) {
+                        self.selectObj.x = event.clientX;
+                        self.selectObj.y = event.clientY;
+                    }
+                    else {
+                        var player = game.player;
+                        if (game && player) {
+                            var dx = (event.clientX - player.x);
+                            var dy = (event.clientY - player.y);
+                            player.angle = Math.atan2(dy, dx);
+                        }
                     }
                 }
             }
@@ -134,7 +161,7 @@ Inputs.prototype = {
      * @param  {string} key - chiave di richiesta
      * @return {Boolean}  Risultato del controllo
      */
-    isDown: function(key) {
+    isDown: function (key) {
         return this.down[key];
     },
 
@@ -144,13 +171,17 @@ Inputs.prototype = {
      * @param  {string} key - chiave di richiesta
      * @return {Boolean}  Risultato del controllo
      */
-    isPressed: function(key) {
+    isPressed: function (key) {
         if (this.pressed[key]) {
             return false;
         } else if (this.down[key]) {
             return this.pressed[key] = true;
         }
         return false;
+    },
+    getMouseView:function (e) {
+        var screen = this.main.screen;
+        return {x:e.clientX - screen.offsetLeft,y:e.clientY - screen.offsetTop};
     }
 };
 
@@ -160,7 +191,7 @@ Inputs.prototype = {
  * @class
  * @constructor
  */
-var SoundManager = function() {
+var SoundManager = function () {
     this.sounds = [];
 };
 SoundManager.prototype = {
@@ -169,7 +200,7 @@ SoundManager.prototype = {
      * @param {String} url - path del file
      * @param {String} key - chiave associata
      */
-    loadSound: function(url, key) {
+    loadSound: function (url, key) {
         var s = new Audio(url);
         if (key === 'shield' && key === 'fire')
             s.volume = .06;
@@ -179,7 +210,7 @@ SoundManager.prototype = {
      *
      * @param {string} type - chiave di riferimanto audio
      */
-    stopSound: function(type) {
+    stopSound: function (type) {
         var s = this.sounds[type];
         s.pause();
         s.currentTime = 0;
@@ -189,7 +220,7 @@ SoundManager.prototype = {
      *
      * @param {string} type - chiave di riferimanto audio
      */
-    playSound: function(type) {
+    playSound: function (type) {
         if (Main.MUTE)
             return;
 
