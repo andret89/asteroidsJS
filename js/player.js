@@ -18,7 +18,7 @@ var Player = GameObj.extend(
         this.hp = 100;
         this.energy = 100;
         this.timeLastShoot = 0;
-        this.timeoutShoot = 400;
+        this.timeoutShoot = 250;
 
         this.shieldActive = false;
         this.shield = {
@@ -137,7 +137,7 @@ var Player = GameObj.extend(
                 if (this.energy <= 0)
                     this.shieldActive = false;
             } else {
-                if (this.energy < 100) this.energy += 0.5;
+                if (this.energy < 100) this.energy += 0.2;
                 if (this.energy > 100) this.energy = 100;
             }
         },

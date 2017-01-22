@@ -13,7 +13,9 @@ var Game = function (main) {
     this.lvl = 1;
     this.n_life = 3;
     this.asterSize = 10;
-    this.timeLastBonus = new Date().getTime();
+    this.timeLastBonusNrg = new Date().getTime();
+    this.timeLastBonusScore = new Date().getTime();
+    this.timeLastBonusHp = new Date().getTime();
     this.timeSpawnBonus = 10000;
     this.debug = false;
 
@@ -110,11 +112,6 @@ Game.prototype = {
             this.main.menu.enableOptions();
             return;
         }
-        if (!this.player.active) {
-            if (input.isPressed("KEY_SPACE")) {
-                this.player.active = true;
-            }
-        }
         if (input.isPressed('KEY_M')) {
             Main.MUTE = !Main.MUTE;
         }
@@ -124,32 +121,39 @@ Game.prototype = {
         }
 
         this.player.shieldActive = false;
-        if (input.isDown('KEY_UP') || input.isDown('KEY_W')) {
-            this.player.addSpeed();
-            this.main.sm.playSound('fire')
+
+        if (!this.player.active) {
+            if (input.isPressed("KEY_SPACE")) {
+                this.player.active = true;
+            }
         }
-        if (input.isDown('KEY_DOWN') || input.isDown('KEY_S')) {
-            if (this.player.energy >= 10)
-                this.player.shieldActive = true;
-        }
-        if ((input.isPressed('KEY_DOWN') || input.isPressed('KEY_S'))) {
-            this.main.sm.playSound('shield');
-        } else
-            if (!this.player.shieldActive)
+        else {
+            if (input.isDown('KEY_UP') || input.isDown('KEY_W')) {
+                this.player.addSpeed();
+                this.main.sm.playSound('fire')
+            }
+            if (input.isDown('KEY_DOWN') || input.isDown('KEY_S')) {
+                if (this.player.energy >= 10)
+                    this.player.shieldActive = true;
+            }
+            if ((input.isPressed('KEY_DOWN') || input.isPressed('KEY_S'))) {
+                this.main.sm.playSound('shield');
+            } else if (!this.player.shieldActive)
                 this.main.sm.stopSound('shield');
 
-        if (input.isDown('KEY_RIGHT') || input.isDown('KEY_D')) {
-            this.player.addDirection(Math.radians(4));
-        }
-        if (input.isDown('KEY_LEFT') || input.isDown('KEY_A')) {
-            this.player.addDirection(Math.radians(-4));
-        }
-        if (input.isPressed('KEY_CTRL') || input.isPressed('KEY_SPACE')) {
-            if (this.player.energy >= 10) {
-                var b = this.player.addBullet();
-                if(b) {
-                    this.bullets.push(b);
-                    this.main.sm.playSound('shoot');
+            if (input.isDown('KEY_RIGHT') || input.isDown('KEY_D')) {
+                this.player.addDirection(Math.radians(4));
+            }
+            if (input.isDown('KEY_LEFT') || input.isDown('KEY_A')) {
+                this.player.addDirection(Math.radians(-4));
+            }
+            if (input.isPressed('KEY_CTRL') || input.isPressed('KEY_SPACE')) {
+                if (this.player.energy >= 10) {
+                    var b = this.player.addBullet();
+                    if (b) {
+                        this.bullets.push(b);
+                        this.main.sm.playSound('shoot');
+                    }
                 }
             }
         }
@@ -223,22 +227,49 @@ Game.prototype = {
             if (_active && !b.selected && self.player.isCollision(b)){
                 _active = false;
                 self.main.score += b.bonus;
+                switch (b.type){
+                    case "hp":
+                        self.player.hp = 100;
+                        break;
+                    case "score":
+
+                        break;
+
+                    case "nrg":
+                        self.player.energy = 100;
+                        break;
+                }
             }
             return _active;
         });
-        var now = new Date().getTime();
-        if(now - this.timeLastBonus > this.timeSpawnBonus
-            && this.asteroids.length > 1){
-            if (!Main.paused) {
-                self.bonus.push(new PowerUp(
-                    Math.randInt(10, self.screen.width-10),
-                    Math.randInt(10, self.screen.height-10),
-                    4,
-                    self.screen
-                ));
-                this.timeLastBonus = now;
-                this.timeSpawnBonus += Math.randInt(0,35000);
+        if(this.asteroids.length > 1){
+            var now = new Date().getTime();
+
+            if(now - this.timeLastBonusHp > this.timeSpawnBonus*3) {
+                this.addBonus("hp", 4);
+                this.timeLastBonusHp = now;
             }
+            else
+                if(now - this.timeLastBonusScore > this.timeSpawnBonus*2) {
+                    this.addBonus("score", 2);
+                    this.timeLastBonusScore = now;
+                }else
+                    if(now - this.timeLastBonusNrg > this.timeSpawnBonus) {
+                        this.addBonus("nrg", 4);
+                        this.timeLastBonusNrg = now;
+                    }
+        }
+    },
+    addBonus:function(type,size) {
+        if (!Main.paused) {
+            this.bonus.push(new PowerUp(
+                Math.randInt(10, this.screen.width - 10),
+                Math.randInt(10, this.screen.height - 10),
+                size,
+                type,
+                this.screen
+            ));
+            this.timeSpawnBonus += Math.randInt(0, 35000);
         }
     },
     /**
