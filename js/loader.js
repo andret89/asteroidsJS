@@ -12,6 +12,7 @@ function loadScripts() {
         'bullet',
         'player',
         'powerUp',
+        'enemy',
         'asteroid',
         'canvas',
         'menu',

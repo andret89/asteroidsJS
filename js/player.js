@@ -42,6 +42,7 @@ var Player = GameObj.extend(
             y: 0
         };
 
+
     }, {
         /**
          * Ritorna un missile

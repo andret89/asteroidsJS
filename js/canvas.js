@@ -97,19 +97,19 @@ Canvas.prototype = {
         g.save();
         g.translate(x, y);
         g.rotate(p.angle + Math.radians(90));
-        var r = p.radius * p.size;
-        g.drawImage(p.img, -r / 2, -r / 2, r, r);
+        var size = p.radius * p.size;
+        g.drawImage(p.img, -size / 2, -size / 2, size, size);
         if(p.jetFireActive) {
             g.rotate(Math.radians(-5));
             g.shadowBlur = 5;
             g.shadowColor = "white";
-            g.drawImage(p.jetFire.img, -r / 2 + p.jetFire.offsetX, -r / 4 + p.jetFire.offsetY, r, r/2);
+            g.drawImage(p.jetFire.img, -size / 2 + p.jetFire.offsetX, -size / 4 + p.jetFire.offsetY, size, size/2);
         }
         if(p.shieldActive){
             g.shadowBlur = 25;
             g.shadowColor = "blue";
             g.globalAlpha = 0.8;
-            g.drawImage(p.shield.img, -r / 2 + p.shield.offsetX, -r / 2 + p.shield.offsetY, r, r/2+10);
+            g.drawImage(p.shield.img, -size / 2 + p.shield.offsetX, -size / 2 + p.shield.offsetY, size, size/2+10);
 
         }
         g.restore();
@@ -127,10 +127,19 @@ Canvas.prototype = {
         g.save();
         g.translate(x, y);
         g.rotate(p.angle);
-        var r = p.radius * 4;
-        g.drawImage(p.img, -r / 2, -r / 2, r, r);
+        var size = p.radius * 4;
+        g.drawImage(p.img, -size / 2, -size / 2, size, size);
         g.restore()
 
+    },
+    drawEnemy:function (p,x,y) {
+        var g = this.ctx;
+        g.save();
+        g.translate(x, y);
+        g.rotate(p.angle + Math.radians(90));
+        var size = p.radius * 2;
+        g.drawImage(p.img, -size / 2, -size / 2, size, size);
+        g.restore()
     },
     /**
      *

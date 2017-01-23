@@ -13,10 +13,12 @@ var Game = function (main) {
     this.lvl = 1;
     this.n_life = 3;
     this.asterSize = 10;
-    this.timeLastBonusNrg = new Date().getTime();
-    this.timeLastBonusScore = new Date().getTime();
-    this.timeLastBonusHp = new Date().getTime();
+    this.timeLastBonusNrg = this.timeLastBonusScore =
+        this.timeLastBonusHp  = new Date().getTime();
+    this.timeLastEnemy = 0;
     this.timeSpawnBonus = 10000;
+    this.timeSpawnEnemy = 120000;
+
     this.debug = false;
 
     this.player = new Player(
@@ -34,6 +36,7 @@ Game.prototype = {
         this.bullets = []; // missili del giocatore
         this.asteroids = []; // asteroidi in gioco
         this.bonus = []; // bonus per il giocatore
+        this.enemies = []; // nemici
 
         // n di asteroidi secondo il livello attuale
         var n_asteroids = Math.round(this.main.levelDifficulty + (this.lvl / 2));
@@ -179,7 +182,7 @@ Game.prototype = {
                     self.player.active = false;
                     self.player.x = self.screen.width / 2;
                     self.player.y = self.screen.height / 2;
-                    self.player.vel = { x: 0,y: 0 };
+                    self.player.vel = {x: 0, y: 0};
                     self.player.hp -= 100 / self.n_life;
                 }
                 self.updateScore(a);
@@ -207,6 +210,35 @@ Game.prototype = {
             var _active = b.active;
             if (_active)
                 b.update(dt);
+            self.enemies.forEachOptimized(function (e) {
+                if(e.isCollision(b.x,b.y)){
+                    e.hp -= 100/3;
+                    if(e.hp <= 0) {
+                        e.active = false;
+                        self.main.score += e.score;
+                        self.main.sm.playSound('explosion');
+                    }
+                }
+            });
+            return _active;
+        });
+
+        this.enemies = self.enemies.filter(function (e) {
+            e.update(dt);
+            var _active = e.active;
+
+            if (_active) {
+                if (self.player.isCollision(e)) {
+                    self.player.x = self.screen.width / 2;
+                    self.player.y = self.screen.height / 2;
+                    self.player.vel = {x: 0, y: 0};
+                    self.player.hp -= 100 / self.n_life;
+                    self.player.active = false;
+                    self.main.sm.playSound('explosion');
+                    _active = false;
+
+                }
+            }
             return _active;
         });
 
@@ -224,10 +256,10 @@ Game.prototype = {
         this.bonus = self.bonus.filter(function (b) {
             b.update();
             var _active = b.active;
-            if (_active && !b.selected && self.player.isCollision(b)){
+            if (_active && !b.selected && self.player.isCollision(b)) {
                 _active = false;
                 self.main.score += b.bonus;
-                switch (b.type){
+                switch (b.type) {
                     case "hp":
                         self.player.hp = 100;
                         break;
@@ -242,25 +274,43 @@ Game.prototype = {
             }
             return _active;
         });
-        if(this.asteroids.length > 1){
-            var now = new Date().getTime();
+        var now = new Date().getTime();
+        if (this.asteroids.length > 1) {
 
-            if(now - this.timeLastBonusHp > this.timeSpawnBonus*3) {
+            if (now - this.timeLastBonusHp > this.timeSpawnBonus * 3) {
                 this.addBonus("hp", 4);
                 this.timeLastBonusHp = now;
             }
-            else
-                if(now - this.timeLastBonusScore > this.timeSpawnBonus*2) {
-                    this.addBonus("score", 2);
-                    this.timeLastBonusScore = now;
-                }else
-                    if(now - this.timeLastBonusNrg > this.timeSpawnBonus) {
-                        this.addBonus("nrg", 4);
-                        this.timeLastBonusNrg = now;
-                    }
+            else if (now - this.timeLastBonusScore > this.timeSpawnBonus * 2) {
+                this.addBonus("score", 2);
+                this.timeLastBonusScore = now;
+            } else if (now - this.timeLastBonusNrg > this.timeSpawnBonus) {
+                this.addBonus("nrg", 4);
+                this.timeLastBonusNrg = now;
+            }
         }
+        if (now - this.timeLastEnemy > this.timeSpawnEnemy) {
+            var x = 30,
+                y = 30,
+                randomPos = (Math.random() > 0.5);
+            if (randomPos)
+                x = Math.randInt(30, this.screen.width - 30);
+            else
+                y = Math.randInt(30, this.screen.height - 30);
+
+            this.enemies.push(new Enemy(
+                x,
+                y,
+                8,
+                this.screen,
+                this.main.levelDifficulty,
+                this.player
+            ));
+            this.timeLastEnemy = now;
+        }
+
     },
-    addBonus:function(type,size) {
+    addBonus: function (type, size) {
         if (!Main.paused) {
             this.bonus.push(new PowerUp(
                 Math.randInt(10, this.screen.width - 10),
@@ -288,7 +338,7 @@ Game.prototype = {
         var barWidth = 150;
         var barHeight = 20;
         var offset_top = g.canvas.offsetTop + 10;
-        var offset_hp = g.canvas.width - barWidth-50;
+        var offset_hp = g.canvas.width - barWidth - 50;
 
         ga.fillStyle = "grey";
         ga.fillRect(offset_hp + 30, offset_top, barWidth, barHeight);
@@ -312,7 +362,7 @@ Game.prototype = {
 
         ga.fillStyle = "white";
         ga.font = "30px sans-serif";
-        var s = "Liv: "+ this.lvl+"  SCORE: ";
+        var s = "Liv: " + this.lvl + "  SCORE: ";
         ga.fillText(s + this.main.score, g.canvas.width / 2 - (s.length + 70), offset_top + 18);
 
 
@@ -320,11 +370,17 @@ Game.prototype = {
             a.draw(g)
         });
 
-        this.player.draw(g);
-
         this.bullets.forEachOptimized(function (b) {
             b.draw(g);
         });
+
+        this.enemies.forEachOptimized(function (b) {
+            b.draw(g);
+        });
+
+
+        this.player.draw(g);
+
 
         this.bonus.forEachOptimized(function (b) {
             b.draw(g);
