@@ -20,6 +20,7 @@ Math.degrees = function(radians) {
     return radians * 180 / Math.PI;
 };
 
+
 function defineSubclass(superclass, // Constructor of our superclass
     constructor, // Constructor of our new subclass
     methods, // Instance methods

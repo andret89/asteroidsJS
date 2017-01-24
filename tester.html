@@ -4,135 +4,119 @@
 <script src="js/loader.js"></script>
 <title>Tester</title>
 <style>
-    body{
+    body {
         background: grey;
     }
-
-    canvas{
+    
+    canvas {
         background: black;
     }
-
-
 </style>
+
 <body>
 
-<script>
-    var Debug = true;
-    /*var canvas = document.createElementNS("http://www.w3.org/1999/xhtml","canvas");
-    canvas.width = canvas.height = 50;
+    <script>
+        var Debug = true;
+        if (Debug) {
+            (function() {
+                    var ca = document.createElement('canvas');
+                    var g = ca.getContext("2d");
+                    ca.width = 480;
+                    ca.height = 600;
+                    document.body.appendChild(ca);
+                    var img = new Image();
+                    img.src = "img/aliensh.png";
+                    var entity = {
+                        x: 450,
+                        y: 150,
+                        speed: .001,
+                        size: 40,
+                        img: img,
+                        angle: -90 * Math.PI / 180,
+                        path: {
+                            cx: 450 - 200,
+                            cy: 150,
+                            radius: 200,
+                            angle: 0,
+                            start: {
+                                x: Math.random() * ca.width,
+                                y: Math.random() * ca.height
+                            },
+                            end: {
+                                x: Math.random() * ca.width,
+                                y: Math.random() * ca.height
+                            },
+                            percent: 0.02
 
-    var ctx = canvas.getContext("2d");
-    ctx.lineWidth = 4;
-    ctx.moveTo(0, 0);
-    ctx.lineTo(50, 50);
-    ctx.moveTo(0, 50);
-    ctx.lineTo(50, 0);
-    ctx.stroke();
+                        }
+                    }
 
-    var dt = event.dataTransfer;
-    dt.setData('text/plain', 'Data to Drag');
-    dt.setDragImage(canvas, 25, 25);
-*/
+                    entity.path.draw = function(g) {
+                        g.beginPath()
+                        g.strokeStyle = "white"
+                        g.lineWidth = 1;
+                        g.arc(this.cx, this.cy, this.radius, 0, Math.PI * 2, true)
+                        g.closePath()
+                        g.stroke()
+                    }
 
-    if (Debug) {
-        (function () {
-            var ca = document.createElement('canvas');
-            var g = ca.getContext("2d");
-            ca.width = 400;
-            ca.height = 300;
-            document.body.appendChild(ca);
+                    entity.draw = function(g) {
 
-            ca.addEventListener("mousemove", mousemove, false);
-            ca.addEventListener("mousedown", mousedown, false);
-            ca.addEventListener("mouseup", mouseup, false);
-            var offsetX = ca.offsetLeft;
-            var offsetY = ca.offsetTop;
-            var mousePos = {x:0,y:0};
-            var canMouseX = mousePos.x;
-            var canMouseY = mousePos.y;
+                        /*
+                        // update circulare moviment
+                        this.x = this.path.cx + Math.cos(this.path.angle) * this.path.radius;
+                        this.y = this.path.cy + Math.sin(this.path.angle) * this.path.radius;
+                        */
 
 
-            var isDragging=false;
-            function parseInt(notInt) {
-                return Math.round(notInt);
-            }
+                        var nextPoint = getLineXYatPercent(this.path.start, this.path.end, this.path.percent)
+                        this.path.percent += 0.02
+                        this.x = nextPoint.x
+                        this.y = nextPoint.y
 
+                        var dx = (this.x - this.path.cx);
+                        var dy = (this.y - this.path.cy);
+                        this.angle = Math.atan2(dy, dx);
 
-            function mousedown(e){
-                canMouseX=parseInt(e.clientX-offsetX);
-                canMouseY=parseInt(e.clientY-offsetY);
-                // set the drag flag
-                isDragging=true;
-            }
+                        this.path.angle += this.speed;
 
-            function mouseup(e){
-                canMouseX=parseInt(e.clientX-offsetX);
-                canMouseY=parseInt(e.clientY-offsetY);
-                // clear the drag flag
-                isDragging=false;
-            }
+                        g.save()
+                        g.translate(this.x, this.y)
+                        g.rotate(this.angle)
+                        g.drawImage(this.img, 0, 0, this.size, this.size);
+                        g.restore()
+                        this.path.draw(g)
 
-            function handleMouseOut(e){
-                canMouseX=parseInt(e.clientX-offsetX);
-                canMouseY=parseInt(e.clientY-offsetY);
-                // user has left the canvas, so clear the drag flag
-                //isDragging=false;
-            }
+                    }
+                    entity.img.onload = function() {
+                        var e = entity;
+                        g.drawImage(this, e.x, e.y, e.size, e.size);
+                        e.path.draw(g)
+                    }
 
-            function mousemove(e){
-                canMouseX=parseInt(e.clientX-offsetX);
-                canMouseY=parseInt(e.clientY-offsetY);
-                // if the drag flag is set, clear the canvas and draw the image
-                if(isDragging){
-                    g.clearRect(0,0,ca.width,ca.height);
-                    g.drawImage(ship.img,canMouseX-128/2,canMouseY-120/2,100,100);
+                    function loop() {
+                        g.clearRect(0, 0, ca.width, ca.height);
+                        entity.draw(g);
+                        requestAnimationFrame(loop)
+
+                    }
+
+                    function getLineXYatPercent(startPt, endPt, percent) {
+                        var dx = endPt.x - startPt.x;
+                        var dy = endPt.y - startPt.y;
+                        var X = startPt.x + dx * percent;
+                        var Y = startPt.y + dy * percent;
+                        return ({
+                            x: X,
+                            y: Y
+                        });
+                    }
+                    requestAnimationFrame(loop)
                 }
-            }
 
-
-//
-
-            //
-
-            function mousemovea(e) {
-                e.stopPropagation();
-                e.preventDefault();
-            }
-
-            function mousemovea(e) {
-                e.stopPropagation();
-                e.preventDefault();
-            }
-
-//
-            function mouseupa(e) {
-                e.stopPropagation();
-                e.preventDefault();
-
-                var dt = e;
-                var x = dt.x;
-                var y = dt.y;
-                console.log(x+" , "+y);
-
-            }
-
-            var ship ={
-                img : new Image(),
-                id : "img",
-                x:ca.width/2,
-                y:ca.height/2
-                /*isIn : function (p) {
-                 if(x || y || w || h)}
-*/
-            };
-            ship.img.onload = function() {
-
-                g.drawImage(ship.img, ship.x, ship.y, 100, 100);
-            };
-            ship.img.src = "img/ship2.png";
-        })()
-    }
-</script>
+            )()
+        }
+    </script>
 
 </body>
 
