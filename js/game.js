@@ -174,9 +174,10 @@ Game.prototype = {
             a.update(dt);
 
             // verifica se i missili colpiscono un asteroide
-            // FIXME troppi massi con Powerlaser
             self.bullets.forEachOptimized(function (b) {
-                if (!b.isEnemy && a.isCollision(b.x, b.y)) {
+                if (!b.isEnemy && a.active && a.isCollision(b.x, b.y)) {
+                    if(self.player.powerLaser)
+                        log("power")
                     b.active = false;
                     a.active = false;
                     self.main.sm.playSound('explosion');

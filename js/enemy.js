@@ -21,6 +21,7 @@ var Enemy = GameObj.extend(
         this.img.src = "img/aliensh.png";
         this.score = 200;
 
+        this.dx = this.dy = 1;
         //this.speed = 1 * difficultly;
         this.speed = 30 * difficultly;
 
@@ -70,10 +71,11 @@ var Enemy = GameObj.extend(
                 this.y = this.maxY;
             }
 
-            var dx = dy = 1;
+
 
             // aggioranemto poizione secondo il target(player)
             if (this.nearTarget()) {
+                var dx ,dy;
                 dx = this.x - this.target.x;
                 dy = this.y - this.target.y;
                 this.angle = Math.atan2(dy, dx);
@@ -84,10 +86,13 @@ var Enemy = GameObj.extend(
 
                 dx /= hyp;
                 dy /= hyp;
+
+                this.dx = dx;
+                this.dy = dy;
             }
 
-            this.x += dx * this.speed * dt;
-            this.y += dy * this.speed * dt;
+            this.x += this.dx * this.speed * dt;
+            this.y += this.dy * this.speed * dt;
 
         },
         /**
