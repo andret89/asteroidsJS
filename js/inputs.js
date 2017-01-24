@@ -9,6 +9,7 @@ var Key = {
     KEY_ENTER: 13,
     KEY_ESC: 27,
     KEY_CTRL: 17,
+    KEY_ALT:18,
     KEY_SPACE: 32,
     KEY_W: 87,
     KEY_A: 65,

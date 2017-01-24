@@ -18,7 +18,10 @@ var Player = GameObj.extend(
         this.hp = 100;
         this.energy = 100;
         this.timeLastShoot = 0;
-        this.timeoutShoot = 250;
+        this.startPowerLaser = 0;
+        this.timeoutShoot = 500;
+        this.timeoutPowerLaser = 10000;
+        this.powerLaser = false;
 
         this.shieldActive = false;
         this.shield = {
@@ -48,23 +51,52 @@ var Player = GameObj.extend(
          * Ritorna un missile
          * @return {Bullet} missile del player
          */
-        addBullet: function () {
+        addBullet: function (bullets) {
             var now = new Date().getTime();
-            if(this.timeLastShoot !==0 &&
+            if (this.timeLastShoot !== 0 &&
                 now - this.timeLastShoot < this.timeoutShoot)
-                return null;
+                return false;
             else
                 this.timeLastShoot = now;
 
             if (this.energy > 10)
                 this.energy -= 10;
 
-           return new Bullet(
+            bullets.push(new Bullet(
                 this.x,
                 this.y,
                 this.angle,
-                this.parent
-            );
+                this.parent));
+
+            if (this.powerLaser) {
+                if (now - this.startPowerLaser < this.timeoutPowerLaser) {
+                    bullets.push(new Bullet(
+                        this.x,
+                        this.y,
+                        this.angle + Math.radians(-4),
+                        this.parent));
+                    bullets.push(new Bullet(
+                        this.x,
+                        this.y,
+                        this.angle + Math.radians(4),
+                        this.parent));
+                }else
+                    this.powerLaser = false;
+            }
+
+            return true;
+        },
+        fullLaser:function (bullets) {
+            this.energy = 0;
+            for(var i=0; i<360; i+=5)
+            {
+                bullets.push(new Bullet(
+                    this.x,
+                    this.y,
+                    this.angle + Math.radians(i),
+                    this.parent));
+            }
+
         },
         /**
          * Aggiorna velocità in caso di accelerazione
@@ -77,7 +109,8 @@ var Player = GameObj.extend(
                 this.vel.y += 15 * Math.sin(this.angle);
             }
             this.jetFireActive = true;
-        },
+        }
+        ,
         /**
          * Ruota l'astronave nella direzione indicata dell'angolo
          *
@@ -85,7 +118,8 @@ var Player = GameObj.extend(
          */
         addDirection: function (theta) {
             this.angle += theta;
-        },
+        }
+        ,
         /**
          * Verifica se un asteroide ha una collisione con il player
          *
@@ -97,13 +131,14 @@ var Player = GameObj.extend(
                 return false;
             }
             return this.collisionCircle(astr.x, astr.y, astr.radius);
-        },
+        }
+        ,
         /**
          * Aggionarna la posizione del player
          * @param {Number} dt - delta del tempo per frame
          */
         update: function (dt) {
-            if(!this.active)
+            if (!this.active)
                 return;
 
             // aggiornameto secondo le dimesioni del componente padre
@@ -141,7 +176,8 @@ var Player = GameObj.extend(
                 if (this.energy < 100) this.energy += 0.2;
                 if (this.energy > 100) this.energy = 100;
             }
-        },
+        }
+        ,
         /**
          * Disegna il player
          * @param  {Canvas} g - oggetto per disegnare sul canvas
@@ -157,4 +193,5 @@ var Player = GameObj.extend(
 
         }
     }
-);
+    )
+    ;

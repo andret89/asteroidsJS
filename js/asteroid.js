@@ -23,13 +23,12 @@ var Asteroid = GameObj.extend(
         this.angle = this.rotation;
 
 
-        var maxSpeed = 120 + 20* difficultly;
-        var minSpeed = 80;
-        log("maxSpeed" + maxSpeed);
+        var maxSpeed = 120 + 20 * difficultly;
+        var minSpeed = 60;
 
         // calcolare la velocità
         var r = Math.PI * Math.random();
-        var v = (Math.random() * maxSpeed) + minSpeed;
+        var v = Math.randInt(maxSpeed,minSpeed);
         var vx = v;
         var vy = v;
 

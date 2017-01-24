@@ -12,12 +12,13 @@ var Game = function (main) {
     this.main.score = 0;
     this.lvl = 1;
     this.n_life = 3;
-    this.asterSize = 10;
+    this.sizeAsteroid = 10;
+    this.sizeEnemy = 8;
     this.timeLastBonusNrg = this.timeLastBonusScore =
         this.timeLastBonusHp  = new Date().getTime();
     this.timeLastEnemy = 0;
     this.timeSpawnBonus = 10000;
-    this.timeSpawnEnemy = 120000;
+    this.timeSpawnEnemy = 60000;
 
     this.debug = false;
 
@@ -39,7 +40,7 @@ Game.prototype = {
         this.enemies = []; // nemici
 
         // n di asteroidi secondo il livello attuale
-        var n_asteroids = Math.round(this.main.levelDifficulty + (this.lvl / 2));
+        var n_asteroids = Math.round(this.main.levelDifficulty + (this.lvl / 4));
         for (var i = 0; i < n_asteroids; i++) {
 
             // definisce la posizione del asteroide nel canvas in modo casuale
@@ -54,7 +55,7 @@ Game.prototype = {
             var aster = new Asteroid(
                 x,
                 y,
-                this.asterSize,
+                this.sizeAsteroid,
                 this.screen,
                 this.main.levelDifficulty
             );
@@ -70,13 +71,13 @@ Game.prototype = {
         // il punteggio assegnato dipende dalla dim dell'astreroide distrutto
         if (this.player.active) {
             switch (a.size) {
-                case this.asterSize:
+                case this.sizeAsteroid:
                     this.main.score += 20;
                     break;
-                case this.asterSize / 2:
+                case this.sizeAsteroid / 2:
                     this.main.score += 50;
                     break;
-                case this.asterSize / 4:
+                case this.sizeAsteroid / 4:
                     this.main.score += 100;
                     break;
             }
@@ -84,7 +85,7 @@ Game.prototype = {
 
         // se l'asteoride è stato colpito al massimo 2 volte
         // viene diviso altrimenti viene eliminato
-        if (a.size > this.asterSize / 4) {
+        if (a.size > this.sizeAsteroid / 4) {
             for (var k = 0; k < 2; k++) {
 
                 var astr = new Asteroid(
@@ -128,6 +129,9 @@ Game.prototype = {
         if (!this.player.active) {
             if (input.isPressed("KEY_SPACE")) {
                 this.player.active = true;
+                this.player.x = this.screen.width / 2;
+                this.player.y = this.screen.height / 2;
+                this.player.vel = {x: 0, y: 0};
             }
         }
         else {
@@ -150,13 +154,18 @@ Game.prototype = {
             if (input.isDown('KEY_LEFT') || input.isDown('KEY_A')) {
                 this.player.addDirection(Math.radians(-4));
             }
-            if (input.isPressed('KEY_CTRL') || input.isPressed('KEY_SPACE')) {
+            if (input.isPressed('KEY_ALT') || input.isPressed('KEY_SPACE')) {
                 if (this.player.energy >= 10) {
-                    var b = this.player.addBullet();
+                    var b = this.player.addBullet(this.bullets);
                     if (b) {
-                        this.bullets.push(b);
                         this.main.sm.playSound('shoot');
                     }
+                }
+            }
+            if(input.isPressed('KEY_CTRL')){
+                if(this.player.energy==100) {
+                    this.player.fullLaser(this.bullets);
+                    this.main.sm.playSound('shoot');
                 }
             }
         }
@@ -165,8 +174,9 @@ Game.prototype = {
             a.update(dt);
 
             // verifica se i missili colpiscono un asteroide
+            // FIXME troppi massi con Powerlaser
             self.bullets.forEachOptimized(function (b) {
-                if (a.isCollision(b.x, b.y)) {
+                if (!b.isEnemy && a.isCollision(b.x, b.y)) {
                     b.active = false;
                     a.active = false;
                     self.main.sm.playSound('explosion');
@@ -180,9 +190,6 @@ Game.prototype = {
                 self.main.sm.playSound('explosion');
                 if (!self.player.shieldActive) {
                     self.player.active = false;
-                    self.player.x = self.screen.width / 2;
-                    self.player.y = self.screen.height / 2;
-                    self.player.vel = {x: 0, y: 0};
                     self.player.hp -= 100 / self.n_life;
                 }
                 self.updateScore(a);
@@ -195,7 +202,8 @@ Game.prototype = {
         });
 
         // se gli astoridi sono stati tutti distrutti si avenza di livello
-        if (this.asteroids.length === 0) {
+        if (this.asteroids.length === 0 &&
+            this.bonus.length === 0 && this.enemies.length === 0) {
             this.lvl++;
             if (this.player.hp < 100)
                 this.player.hp += 100 / this.n_life;
@@ -210,8 +218,18 @@ Game.prototype = {
             var _active = b.active;
             if (_active)
                 b.update(dt);
+
+            if(b.isEnemy &&  self.player.isCollision(b)){
+                if(!self.player.shieldActive) {
+                    self.player.active = false;
+                    self.player.hp -= 100 / self.n_life;
+                    self.main.sm.playSound('explosion');
+                }
+                b.active = false;
+
+            }
             self.enemies.forEachOptimized(function (e) {
-                if(e.isCollision(b.x,b.y)){
+                if(!b.isEnemy && e.isCollision(b.x,b.y)){
                     e.hp -= 100/3;
                     if(e.hp <= 0) {
                         e.active = false;
@@ -228,15 +246,19 @@ Game.prototype = {
             var _active = e.active;
 
             if (_active) {
+                if(e.nearTarget()) {
+                    var b = e.tryShoot();
+                    if (b) {
+                        self.bullets.push(b);
+                        self.main.sm.playSound('shoot');
+                    }
+                }
+
                 if (self.player.isCollision(e)) {
-                    self.player.x = self.screen.width / 2;
-                    self.player.y = self.screen.height / 2;
-                    self.player.vel = {x: 0, y: 0};
-                    self.player.hp -= 100 / self.n_life;
                     self.player.active = false;
+                    self.player.hp -= 100 / self.n_life;
                     self.main.sm.playSound('explosion');
                     _active = false;
-
                 }
             }
             return _active;
@@ -253,6 +275,9 @@ Game.prototype = {
             this.main.nextState = States.GAMEOVER;
         }
 
+        var now = new Date().getTime();
+
+
         this.bonus = self.bonus.filter(function (b) {
             b.update();
             var _active = b.active;
@@ -264,17 +289,22 @@ Game.prototype = {
                         self.player.hp = 100;
                         break;
                     case "score":
-
+                        self.player.powerLaser = true;
+                        self.player.startPowerLaser = now;
                         break;
 
                     case "nrg":
                         self.player.energy = 100;
+                        self.player.powerLaser = true;
+                        self.player.startPowerLaser = now;
                         break;
                 }
             }
             return _active;
         });
-        var now = new Date().getTime();
+
+
+
         if (this.asteroids.length > 1) {
 
             if (now - this.timeLastBonusHp > this.timeSpawnBonus * 3) {
@@ -290,6 +320,7 @@ Game.prototype = {
             }
         }
         if (now - this.timeLastEnemy > this.timeSpawnEnemy) {
+            // TODO start position bug
             var x = 30,
                 y = 30,
                 randomPos = (Math.random() > 0.5);
@@ -301,12 +332,14 @@ Game.prototype = {
             this.enemies.push(new Enemy(
                 x,
                 y,
-                8,
+                this.sizeEnemy,
                 this.screen,
                 this.main.levelDifficulty,
                 this.player
             ));
             this.timeLastEnemy = now;
+
+
         }
 
     },

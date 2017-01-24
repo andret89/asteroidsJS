@@ -39,6 +39,23 @@ var Enemy = GameObj.extend(
         };
     }, {
         /**
+         * Ritorna un missile
+         * @return {Bullet} missile del player
+         */
+        tryShoot: function () {
+            if(Math.random()>0.995)
+                return new Bullet(
+                    this.x,
+                    this.y,
+                    this.angle + Math.radians(180),
+                    this.parent,
+                    true // missile nemico
+            );
+        },
+        nearTarget:function () {
+            return this.target.active && this.distance(this.target) < 300;
+        },
+        /**
          * Aggiornamento posizione e rotazione
          * @param dt
          */
@@ -49,18 +66,18 @@ var Enemy = GameObj.extend(
             if (this.maxY !== this.parent.height)
                 this.maxY = this.parent.height;
 
+
             // timeoutUpdatePosition
-            if(this.target.active && this.distance(this.target) < 600 ) {
+            if(this.nearTarget) {
                 var dx = this.x - this.target.x,
                     dy = this.y - this.target.y;
                 this.angle = Math.atan2(dy, dx);
             }
 
-
             this.vel.x = this.speed * Math.cos(this.angle);
             this.vel.x = this.speed * Math.cos(this.angle);
 
-            if (this.vel.x * this.vel.x + this.vel.y * this.vel.y < 60 * 60) {
+            if (this.vel.x * this.vel.x + this.vel.y * this.vel.y < 80 * 80) {
                 this.vel.x += this.speed;
                 this.vel.x += this.speed;
             }

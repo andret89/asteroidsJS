@@ -3,22 +3,24 @@
  * @param  {number} y      - posizione in coordinate y
  * @param  {number} angle  - angolo di rotazione
  * @param  {Canvas} parent - componente per il disegno
+ * @param  {Boolean} isEnemy - missile del nemico
  * @class Rappresenta un missile del Player
  */
-var Bullet = function Bullet(x, y, angle, parent) {
+var Bullet = function Bullet(x, y, angle, parent, isEnemy) {
     this.type = "Bullet";
-    this.color = "yellow";
     this.x = x;
     this.y = y;
     this.parent = parent;
     this.active = true;
+    this.isEnemy = isEnemy || false;
+    this.color = this.isEnemy ? "red" : "yellow";
     // tempo di vita
-    this.timeout = 2500;
+    this.timeout = 1500;
     this.startTime = new Date().getTime();
 
     // calcolare la velocità secondo l'algolo di rotazione del player
     // pixel per secondo
-    var v = 500;
+    var v = this.isEnemy ? 250 : 400;
     this.vel = {
         x: v * Math.cos(angle),
         y: v * Math.sin(angle)
@@ -44,6 +46,7 @@ Bullet.prototype = {
 
 
 
+        /*
         // movimento missile nel canvas
         if (this.x > this.maxX)
             this.x = 0;
@@ -56,6 +59,11 @@ Bullet.prototype = {
         else
             if (this.y < 0)
                 this.y = this.maxY;
+        */
+        if(this.x < 0 || this.x > this.maxX ||
+            this.y < 0|| this.y > this.maxY )
+            this.active = false;
+
 
         // ultima posizione per disegno
         this.oldx = this.x;
