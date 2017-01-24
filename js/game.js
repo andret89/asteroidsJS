@@ -235,6 +235,7 @@ Game.prototype = {
                         e.active = false;
                         self.main.score += e.score;
                         self.main.sm.playSound('explosion');
+                        _active = false;
                     }
                 }
             });

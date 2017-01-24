@@ -21,39 +21,13 @@ var Enemy = GameObj.extend(
         this.img.src = "img/aliensh.png";
         this.score = 200;
 
-        // imposta l'angolo di rotazione utilizzato in ogni aggiornamento
-        this.rotation = 0;
         //this.speed = 1 * difficultly;
-        this.speed = .004;
+        this.speed = 30 * difficultly;
 
         this.lastUpdate = new Date().getTime();
         this.timeOut = 10000;
 
-        this.path = {
-            radius: 0,
-            cx: target.x,
-            cy: target.y,
-            angle: 0
-        };
-
-        this.path.draw = function (g) {
-            g.beginPath();
-            g.strokeStyle = "white";
-            g.lineWidth = 1;
-            g.arc(this.cx, this.cy, this.radius, 0, Math.PI * 2, true)
-            g.closePath();
-            g.stroke()
-        };
-        this.updatePathRadius()
-
     }, {
-        updatePathRadius: function () {
-            var distToTarget = this.distance(this.target);
-            this.path.radius = Math.min(distToTarget,
-                this.parent.width, this.parent.height);
-
-
-        },
         /**
          * Ritorna un missile
          * @return {Bullet} missile del player
@@ -69,7 +43,8 @@ var Enemy = GameObj.extend(
                 );
         },
         nearTarget: function () {
-            return this.target.active && this.distance(this.target) < 250;
+            var dist = this.distance(this.target)
+            return this.target.active && dist < 300;
         },
         /**
          * Aggiornamento posizione e rotazione
@@ -95,45 +70,24 @@ var Enemy = GameObj.extend(
                 this.y = this.maxY;
             }
 
-            var path = this.path;
+            var dx = dy = 1;
 
-            // timeoutUpdatePosition
-            if (this.nearTarget) {
-                var dx = this.x - this.target.x,
-                    dy = this.y - this.target.y;
+            // aggioranemto poizione secondo il target(player)
+            if (this.nearTarget()) {
+                dx = this.x - this.target.x;
+                dy = this.y - this.target.y;
                 this.angle = Math.atan2(dy, dx);
-                this.updatePathRadius();
-                path.cx = this.target.x;
-                path.cy = this.target.y;
 
-                path.angle += this.speed;
+                dx = this.target.x - this.x;
+                dy = this.target.y - this.y;
+                var hyp = Math.sqrt(dx * dx + dy * dy);
 
-                this.x = path.cx + Math.cos(path.angle) * path.radius;
-                this.y = path.cy + Math.sin(path.angle) * path.radius;
+                dx /= hyp;
+                dy /= hyp;
             }
 
-
-
-
-            /*
-             if (this.vel.x * this.vel.x + this.vel.y * this.vel.y < 80 * 80) {
-             this.vel.x += this.speed;
-             this.vel.y += this.speed;
-             }
-             */
-
-            /*
-             // update circulare moviment
-             this.x = this.path.cx + Math.cos(this.path.angle) * this.path.radius;
-             this.y = this.path.cy + Math.sin(this.path.angle) * this.path.radius;
-             */
-
-            // aggioranemto posizione secondo la velocità
-
-
-             this.x += this.speed * dt;
-             this.y += this.speed * dt;
-
+            this.x += dx * this.speed * dt;
+            this.y += dy * this.speed * dt;
 
         },
         /**
@@ -145,7 +99,6 @@ var Enemy = GameObj.extend(
             g.drawEnemy(this, this.x, this.y);
             if (Main.DEBUGBOX) {
                 g.drawCircleBox(this.x, this.y, this.radius);
-                this.path.draw(g.ctx);
             }
         },
         /**
