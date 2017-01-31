@@ -11,13 +11,13 @@ var Start = function(main) {
 
 }
 Start.prototype = {
-    update: function (input) {
+    update: function(input) {
         if (input.isPressed('KEY_SPACE') || input.isPressed('KEY_ENTER')) {
             this.main.menu.enableOptions();
         }
 
     },
-    draw: function (g) {
+    draw: function(g) {
         if (this.menu.active || this.menu.activeInfo || this.menu.activeDifficultly) {
             return;
         }
@@ -33,7 +33,7 @@ Start.prototype = {
 
         ga.textAlign = 'center';
         var s = "Asteroids game \n\npush spacebar";
-        g.fillTextMultiLine(s, x, y );
+        g.fillTextMultiLine(s, x, y);
         ga.restore();
     }
 };
@@ -43,7 +43,7 @@ Start.prototype = {
  * @param {Main} game - controllo principale
  * @constructor
  */
-var GameOver = function (game) {
+var GameOver = function(game) {
     this.type = "GameOver";
     this.main = game;
     this.menu = game.menu;
@@ -75,8 +75,8 @@ GameOver.prototype = {
         ga.fillStyle = "red";
         ga.textAlign = "center";
         ga.font = "50px sans-serif";
-        var s = "   GAME OVER\n\n  HighScore  " + this.hs + "\n\n  push spacebar";
-        g.fillTextMultiLine(s, g.canvas.width / 2 , g.canvas.height / 2 - 60);
+        var s = "   GAME OVER\n\n  Your Score  " + this.main.score + "\n\n  HighScore  " + this.hs + "\n\n  push spacebar";
+        g.fillTextMultiLine(s, g.canvas.width / 2, g.canvas.height / 2 - 80);
         ga.restore();
 
     }
