@@ -1,0 +1,134 @@
+body,
+html {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-image: url("../img/bg.png");
+    text-rendering: optimizelegibility;
+}
+
+canvas{
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+#gameContainer {
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    margin: inherit;
+    justify-content: center;
+    display: flex;
+}
+
+:root {
+    --primary-color: #006680;
+    --hover-color: darkgoldenrod;
+    --text-color: white;
+    --bt-height: 60px;
+    --bt-width: 220px;
+    --bt-offset: 15px;
+    --bt-radius: 10px;
+    --font-size: 40px;
+}
+
+
+#difficultyContainer {
+    font-size: var(--font-size);
+    display: flex;
+    /* width: 100%; */
+}
+
+#optionsContainer {
+    font-size: var(--font-size);
+    display: block;
+    width: 250px;
+    position: relative;
+    height: 400px;
+    display: none;
+}
+
+#titleDifficultyMenu {
+    color: white;
+    position: absolute;
+    font-size: 50px;
+    top: 23%;
+    left: 31%;
+}
+
+#titleOptionMenu {
+    color: darkgoldenrod;
+    position: relative;
+    font-size: 40px;
+    text-align: center;
+
+}
+
+.btnDifficulty {
+    display: block;
+    margin: var(--bt-offset);
+    height: var(--bt-height);
+    width: var(--bt-width);
+    transition: 0.5s;
+    background: var(--primary-color);
+    color: var( --text-color);
+    cursor: pointer;
+    border-radius: var(--bt-radius);
+}
+
+.btnOption {
+    display: block;
+    margin: var(--bt-offset);
+    height: var(--bt-height);
+    width: var(--bt-width);
+    transition: 0.5s;
+    background: var(--primary-color);
+    color: var( --text-color);
+    cursor: pointer;
+    border-radius: var(--bt-radius);
+}
+
+.btnDifficulty:hover,
+.btnOption:hover{
+    background-color:var(--hover-color);
+
+}
+
+.btnOption:active,
+.btnDifficulty:active {
+    position: relative;
+    top: 1px;
+}
+
+.btnOption p,
+.btnDifficulty p {
+    position: relative;
+    text-align: center;
+    margin: 8px;
+    color: var(--text-color);
+    transition: 0.5s;
+}
+
+.btnDifficulty p:hover,
+.btnOption p:hover{
+    color: black;
+}
+
+
+#infoContainer {
+    color: #FFC107;
+    width: 540px;
+    position: relative;
+    height: 349px;
+    top: 16%;
+    margin: auto;
+    font-size: 31px;
+}
+
+#resumeGame{
+    display: none;
+}
+
