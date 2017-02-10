@@ -184,6 +184,13 @@ Game.prototype = {
                     self.updateScore(a)
                 }
             });
+
+            self.asteroids.forEachOptimized(function (b) {
+                if(a !== b && b.active && a.collisionCircle(b.x,b.y,b.radius)){
+                    b.elasticCollision(a);
+                }
+
+            });
             // se il player collide con un astreroide e lo scudo non è attivo
             // viene riposizionato al centro dello schermo
             // e decrementa la  sua vita
