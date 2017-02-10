@@ -17,7 +17,8 @@ var Key = {
     KEY_D: 68,
     KEY_P: 80,
     KEY_M: 77,
-    KEY_G: 71
+    KEY_G: 71,
+    KEY_C: 67
 };
 
 /**
@@ -70,7 +71,6 @@ Inputs.prototype = {
                     if (inGame) {
                         var b = game.bonus;
                         b.forEachOptimized(function (a) {
-                            var mouseView = {x:evt.clientX - a.x,y:evt.clientY-a.y};
                             log("mouse "+evt.clientX +","+evt.clientX );
                             log("bonus "+a.x+","+a.y);
                             if (a.hitTest(evt.clientX, evt.clientY)) {

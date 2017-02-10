@@ -20,6 +20,8 @@ var Main = function () {
     Main.MUTE = false;
     Main.DEBUGBOX = false;
     Main.MOUSE_GAME = true;
+    Main.ElasticCollision = false;
+
 };
 
 Main.prototype = {
@@ -100,7 +102,7 @@ Main.prototype = {
             window.requestAnimFrame(gameLoop);
         }
 
-        window.requestAnimFrame(gameLoop);
+        gameLoop();
     },
     /**
      * Salva in memoria il punteggio più alto

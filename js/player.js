@@ -19,7 +19,7 @@ var Player = GameObj.extend(
         this.energy = 100;
         this.timeLastShoot = 0;
         this.startPowerLaser = 0;
-        this.timeoutShoot = 500;
+        this.timeoutShoot = 300;
         this.timeoutPowerLaser = 10000;
         this.powerLaser = false;
 
@@ -39,7 +39,7 @@ var Player = GameObj.extend(
             offsetX: -2
         };
         this.jetFire.img.src = "img/jetfire.png";
-
+        this.friction = 0.96;
         this.vel = {
             x: 0,
             y: 0
@@ -130,7 +130,7 @@ var Player = GameObj.extend(
             if (!this.active) {
                 return false;
             }
-            return this.collisionCircle(astr.x, astr.y, astr.radius);
+            return this.hitTestCircle(astr.x, astr.y, astr.radius);
         }
         ,
         /**
@@ -152,8 +152,8 @@ var Player = GameObj.extend(
             this.y += this.vel.y * dt;
 
             // frizione
-            this.vel.x *= 0.96;
-            this.vel.y *= 0.96;
+            this.vel.x *= this.friction;
+            this.vel.y *= this.friction;
 
             // movimento player nel canvas
             if (this.x > this.maxX) {

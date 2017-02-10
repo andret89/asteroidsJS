@@ -15,7 +15,7 @@ var Game = function (main) {
     this.sizeAsteroid = 10;
     this.sizeEnemy = 8;
     this.timeLastBonusNrg = this.timeLastBonusScore =
-        this.timeLastBonusHp  = new Date().getTime();
+        this.timeLastBonusHp = new Date().getTime();
     this.timeLastEnemy = 0;
     this.timeSpawnBonus = 10000;
     this.timeSpawnEnemy = 60000;
@@ -82,19 +82,33 @@ Game.prototype = {
                     break;
             }
         }
+        var checkStart = function (aster) {
+            var ret = {value:false};
+            this.asteroids.forEachOptimized(function (a) {
+                if (aster.hitTestCircle(a.x, a.y, a.radius))
+                    ret.value = true;
+            });
+            return ret.value;
+        }
+
 
         // se l'asteoride è stato colpito al massimo 2 volte
         // viene diviso altrimenti viene eliminato
         if (a.size > this.sizeAsteroid / 4) {
             for (var k = 0; k < 2; k++) {
-
-                var astr = new Asteroid(
-                    a.x,
-                    a.y,
-                    a.size / 2,
-                    this.screen,
-                    this.main.levelDifficulty
-                );
+                var size = a.size/2;
+                //var isDone = false;
+                //while (isDone) {
+                    var astr = new Asteroid(
+                        k % 2 == 0 ? a.x-size * 3:a.x+size * 3,
+                        k % 2 == 0 ? a.y-size * 3:a.y+size * 3,
+                        size,
+                        this.screen,
+                        this.main.levelDifficulty
+                    );
+                    //if(!checkStart(astr))
+                    //    isDone = true;
+                //}
                 this.asteroids.push(astr);
             }
         }
@@ -122,6 +136,10 @@ Game.prototype = {
 
         if (input.isPressed('KEY_G')) {
             Main.DEBUGBOX = !Main.DEBUGBOX;
+        }
+
+        if (input.isPressed('KEY_C')) {
+            Main.ElasticCollision = !Main.ElasticCollision;
         }
 
         this.player.shieldActive = false;
@@ -162,8 +180,8 @@ Game.prototype = {
                     }
                 }
             }
-            if(input.isPressed('KEY_CTRL')){
-                if(this.player.energy==100) {
+            if (input.isPressed('KEY_CTRL')) {
+                if (this.player.energy == 100) {
                     this.player.fullLaser(this.bullets);
                     this.main.sm.playSound('shoot');
                 }
@@ -176,7 +194,7 @@ Game.prototype = {
             // verifica se i missili colpiscono un asteroide
             self.bullets.forEachOptimized(function (b) {
                 if (!b.isEnemy && a.active && a.isCollision(b.x, b.y)) {
-                    if(self.player.powerLaser)
+                    if (self.player.powerLaser)
                         log("power")
                     b.active = false;
                     a.active = false;
@@ -185,12 +203,15 @@ Game.prototype = {
                 }
             });
 
-            self.asteroids.forEachOptimized(function (b) {
-                if(a !== b && b.active && a.collisionCircle(b.x,b.y,b.radius)){
-                    b.elasticCollision(a);
-                }
+            if (Main.ElasticCollision) {
 
-            });
+                self.asteroids.forEachOptimized(function (b) {
+                    if (a !== b && b.active) {
+                        b.elasticCollision(a);
+                    }
+
+                });
+            }
             // se il player collide con un astreroide e lo scudo non è attivo
             // viene riposizionato al centro dello schermo
             // e decrementa la  sua vita
@@ -227,24 +248,27 @@ Game.prototype = {
             if (_active)
                 b.update(dt);
 
-            if(b.isEnemy &&  self.player.isCollision(b)){
-                if(!self.player.shieldActive) {
-                    self.player.active = false;
-                    self.player.hp -= 100 / self.n_life;
+            if (b.isEnemy && self.player.isCollision(b)) {
+                if (!self.player.shieldActive) {
+                    self.player.hp -= b.damage;
                     self.main.sm.playSound('explosion');
+                    if (self.player.hp <= 0) {
+                        self.player.active = false;
+                        self.gameOver = true;
+                    }
                 }
                 b.active = false;
 
             }
             self.enemies.forEachOptimized(function (e) {
-                if(!b.isEnemy && e.isCollision(b.x,b.y)){
-                    e.hp -= 100/3;
-                    if(e.hp <= 0) {
+                if (!b.isEnemy && e.isCollision(b.x, b.y)) {
+                    e.hp -= 100 / 2;
+                    self.main.score += e.score;
+                    self.main.sm.playSound('explosion');
+                    if (e.hp <= 0) {
                         e.active = false;
-                        self.main.score += e.score;
-                        self.main.sm.playSound('explosion');
-                        _active = false;
                     }
+                    _active = false;
                 }
             });
             return _active;
@@ -255,7 +279,7 @@ Game.prototype = {
             var _active = e.active;
 
             if (_active) {
-                if(e.nearTarget()) {
+                if (e.nearTarget()) {
                     var b = e.tryShoot();
                     if (b) {
                         self.bullets.push(b);
@@ -313,7 +337,6 @@ Game.prototype = {
         });
 
 
-
         if (this.asteroids.length > 1) {
 
             if (now - this.timeLastBonusHp > this.timeSpawnBonus * 3) {
@@ -355,8 +378,8 @@ Game.prototype = {
     addBonus: function (type, size) {
         if (!Main.paused) {
             this.bonus.push(new PowerUp(
-                Math.randInt(10, this.screen.width - 10),
-                Math.randInt(10, this.screen.height - 10),
+                Math.randInt(10+size, this.screen.width - 10 - size),
+                Math.randInt(10+size, this.screen.height - 10 - size),
                 size,
                 type,
                 this.screen

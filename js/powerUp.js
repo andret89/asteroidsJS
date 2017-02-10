@@ -49,7 +49,7 @@ var PowerUp = GameObj.extend(
             g.drawAster(this,this.x,this.y)
         },
         hitTest: function(x, y) {
-            return this.collisionCircle(x, y);
+            return this.hitTestCircle(x, y);
         }
     }
 );

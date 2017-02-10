@@ -25,7 +25,7 @@ GameObj.prototype = {
      * @param  {number} r - raggio
      * @return {Boolean} Risultato intersezione
      */
-    collisionCircle: function(cx, cy, r) {
+    hitTestCircle: function(cx, cy, r) {
         var _r = r || 0; // 0 per distanza da un punto
         return this.distance({ x: cx, y: cy }) < this.radius + _r;
     },

@@ -174,5 +174,32 @@ Canvas.prototype = {
             this.ctx.fillText(lines[i], x, y);
             y += lineHeight;
         }
+    },
+    drawVelocity:function(entity) {
+        with(this.ctx) {
+            strokeStyle = "yellow";
+            lineWidth = 1;
+            beginPath();
+            moveTo(entity.x, entity.y);
+            lineTo(entity.x + entity.vx, entity.y + entity.vy);
+            stroke();
+            closePath();
+            fillStyle = "yellow";
+            beginPath();
+            var x0 = entity.x + entity.vx;
+            var y0 = entity.y + entity.vy;
+            lineTo(x0, y0);
+            var angle = Math.atan2(entity.vy, entity.vx);
+            var aperture = Math.PI - Math.PI / 12;
+            var len = 10;
+            var x1 = x0 + len * Math.cos(angle + aperture);
+            var y1 = y0 + len * Math.sin(angle + aperture);
+            lineTo(x1, y1);
+            var x2 = x0 + len * Math.cos(angle - aperture);
+            var y2 = y0 + len * Math.sin(angle - aperture);
+            lineTo(x2, y2);
+            fill();
+            closePath();
+        }
     }
 };
