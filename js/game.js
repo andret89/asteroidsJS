@@ -82,15 +82,6 @@ Game.prototype = {
                     break;
             }
         }
-        var checkStart = function (aster) {
-            var ret = {value:false};
-            this.asteroids.forEachOptimized(function (a) {
-                if (aster.hitTestCircle(a.x, a.y, a.radius))
-                    ret.value = true;
-            });
-            return ret.value;
-        }
-
 
         // se l'asteoride è stato colpito al massimo 2 volte
         // viene diviso altrimenti viene eliminato
@@ -378,8 +369,8 @@ Game.prototype = {
     addBonus: function (type, size) {
         if (!Main.paused) {
             this.bonus.push(new PowerUp(
-                Math.randInt(10+size, this.screen.width - 10 - size),
-                Math.randInt(10+size, this.screen.height - 10 - size),
+                Math.randInt(10+size*4, this.screen.width - 10 - size*4),
+                Math.randInt(10+size*4, this.screen.height - 10 - size*4),
                 size,
                 type,
                 this.screen

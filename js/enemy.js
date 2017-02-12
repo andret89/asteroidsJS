@@ -20,13 +20,12 @@ var Enemy = GameObj.extend(
         this.hp = 100;
         this.img.src = "img/aliensh.png";
         this.score = 200;
-        this.damage = 20;
         this.randomShoot = 0.995;
         this.randomShootDefault = 0.995;
         this.randomShootMore = 0.97;
 
+
         this.dx = this.dy = 1;
-        //this.speed = 1 * difficultly;
         this.speed = 30 * difficultly;
 
         this.timeOut = 10000;
@@ -94,7 +93,6 @@ var Enemy = GameObj.extend(
                 this.dy = dy;
             }
 
-            // TODO testing stop near too
             if(this.distance(this.target)>100 || !this.target.active) {
                 this.x += this.dx * this.speed * dt;
                 this.y += this.dy * this.speed * dt;
