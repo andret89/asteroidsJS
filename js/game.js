@@ -250,12 +250,8 @@ Game.prototype = {
 
             if (b.isEnemy && self.player.isCollision(b)) {
                 if (!self.player.shieldActive) {
-                    self.player.hp -= b.damage;
+                    self.player.hp -= 20;
                     self.main.sm.playSound('explosion');
-                    if (self.player.hp <= 0) {
-                        self.player.active = false;
-                        self.gameOver = true;
-                    }
                 }
                 b.active = false;
 
@@ -301,6 +297,10 @@ Game.prototype = {
         this.asteroids = self.asteroids.filter(function (a) {
             return a.active;
         });
+        if (self.player.hp <= 0) {
+            self.gameOver = true;
+        }
+
         // se fine gioco il prossimo stato è game over
         if (this.gameOver) {
             this.main.menu.setVisibility("resumeGame", 'none');

@@ -95,7 +95,7 @@ var Enemy = GameObj.extend(
             }
 
             // TODO testing stop near too
-            if(this.distance(this.target)>100) {
+            if(this.distance(this.target)>100 || !this.target.active) {
                 this.x += this.dx * this.speed * dt;
                 this.y += this.dy * this.speed * dt;
                 this.randomShoot = this.randomShootDefault;
@@ -112,7 +112,7 @@ var Enemy = GameObj.extend(
         draw: function (g) {
             g.drawEnemy(this, this.x, this.y);
             if (Main.DEBUGBOX) {
-                g.drawCircleBox(this.x, this.y, this.radius);
+                g.drawBbox(this.x, this.y, this.radius);
             }
         },
         /**

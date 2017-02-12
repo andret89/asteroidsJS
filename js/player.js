@@ -189,7 +189,7 @@ var Player = GameObj.extend(
             g.drawPlayer(this, this.x, this.y);
             this.jetFireActive = false;
             if (Main.DEBUGBOX)
-                g.drawCircleBox(this.x, this.y, this.radius);
+                g.drawBbox(this.x, this.y, this.radius);
 
         }
     }

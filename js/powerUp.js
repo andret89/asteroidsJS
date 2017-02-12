@@ -46,7 +46,7 @@ var PowerUp = GameObj.extend(
             }
         },
         draw:function (g) {
-            g.drawAster(this,this.x,this.y)
+            g.drawAsteroid(this,this.x,this.y)
         },
         hitTest: function(x, y) {
             return this.hitTestCircle(x, y);

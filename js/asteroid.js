@@ -18,22 +18,24 @@ var Asteroid = GameObj.extend(
         this.img = new Image();
         this.img.src = "img/aster.png";
         var sizeAsteroid = 10;
+        this.justCollison = false;
 
 
         // imposta l'angolo di rotazione utilizzato in ogni aggiornamento
-        this.rotation = Math.radians(Math.random() * 0.02+1);
+        this.rotation = Math.radians(Math.random() * 0.02 + 1);
         this.angle = Math.radians(Math.random() * 360 + 1);
 
         var massTemp = 4;
-        if(size === sizeAsteroid/2)
+        if (size === sizeAsteroid / 2)
             massTemp = 2;
-        else if(size === sizeAsteroid/4)
+        else if (size === sizeAsteroid / 4)
             massTemp = 1;
 
         this.mass = massTemp;
 
+        this.speed = 120 + 10 * difficultly;
 
-        this.speed = 120 + 2 * difficultly;
+        this.maxSpeed = 180;
         // calcolare la velocità
         this.updateDirection();
 
@@ -46,6 +48,19 @@ var Asteroid = GameObj.extend(
             // aggiornameto per il ridimenzionamento
             var canvasWidth = this.parent.width;
             var canvasHeight = this.parent.height;
+
+            if (this.vx > this.maxSpeed) {
+                this.vx = this.maxSpeed;
+            }
+            if (this.vx < this.maxSpeed * -1) {
+                this.vx = this.maxSpeed * -1;
+            }
+            if (this.vy > this.maxSpeed) {
+                this.vy = this.maxSpeed;
+            }
+            if (this.vy < this.maxSpeed * -1) {
+                this.vy = this.maxSpeed * -1;
+            }
 
             // aggioranemto posizione secondo la velocità
             this.x += this.vx * dt;
@@ -76,10 +91,10 @@ var Asteroid = GameObj.extend(
          * @param  {Canvas} g - oggetto per disegnare sul canvas
          */
         draw: function (g) {
-            g.drawAster(this, this.x, this.y);
+            g.drawAsteroid(this, this.x, this.y);
             if (Main.DEBUGBOX) {
                 var bbox = this.getBox();
-                g.drawCircleBox(bbox.x, bbox.y, bbox.radius);
+                g.drawBbox(bbox.x, bbox.y, bbox.radius);
                 g.drawVelocity(this)
 
             }
@@ -100,42 +115,122 @@ var Asteroid = GameObj.extend(
         isCollision: function (x, y) {
             return this.hitTestCircle(x, y);
         },
-        elasticCollisionold: function (aster) {
+        /**
+         * https://blogs.msdn.microsoft.com/faber/2013/01/09/elastic-collisions-of-balls/
+         * V1f = ((m1-m2)/(m1+m2))V1i+((2*m2)/(m1+m2))V2i
+         * V2f = ((m1-m2)/(m1+m2))V2i+((2*m2)/(m1+m2))V1i
+         * @param aster
+         */
+        elasticCollision: function (aster) {
             if (this.hitTestCircle(aster.x, aster.y, aster.radius)) {
-                var dbg = true;
-                    this.elasticCollisionbak(aster);
-
-                if(dbg)
-                    return;
-
-                var pt1 = this;
-                var pt2 = aster;
-                var dx = pt2.x - pt1.x;
-                var dy = pt2.y - pt1.y;
+                var dx = aster.x - this.x;
+                var dy = aster.y - this.y;
                 var dist = dx * dx + dy * dy;
 
-                var dvx = pt2.vx - pt1.vx;
-                var dvy = pt2.vy - pt1.vy;
-                var scalar = dx * dvx + dy * dvy;
+                var dvx = aster.vx - this.vx;
+                var dvy = aster.vy - this.vy;
+                var scalare = dx * dvx + dy * dvy;
 
-                if (scalar < 0) {
-                    var k = 2 * scalar / dist / (pt1.mass + pt2.mass);
-                    var k1 = k * pt2.mass;
-                    pt1.vx += k1 * dx;
-                    pt1.vy += k1 * dy;
-                    var k2 = -k * pt1.mass;
-                    pt2.vx += k2 * dx;
-                    pt2.vy += k2 * dy;
+                if (scalare < 0) {
+                    var k = (2 * scalare * (this.mass + aster.mass)) / dist;
+                    var k1 = k * aster.mass;
+                    this.vx += k1 * dx;
+                    this.vy += k1 * dy;
+                    var k2 = -k * this.mass;
+                    aster.vx += k2 * dx;
+                    aster.vy += k2 * dy;
                 }
+
+
+                this.elasticCollisionBest(aster);
+
+                return
+
+                var dx = aster.x - this.x;
+                var dy = aster.y - this.y;
+
+                // module velocity
+                /*
+                 var m1 = this.mass;
+                 var m2 = aster.mass;
+                 var v1x = this.vx;
+                 var v1y = this.vx;
+                 var v2x = aster.vx;
+                 var v2y = aster.vy;
+                 var d1v = Math.sqrt(v1x * v1x + v1y * v1y);
+                 var d2v = Math.sqrt(v2x * v2x + v2y * v2y);
+
+
+                 var phi = Math.atan2(dy, dx);
+                 var theta1 = Math.atan2(this.vy, this.vx);
+                 var theta2 = Math.atan2(aster.vy, aster.vx);
+
+                 var
+                 vf1x = d1v * cos(theta1 - phi),
+                 vf1y = d1v * sin(theta1 - phi),
+                 vf2x = d2v * cos(theta2 - phi),
+                 vf2y = d2v * sin(theta2 - phi),
+
+                 u1x = ((m1 - m2) * vf1x + (m2 + m2) * vf2x) / (m1 + m2),
+                 u2x = ((m1 + m1) * vf1x + (m2 - m1) * vf2x) / (m1 + m2),
+                 u1y = vf1y,
+                 u2y = vf2y,
+
+                 uf1x = u1x * cos(phi) - u1y * sin(phi),
+                 uf1y = u1x * sin(phi) + u1y * cos(phi),
+                 uf2x = u2x * cos(phi) - u2y * sin(phi),
+                 uf2y = u2x * sin(phi) + u2y * cos(phi);
+
+                 this.vx = uf1x;
+                 this.vy = uf1y;
+                 aster.vx = uf2x;
+                 aster.vy = uf2y;*/
+
+                var distance = this.distance(aster);
+                var collisionPoint = (this.radius + aster.radius) - distance;
+
+                var v1fx = (dx / distance * collisionPoint) / this.mass;
+                var v1fy = (dy / distance * collisionPoint) / this.mass;
+
+                var v2fx = (dx / distance * collisionPoint) / aster.mass;
+                var v2fy = (dy / distance * collisionPoint) / aster.mass;
+
+                this.vx += v1fx;
+                this.vy += v1fy;
+
+                aster.vx -= v2fx;
+                aster.vy -= v2fy;
+
             }
 
         },
-        elasticCollision: function (ball2) {
-            if (!this.hitTestCircle(ball2.x,ball2.y,ball2.radius) || this.distance(ball2) < this.radius-2)
-                    return;
+        elasticCollisionBest: function (aster) {
+            if (!this.hitTestCircle(aster.x, aster.y, aster.radius) ||
+                this.distance(aster) < this.radius - 4)
+                return;
 
+            var pt1 = this;
+            var pt2 = aster;
+            var dx = pt2.x - pt1.x;
+            var dy = pt2.y - pt1.y;
+            var dist = dx * dx + dy * dy;
+
+            var dvx = pt2.vx - pt1.vx;
+            var dvy = pt2.vy - pt1.vy;
+            var scalar = dx * dvx + dy * dvy;
+
+            if (scalar < 0) {
+                var k = 2 * scalar / dist / (pt1.mass + pt2.mass);
+                var k1 = k * pt2.mass;
+                pt1.vx += k1 * dx;
+                pt1.vy += k1 * dy;
+                var k2 = -k * pt1.mass;
+                pt2.vx += k2 * dx;
+                pt2.vy += k2 * dy;
+            }
+        },
+        microsoftCollison: function (ball2) {
             var ball1 = this;
-
             var dx = ball1.x - ball2.x;
             var dy = ball1.y - ball2.y;
             var dvx = ball1.vx * ball1.vx + ball1.vy * ball1.vy;
@@ -143,46 +238,35 @@ var Asteroid = GameObj.extend(
 
 
             //find the angle of the collision
-            var collisionAngle = Math.atan2(dy, dx);
+            var collisionision_angle = Math.atan2(dy, dx);
 
             var speed1 = Math.sqrt(dvx);
             var speed2 = Math.sqrt(dvy);
 
-            var direction1 = Math.atan2(ball1.vy, ball1.vx);
-            var direction2 = Math.atan2(ball2.vy, ball2.vx);
+            var direction_1 = Math.atan2(ball1.vy, ball1.vx);
+            var direction_2 = Math.atan2(ball2.vy, ball2.vx);
 
-            var speed_1x = speed1 * Math.cos(direction1 - collisionAngle);
-            var speed_1y = speed1 * Math.sin(direction1 - collisionAngle);
-            var speed_2x = speed2 * Math.cos(direction2 - collisionAngle);
-            var speed_2y = speed2 * Math.sin(direction2 - collisionAngle);
+            var
 
-            // m1v1 = m2v2
+                new_xspeed_1 = speed1 * Math.cos(direction_1 - collisionision_angle),
+                new_yspeed_1 = speed1 * Math.sin(direction_1 - collisionision_angle),
+                new_xspeed_2 = speed2 * Math.cos(direction_2 - collisionision_angle),
+                new_yspeed_2 = speed2 * Math.sin(direction_2 - collisionision_angle),
 
-            var final_velocityx_1 = ((ball1.mass - ball2.mass) * speed_1x +
-                (ball2.mass + ball2.mass) * speed_2x) / (ball1.mass + ball2.mass);
+                final_xspeed_1 = ((ball1.mass - ball2.mass) * new_xspeed_1 +
+                    (ball2.mass + ball2.mass) * new_xspeed_2) / (ball1.mass + ball2.mass),
+                final_xspeed_2 = ((ball1.mass + ball1.mass) * new_xspeed_1 +
+                    (ball2.mass - ball1.mass) * new_xspeed_2) / (ball1.mass + ball2.mass),
+                final_yspeed_1 = new_yspeed_1,
+                final_yspeed_2 = new_yspeed_2,
 
-            var final_velocityx_2 = ((ball1.mass + ball1.mass) * speed_1x +
-                (ball2.mass - ball1.mass) * speed_2x) / (ball1.mass + ball2.mass);
+                cosAngle = Math.cos(collisionision_angle),
+                sinAngle = Math.sin(collisionision_angle);
 
-            var final_velocityy_1 = speed_1y;
-            var final_velocityy_2 = speed_2y;
-
-            ball1.vx = Math.cos(collisionAngle) * final_velocityx_1 +
-                Math.cos(collisionAngle + Math.PI / 2) * final_velocityy_1;
-
-            ball1.vy = Math.sin(collisionAngle) * final_velocityx_1 +
-                Math.sin(collisionAngle + Math.PI / 2) * final_velocityy_1;
-
-            ball2.vx = Math.cos(collisionAngle) * final_velocityx_2 +
-                Math.cos(collisionAngle + Math.PI / 2) * final_velocityy_2;
-
-            ball2.vy = Math.sin(collisionAngle) * final_velocityx_2 +
-                Math.sin(collisionAngle + Math.PI / 2) * final_velocityy_2;
-
-           /* ball1.vx += 2;
-            ball1.vy += 2;
-            ball2.vx -= 2;
-            ball2.vy -= 2;*/
+            ball1.vx = cosAngle * final_xspeed_1 - sinAngle * final_yspeed_1;
+            ball1.vy = sinAngle * final_xspeed_1 + cosAngle * final_yspeed_1;
+            ball2.vx = cosAngle * final_xspeed_2 - sinAngle * final_yspeed_2;
+            ball2.vy = sinAngle * final_xspeed_2 + cosAngle * final_yspeed_2;
         }
     }
 );
