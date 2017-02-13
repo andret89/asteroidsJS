@@ -23,6 +23,7 @@ var Menu = function (main) {
     var self = this;
     Main.paused = false;
 
+    // aggiunge gestore eventi click ai bottoni
     document.getElementById("startGame")
         .addEventListener('click', function () {
             Menu.menuChoice = Button.startGame;
@@ -68,62 +69,39 @@ var Menu = function (main) {
 };
 
 Menu.prototype = {
-    /**
-     *
-     * @param id
-     * @param value
-     */
     setVisibility: function (id, value) {
         document.getElementById(id).style.display = value;
     },
-    /**
-     *
-     */
     enableOptions: function () {
         this.active = true;
         Main.paused = true;
         this.setVisibility("optionsContainer", 'block');
 
     },
-    /**
-     *
-     */
     disableOptions: function () {
         this.active = false;
         this.setVisibility("optionsContainer", 'none');
     },
-    /**
-     *
-     */
     enableInfo: function () {
         this.activeInfo = true;
         Main.paused = true;
         this.setVisibility("infoContainer", 'block');
     },
-    /**
-     *
-     */
     disableInfo: function () {
         this.activeInfo = false;
         this.setVisibility("infoContainer", 'none');
     },
-    /**
-     *
-     */
     enableDifficultly: function () {
-        this.activeDifficultly = true;
+        this.activeDifficulty = true;
         Main.paused = true;
         this.setVisibility("difficultyContainer", 'flex');
     },
-    /**
-     *
-     */
     disableDifficultly: function () {
-        this.activeDifficultly = false;
+        this.activeDifficulty = false;
         this.setVisibility("difficultyContainer", 'none');
     },
     /**
-     *
+     * Verifica il bottone selezionato e visualizza le informazioni richieste
      * @param input
      */
     update: function (input) {

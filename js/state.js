@@ -18,7 +18,7 @@ Start.prototype = {
 
     },
     draw: function(g) {
-        if (this.menu.active || this.menu.activeInfo || this.menu.activeDifficultly) {
+        if (this.menu.active || this.menu.activeInfo || this.menu.activeDifficulty) {
             return;
         }
         var ga = g.ctx;
@@ -51,21 +51,13 @@ var GameOver = function(game) {
 };
 
 GameOver.prototype = {
-    /**
-     *
-     * @param input
-     */
     update: function(input) {
         if (input.isPressed('KEY_SPACE') || input.isPressed('KEY_ENTER')) {
             this.main.menu.enableOptions();
         }
     },
-    /**
-     *
-     * @param g
-     */
     draw: function(g) {
-        if (this.menu.active || this.menu.activeInfo || this.menu.activeDifficultly) {
+        if (this.menu.active || this.menu.activeInfo || this.menu.activeDifficulty) {
             return;
         }
         var ga = g.ctx;

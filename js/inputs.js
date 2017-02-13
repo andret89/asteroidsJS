@@ -222,7 +222,7 @@ SoundManager.prototype = {
      * @param {string} type - chiave di riferimanto audio
      */
     playSound: function (type) {
-        if (Main.MUTE)
+        if (Main.Mute)
             return;
 
         var s = this.sounds[type];

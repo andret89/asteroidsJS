@@ -119,7 +119,7 @@ Canvas.prototype = {
      * @param x {number} coordinata x del centro
      * @param y {number} coordinata y del centro
      */
-    drawAsteroid: function(p, x, y) {
+    drawImageCircle: function(p, x, y) {
         var g = this.ctx;
         g.save();
         g.translate(x, y);

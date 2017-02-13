@@ -1,17 +1,17 @@
 /**
+ * @class Rappresenta un Asteroide
+ * @extends GameObj
  * @param  {number} x      - posizione in coordinate x
  * @param  {number} y      - posizione in coordinate y
  * @param  {number} size   - dimensione dell'asteroide
  * @param  {Canvas} parent - componente per il disegno
  * @param  {number} difficultly - livello di difficoltà
- * @class Rappresenta un Asteroide
- * @extends GameObj
  */
 var Asteroid = GameObj.extend(
-  /**
+    /**
    * @constructor
    */
-  function Asteroid (x, y, size, parent, difficultly) {
+  function Asteroid (x, y, size, parent, difficulty) {
     GameObj.call(this, x, y, size, parent)
     this.type = 'Asteroid'
     this.color = 'grey'
@@ -22,7 +22,7 @@ var Asteroid = GameObj.extend(
 
     // imposta l'angolo di rotazione utilizzato in ogni aggiornamento
     this.rotation = 0.02 * (Math.random() * 2 - 1)
-    this.angle = this.rotation
+    this.angle = Math.PI * Math.random();
 
     var massTemp = 4
     if (size === sizeAsteroid / 2)
@@ -32,12 +32,13 @@ var Asteroid = GameObj.extend(
 
     this.mass = massTemp
 
-    var maxSpeed = 120 + 20 * difficultly
+    var maxSpeed = 120 + 20 * difficulty
     var minSpeed = 60
     this.checkMaxSpeed = false;
+    this.bornNow = true;
 
     // calcolare la velocità
-    var r = Math.PI * Math.random()
+
     var v = Math.randInt(maxSpeed, minSpeed)
     var vx = v
     var vy = v
@@ -48,8 +49,8 @@ var Asteroid = GameObj.extend(
     if (Math.random() > 0.5)
       vy *= -1
 
-    this.vx = vx * Math.cos(r)
-    this.vy = vy * Math.sin(r)
+    this.vx = vx * Math.cos(this.angle)
+    this.vy = vy * Math.sin(this.angle)
   }, {
     /**
      * Aggiornamento posizione e rotazione
@@ -98,7 +99,7 @@ var Asteroid = GameObj.extend(
      * @param  {Canvas} g - oggetto per disegnare sul canvas
      */
     draw: function (g) {
-      g.drawAsteroid(this, this.x, this.y)
+      g.drawImageCircle(this, this.x, this.y)
       if (Main.DEBUGBOX) {
         var bbox = this.getBox()
         g.drawBbox(bbox.x, bbox.y, bbox.radius)
@@ -123,17 +124,20 @@ var Asteroid = GameObj.extend(
     },
     elasticCollision:function(aster){
 
-            if (!this.hitTestCircle(aster.x, aster.y, aster.radius)) 
-                return; 
+            if (!this.hitTestCircle(aster.x, aster.y, aster.radius) || this.bornNow || aster.bornNow) {
+                this.bornNow = false;
+                //aster.bornNow = false;
+                return;
+            }
             
             this.shiftPos(aster);
 
-            var ball1 = this; 
-            var ball2 = aster 
-            var dx = ball1.x - ball2.x; 
-            var dy = ball1.y - ball2.y; 
-            var dvx = ball1.vx * ball1.vx + ball1.vy * ball1.vy; 
-            var dvy = ball2.vx * ball2.vx + ball2.vy * ball2.vy; 
+            var aster1 = this;
+            var aster2 = aster
+            var dx = aster1.x - aster2.x;
+            var dy = aster1.y - aster2.y;
+            var dvx = aster1.vx * aster1.vx + aster1.vy * aster1.vy;
+            var dvy = aster2.vx * aster2.vx + aster2.vy * aster2.vy;
  
  
             //find the angle of the collision 
@@ -143,8 +147,8 @@ var Asteroid = GameObj.extend(
             var speed1 = Math.sqrt(dvx); 
             var speed2 = Math.sqrt(dvy); 
  
-            var direction_1 = Math.atan2(ball1.vy, ball1.vx); 
-            var direction_2 = Math.atan2(ball2.vy, ball2.vx); 
+            var direction_1 = Math.atan2(aster1.vy, aster1.vx);
+            var direction_2 = Math.atan2(aster2.vy, aster2.vx);
  
             var 
  
@@ -153,58 +157,46 @@ var Asteroid = GameObj.extend(
                 new_xspeed_2 = speed2 * Math.cos(direction_2 - collisionision_angle), 
                 new_yspeed_2 = speed2 * Math.sin(direction_2 - collisionision_angle), 
  
-                final_xspeed_1 = ((ball1.mass - ball2.mass) * new_xspeed_1 + 
-                    (ball2.mass + ball2.mass) * new_xspeed_2) / (ball1.mass + ball2.mass), 
-                final_xspeed_2 = ((ball1.mass + ball1.mass) * new_xspeed_1 + 
-                    (ball2.mass - ball1.mass) * new_xspeed_2) / (ball1.mass + ball2.mass), 
+                final_xspeed_1 = ((aster1.mass - aster2.mass) * new_xspeed_1 +
+                    (aster2.mass + aster2.mass) * new_xspeed_2) / (aster1.mass + aster2.mass),
+                final_xspeed_2 = ((aster1.mass + aster1.mass) * new_xspeed_1 +
+                    (aster2.mass - aster1.mass) * new_xspeed_2) / (aster1.mass + aster2.mass),
                 final_yspeed_1 = new_yspeed_1, 
                 final_yspeed_2 = new_yspeed_2, 
- 
-                /* 
-                 cosAngle = Math.cos(collisionision_angle), 
-                 sinAngle = Math.sin(collisionision_angle); 
- 
- 
-                 ball1.vx = cosAngle * final_xspeed_1 - sinAngle * final_yspeed_1; 
-                 ball1.vy = sinAngle * final_xspeed_1 + cosAngle * final_yspeed_1; 
-                 ball2.vx = cosAngle * final_xspeed_2 - sinAngle * final_yspeed_2; 
-                 ball2.vy = sinAngle * final_xspeed_2 + cosAngle * final_yspeed_2; 
-                 */ 
+
                 cosAngle = Math.cos(collisionision_angle), 
                 cosAngle2 = Math.cos(collisionision_angle + Math.PI / 2), 
                 sinAngle = Math.sin(collisionision_angle), 
                 sinAngle2 = Math.sin(collisionision_angle + Math.PI / 2); 
  
  
-            ball1.vx = cosAngle * final_xspeed_1 + cosAngle2 * final_yspeed_1; 
-            ball1.vy = sinAngle * final_xspeed_1 + sinAngle2 * final_yspeed_1; 
-            ball2.vx = cosAngle * final_xspeed_2 + sinAngle2 * final_yspeed_2; 
-            ball2.vy = sinAngle * final_xspeed_2 + cosAngle2 * final_yspeed_2; 
+            aster1.vx = cosAngle * final_xspeed_1 + cosAngle2 * final_yspeed_1;
+            aster1.vy = sinAngle * final_xspeed_1 + sinAngle2 * final_yspeed_1;
+            aster2.vx = cosAngle * final_xspeed_2 + sinAngle2 * final_yspeed_2;
+            aster2.vy = sinAngle * final_xspeed_2 + cosAngle2 * final_yspeed_2;
 
     },
+    /**
+     * Spostamento asteroidi per fix posizione dopo l'urto
+     * @param aster
+     */
     shiftPos:function(aster){
-        var ball1 = this;
-        var ball2 = aster;
-        if (ball1.x < ball2.x)
-        {
-          ball1.x -= 1;
-          ball2.x += 1;
+        if (this.x < aster.x){
+          this.x -= 2;
+          aster.x += 2;
         }
-        else
-        {
-          ball1.x += 1;
-          ball2.x -= 1;
+        else {
+          this.x += 2;
+          aster.x -= 2;
         }
  
-        if (ball1.y < ball2.y)
-        {
-          ball1.y -= 1;
-          ball2.y += 1;
+        if (this.y < aster.y){
+          this.y -= 2;
+          aster.y += 2;
         }
-        else
-        {
-          ball1.y += 1;
-          ball2.y -= 1;
+        else {
+          this.y += 2;
+          aster.y -= 2;
         }
     }
   }

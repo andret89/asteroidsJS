@@ -17,7 +17,7 @@ var Main = function () {
     Main.paused = false;
     Main.startGame = false;
     Main.endGame = false;
-    Main.MUTE = false;
+    Main.Mute = false;
     Main.DEBUGBOX = false;
     Main.MOUSE_GAME = true;
     Main.ElasticCollision = false;
@@ -26,7 +26,7 @@ var Main = function () {
 
 Main.prototype = {
     /**
-     * Inizializzazione gioco
+     * Inizializzazione elementi del gioco
      */
     init: function () {
         // funzioni per disegnare su canvas
@@ -49,7 +49,7 @@ Main.prototype = {
         this.nextState = States.START;
     },
     /**
-     * Attivazione gameloop per l'animazione degli oggetti di gioco
+     * Attivazione animazione degli oggetti di gioco
      */
     run: function () {
         var self = this;
@@ -87,12 +87,14 @@ Main.prototype = {
                     dt = 0.15;
             }
             // aggiorna solo gli eventi dei menu se sono attivi
-            if (self.menu.active || self.menu.activeInfo || self.menu.activeDifficultly) {
+            if (self.menu.active || self.menu.activeInfo || self.menu.activeDifficulty) {
                 self.menu.update(self.input);
             }
             else
+                // aggiorna stato corrente
                 self.currState.update(self.input, dt);
 
+            // ridisegna
             self.screen.clearAll();
             self.currState.draw(self.screen);
 
@@ -101,7 +103,7 @@ Main.prototype = {
 
             window.requestAnimFrame(gameLoop);
         }
-
+        // attivazione loop di gioco
         gameLoop();
     },
     /**

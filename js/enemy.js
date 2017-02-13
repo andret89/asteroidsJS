@@ -1,11 +1,11 @@
 /**
+ * @class Rappresenta un Astronave nemica
+ * @extends GameObj
  * @param  {number} x      - posizione in coordinate x
  * @param  {number} y      - posizione in coordinate y
  * @param  {number} size   - dimensione dell'asteroide
  * @param  {Canvas} parent - componente per il disegno
  * @param  {number} difficultly - livello di difficoltà
- * @class Rappresenta un Asteroide
- * @extends GameObj
  */
 var Enemy = GameObj.extend(
     /**
@@ -20,11 +20,13 @@ var Enemy = GameObj.extend(
         this.hp = 100;
         this.img.src = "img/aliensh.png";
         this.score = 200;
+
+        // time random per probabilita di sparo
         this.randomShoot = 0.995;
         this.randomShootDefault = 0.995;
         this.randomShootMore = 0.97;
 
-
+        // valori per direzione
         this.dx = this.dy = 1;
         this.speed = 30 * difficultly;
 
@@ -59,16 +61,16 @@ var Enemy = GameObj.extend(
             var canvasHeight = this.parent.height
 
 
-            // movimento player nel canvas
+            // movimento nemico nel canvas
             if (this.x > canvasWidth) {
                 this.x = 0;
             } else if (this.x < 0) {
-                this.x = this.canvasWidth;
+                this.x = canvasWidth;
             }
-            if (this.y > this.canvasHeight) {
+            if (this.y > canvasHeight) {
                 this.y = 0;
             } else if (this.y < 0) {
-                this.y = this.canvasHeight;
+                this.y = canvasHeight;
             }
 
 
