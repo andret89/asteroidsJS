@@ -54,6 +54,6 @@ Bullet.prototype = {
      * @param  {Canvas} g - oggetto per disegnare sul canvas
      */
     draw: function(g) {
-        g.drawBullet(this.oldx, this.oldy, this.x, this.y, this.color)
+        g.drawBullet(this, this.color)
     }
 }

@@ -87,17 +87,20 @@ Game.prototype = {
         // viene diviso altrimenti viene eliminato
         if (a.size > this.sizeAsteroid / 4) {
             for (var k = 0; k < 2; k++) {
-                var size = a.size/2;
-                var offset = 2 + size*4;
-                    var astr = new Asteroid(
-                        k % 2 == 0 ? a.x-offset:a.x+offset,
-                        //a.x,
-                        k % 2 == 0 ? a.y-offset:a.y+offset,
-                        //a.y,
-                        size,
-                        this.screen,
-                        this.main.levelDifficulty
-                    );
+                var size = a.size / 2;
+                var offset = 5;
+                if (Main.ElasticCollision)
+                    offset = 2 + size * 4;
+
+                var astr = new Asteroid(
+                    k % 2 == 0 ? a.x - offset : a.x + offset,
+                    //a.x,
+                    k % 2 == 0 ? a.y - offset : a.y + offset,
+                    //a.y,
+                    size,
+                    this.screen,
+                    this.main.levelDifficulty
+                );
                 this.asteroids.push(astr);
             }
         }
@@ -349,7 +352,6 @@ Game.prototype = {
         }
         // tempo di comparsa nemici
         if (now - this.timeLastEnemy > this.timeSpawnEnemy) {
-            // TODO start position bug
             var x = 30,
                 y = 30,
                 randomPos = (Math.random() > 0.5);
@@ -380,8 +382,8 @@ Game.prototype = {
     addBonus: function (type, size) {
         if (!Main.paused) {
             this.bonus.push(new PowerUp(
-                Math.randInt(10+size*4, this.screen.width - 10 - size*4),
-                Math.randInt(10+size*4, this.screen.height - 10 - size*4),
+                Math.randInt(10 + size * 4, this.screen.width - 10 - size * 4),
+                Math.randInt(10 + size * 4, this.screen.height - 10 - size * 4),
                 size,
                 type,
                 this.screen

@@ -1,11 +1,11 @@
 /**
- * @class Rappresenta un Astronave nemica
+ * @class Rappresenta un astronave nemica
  * @extends GameObj
  * @param  {number} x      - posizione in coordinate x
  * @param  {number} y      - posizione in coordinate y
  * @param  {number} size   - dimensione dell'asteroide
  * @param  {Canvas} parent - componente per il disegno
- * @param  {number} difficultly - livello di difficoltà
+ * @param  {number} difficulty - livello di difficoltà
  */
 var Enemy = GameObj.extend(
     /**
@@ -27,7 +27,7 @@ var Enemy = GameObj.extend(
         this.randomShootMore = 0.97;
 
         // valori per direzione
-        this.dx = this.dy = 1;
+        this.directionX = this.directionY = 1;
         this.speed = 30 * difficultly;
 
         this.timeOut = 10000;
@@ -74,28 +74,32 @@ var Enemy = GameObj.extend(
             }
 
 
-
-            // aggioranemto poizione secondo il target(player)
+            // aggioranemto posizione secondo il target(player)
             if (this.nearTarget()) {
-                var dx ,dy;
+                var dx, dy;
                 dx = this.x - this.target.x;
                 dy = this.y - this.target.y;
+
+                // angolo direzione per raggiungere il target
                 this.angle = Math.atan2(dy, dx);
 
-                dx = this.target.x - this.x;
-                dy = this.target.y - this.y;
-                var hyp = Math.sqrt(dx * dx + dy * dy);
+                dx *= -1;
+                dy *= -1;
 
-                dx /= hyp;
-                dy /= hyp;
+                var module_spostamento = Math.sqrt(dx * dx + dy * dy);
 
-                this.dx = dx;
-                this.dy = dy;
+                if (module_spostamento !== 0) {
+                    dx /= module_spostamento;
+                    dy /= module_spostamento;
+                }
+
+                this.directionX = dx;
+                this.directionY = dy;
             }
 
-            if(this.distance(this.target)>100 || !this.target.active) {
-                this.x += this.dx * this.speed * dt;
-                this.y += this.dy * this.speed * dt;
+            if (this.distance(this.target) > 100 || !this.target.active) {
+                this.x += this.directionX * this.speed * dt;
+                this.y += this.directionY * this.speed * dt;
                 this.randomShoot = this.randomShootDefault;
             }
             else

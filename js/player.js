@@ -1,10 +1,10 @@
 /**
+ * @class Rappresenta l'astronave del Player
+ * @extends GameObj
  * @param  {number} x      - posizione in coordinate x
  * @param  {number} y      - posizione in coordinate y
  * @param  {number} size   - dimensione dell'astronave
  * @param  {Canvas} parent - componente per il disegno
- * @class Rappresenta l'astronave del Player
- * @extends GameObj
  */
 var Player = GameObj.extend(
     /**
@@ -23,6 +23,7 @@ var Player = GameObj.extend(
         this.timeoutPowerLaser = 10000;
         this.powerLaser = false;
 
+        // oggetto per rappresentare il lo scudo di energia
         this.shieldActive = false;
         this.shield = {
             img: new Image(),
@@ -49,6 +50,7 @@ var Player = GameObj.extend(
          */
         addBullet: function (bullets) {
             var now = new Date().getTime();
+            // tempo di ricarica cannone laser
             if (this.timeLastShoot !== 0 &&
                 now - this.timeLastShoot < this.timeoutShoot)
                 return false;
@@ -64,6 +66,7 @@ var Player = GameObj.extend(
                 this.angle,
                 this.parent));
 
+            // creazione bullet per laser più potente
             if (this.powerLaser) {
                 if (now - this.startPowerLaser < this.timeoutPowerLaser) {
                     bullets.push(new Bullet(
@@ -82,6 +85,10 @@ var Player = GameObj.extend(
 
             return true;
         },
+        /**
+         * Creazione missile per laser in ogni direzione(super arma)
+         * @param bullets
+         */
         fullLaser:function (bullets) {
             this.energy = 0;
             for(var i=0; i<360; i+=5)

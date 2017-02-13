@@ -47,22 +47,6 @@ Canvas.prototype = {
     clearAll: function() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     },
-    /*
-
-     */
-    drawCircle: function( cx, cy, r, color) {
-        var g = this.ctx;
-        g.save();
-        g.beginPath();
-        g.shadowBlur = 35;
-        g.globalAlpha = 0.1;
-        g.shadowColor = g.fillStyle = color || "red";
-        g.translate(cx,cy);
-        g.arc(0, 0, r, 0, 2 * Math.PI, false);
-        g.closePath();
-        g.fill();
-        g.restore();
-    },
     /**
      * Disegna il bbox
      * @param cx {number}  coordinata x del centro
@@ -145,30 +129,27 @@ Canvas.prototype = {
         g.restore()
     },
     /**
-     *
-     * @param x1
-     * @param y1
-     * @param x2
-     * @param y2
-     * @param color
+     *Disegna un missile
      */
-    drawBullet: function(x1, y1, x2, y2, color) {
-        var g = this.ctx;
+    drawBullet: function(bullet) {
+        var g = this.ctx,
+            x1=bullet.x,
+            y1=bullet.y,
+            x2=bullet.oldx,
+            y2=bullet.oldy;
+
         g.save();
         g.beginPath();
         g.lineWidth = 3;
         g.shadowBlur = 10;
-        g.shadowColor = g.strokeStyle = color || "yellow";
+        g.shadowColor = g.strokeStyle = bullet.color || "yellow";
         g.moveTo(x1, y1);
         g.lineTo(x2, y2);
         g.stroke();
         g.restore();
     },
     /**
-     *
-     * @param text
-     * @param x
-     * @param y
+     * Disegna un testo su piu righe
      */
     fillTextMultiLine: function(text, x, y) {
         var lineHeight = this.ctx.measureText("M").width * 1.2;
@@ -178,6 +159,9 @@ Canvas.prototype = {
             y += lineHeight;
         }
     },
+    /**
+     * Disegna il vettore della velocita
+     */
     drawVelocity: function(entity) {
         with(this.ctx) {
             strokeStyle = "yellow";
