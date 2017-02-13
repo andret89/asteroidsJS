@@ -24,19 +24,19 @@ var Bullet = function Bullet(x, y, angle, parent, isEnemy) {
 };
 Bullet.prototype = {
     /**
-     * Aggionarna la posizione del missile
+     * Aggiorna la posizione del missile
      * @param {Number} dt - delta del tempo per frame
      */
-    update: function(dt) {
+    update: function (dt) {
 
         // aggiornameto per ridimenzionamento finestra
         var canvasWidth = this.parent.width
         var canvasHeight = this.parent.height
 
-        
+
         // movimento missile nel canvas
-        if(this.x < 0 || this.x > canvasWidth ||
-            this.y < 0|| this.y > canvasHeight )
+        if (this.x < 0 || this.x > canvasWidth ||
+            this.y < 0 || this.y > canvasHeight)
             this.active = false;
 
 
@@ -53,7 +53,7 @@ Bullet.prototype = {
      * Disegna il missile
      * @param  {Canvas} g - oggetto per disegnare sul canvas
      */
-    draw: function(g) {
+    draw: function (g) {
         g.drawBullet(this, this.color)
     }
-}
+};

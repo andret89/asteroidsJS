@@ -50,6 +50,7 @@ var Player = GameObj.extend(
          */
         addBullet: function (bullets) {
             var now = new Date().getTime();
+
             // tempo di ricarica cannone laser
             if (this.timeLastShoot !== 0 &&
                 now - this.timeLastShoot < this.timeoutShoot)
@@ -86,7 +87,7 @@ var Player = GameObj.extend(
             return true;
         },
         /**
-         * Creazione missile per laser in ogni direzione(super arma)
+         * Creazione missile per laser in ogni direzione (super arma)
          * @param bullets
          */
         fullLaser:function (bullets) {
@@ -124,7 +125,7 @@ var Player = GameObj.extend(
         }
         ,
         /**
-         * Verifica se un asteroide ha una collisione con il player
+         * Verifica se c'è una collisione con il player
          *
          * @param  {Asteroid} astr - asteroide da testare
          * @return {Boolean}  Risultato collisione
@@ -137,7 +138,7 @@ var Player = GameObj.extend(
         }
         ,
         /**
-         * Aggionarna la posizione del player
+         * Aggiorna la posizione del player
          * @param {Number} dt - delta del tempo per frame
          */
         update: function (dt) {

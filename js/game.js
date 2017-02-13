@@ -14,18 +14,17 @@ var Game = function (main) {
     this.n_life = 3;
     this.sizeAsteroid = 10;
     this.sizeEnemy = 8;
+    this.sizePlayer = 6;
     this.timeLastBonusNrg = this.timeLastBonusScore =
         this.timeLastBonusHp = new Date().getTime();
     this.timeLastEnemy = 0;
     this.timeSpawnBonus = 10000;
     this.timeSpawnEnemy = 60000;
 
-    this.debug = false;
-
     this.player = new Player(
         this.screen.width / 2, // x
         this.screen.height / 2, // y
-        6, //size
+        this.sizePlayer, //size
         this.screen // parent
     );
 };
@@ -216,9 +215,6 @@ Game.prototype = {
                 a.active = false;
             }
 
-            if (self.player.hp <= 0) {
-                self.gameOver = true;
-            }
         });
 
         // se tutti gli oggetti in gioco sono stati tutti eliminati
@@ -279,7 +275,7 @@ Game.prototype = {
                     }
                 }
 
-                // se l'atronave nemica collide con il player
+                // se l'astronave nemica collide con il player
                 // questo perde una vita
                 if (self.player.isCollision(e)) {
                     self.player.active = false;
@@ -312,7 +308,7 @@ Game.prototype = {
         this.bonus = self.bonus.filter(function (b) {
             b.update();
             var _active = b.active;
-            // assegnazione bonus al giocatore se fa drug and drop o collide
+            // assegnazione bonus al giocatore se fa drag and drop o collide
             if (_active && !b.selected && self.player.isCollision(b)) {
                 _active = false;
                 self.main.score += b.bonus;

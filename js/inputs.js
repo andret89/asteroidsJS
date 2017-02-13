@@ -29,7 +29,6 @@ var Inputs = function () {
     this.keys = {};
     this.down = {};
     this.pressed = {};
-    this.isDrag = false;
     this.selectObj = null;
     this.mousePos = {
         x: 0,
@@ -71,9 +70,7 @@ Inputs.prototype = {
                     if (inGame) {
                         var b = game.bonus;
                         b.forEachOptimized(function (a) {
-                            log("mouse "+evt.clientX +","+evt.clientX );
-                            log("bonus "+a.x+","+a.y);
-                            if (a.hitTest(evt.clientX, evt.clientY)) {
+                           if (a.hitTest(evt.clientX, evt.clientY)) {
                                 self.selectObj = a;
                                 a.selected = true;
                                 log("selected")
@@ -100,8 +97,6 @@ Inputs.prototype = {
         });
         document.addEventListener('mouseup', function (evt) {
             var btnCode = evt.button;
-            var game = self.main.currState;
-            var inGame = game && game instanceof Game;
 
             switch (btnCode) {
                 case 0:
@@ -131,8 +126,6 @@ Inputs.prototype = {
 
         // gestione evento movimento mouse
         document.addEventListener("mousemove", function (event) {
-            var mouseView = self.getMouseView(event);
-
 
             // e aggiornamento angolo di rotazione player
             if (Main.MOUSE_GAME && !Main.paused) {
@@ -179,10 +172,6 @@ Inputs.prototype = {
             return this.pressed[key] = true;
         }
         return false;
-    },
-    getMouseView:function (e) {
-        var screen = this.main.screen;
-        return {x:e.clientX - screen.offsetLeft,y:e.clientY - screen.offsetTop};
     }
 };
 
