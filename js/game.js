@@ -140,7 +140,7 @@ Game.prototype = {
                 this.player.active = true;
                 this.player.x = this.screen.width / 2;
                 this.player.y = this.screen.height / 2;
-                this.player.vel = {x: 0, y: 0};
+                this.player.vx = this.player.vy = 0;
             }
         }
         else {

@@ -21,10 +21,9 @@ var Bullet = function Bullet(x, y, angle, parent, isEnemy) {
     // calcolare la velocità secondo l'algolo di rotazione del player
     // pixel per secondo
     var v = this.isEnemy ? 250 : 400;
-    this.vel = {
-        x: v * Math.cos(angle),
-        y: v * Math.sin(angle)
-    }
+    this.vx = v * Math.cos(angle)
+    this.vy = v * Math.sin(angle)
+    
 };
 Bullet.prototype = {
     /**
@@ -39,29 +38,13 @@ Bullet.prototype = {
         }
 
         // aggiornameto per ridimenzionamento finestra
-        if (this.maxX !== this.parent.width)
-            this.maxX = this.parent.width;
-        if (this.maxY !== this.parent.height)
-            this.maxY = this.parent.height;
+        var canvasWidth = this.parent.width
+        var canvasHeight = this.parent.height
 
-
-
-        /*
+        
         // movimento missile nel canvas
-        if (this.x > this.maxX)
-            this.x = 0;
-        else
-            if (this.x < 0)
-                this.x = this.maxX;
-
-        if (this.y > this.maxY)
-            this.y = 0;
-        else
-            if (this.y < 0)
-                this.y = this.maxY;
-        */
-        if(this.x < 0 || this.x > this.maxX ||
-            this.y < 0|| this.y > this.maxY )
+        if(this.x < 0 || this.x > canvasWidth ||
+            this.y < 0|| this.y > canvasHeight )
             this.active = false;
 
 
@@ -70,8 +53,8 @@ Bullet.prototype = {
         this.oldy = this.y;
 
         // aggiorna posizione
-        this.x += this.vel.x * dt;
-        this.y += this.vel.y * dt;
+        this.x += this.vx * dt;
+        this.y += this.vy * dt;
     },
 
     /**

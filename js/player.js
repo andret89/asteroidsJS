@@ -40,12 +40,8 @@ var Player = GameObj.extend(
         };
         this.jetFire.img.src = "img/jetfire.png";
         this.friction = 0.96;
-        this.vel = {
-            x: 0,
-            y: 0
-        };
-
-
+        this.vx = this.vy = 0
+    
     }, {
         /**
          * Ritorna un missile
@@ -104,9 +100,9 @@ var Player = GameObj.extend(
         addSpeed: function () {
 
             // 		a*a + b*b = c*c
-            if (this.vel.x * this.vel.x + this.vel.y * this.vel.y < 400 * 400) {
-                this.vel.x += 15 * Math.cos(this.angle);
-                this.vel.y += 15 * Math.sin(this.angle);
+            if (this.vx * this.vx + this.vy * this.vy < 400 * 400) {
+                this.vx += 15 * Math.cos(this.angle);
+                this.vy += 15 * Math.sin(this.angle);
             }
             this.jetFireActive = true;
         }
@@ -141,30 +137,29 @@ var Player = GameObj.extend(
             if (!this.active)
                 return;
 
-            // aggiornameto secondo le dimesioni del componente padre
-            if (this.maxX !== this.parent.width)
-                this.maxX = this.parent.width;
-            if (this.maxY !== this.parent.height)
-                this.maxY = this.parent.height;
+            // aggiornameto per ridimenzionamento finestra
+            var canvasWidth = this.parent.width
+            var canvasHeight = this.parent.height
+
 
             // aggioranemto posizione secondo la velocità
-            this.x += this.vel.x * dt;
-            this.y += this.vel.y * dt;
+            this.x += this.vx * dt;
+            this.y += this.vy * dt;
 
             // frizione
-            this.vel.x *= this.friction;
-            this.vel.y *= this.friction;
+            this.vx *= this.friction;
+            this.vy *= this.friction;
 
             // movimento player nel canvas
-            if (this.x > this.maxX) {
+            if (this.x > canvasWidth) {
                 this.x = 0;
             } else if (this.x < 0) {
-                this.x = this.maxX;
+                this.x = canvasWidth;
             }
-            if (this.y > this.maxY) {
+            if (this.y > canvasHeight) {
                 this.y = 0;
             } else if (this.y < 0) {
-                this.y = this.maxY;
+                this.y = canvasHeight;
             }
             // gestione quantità di energia usata
             if (this.shieldActive) {

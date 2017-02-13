@@ -54,23 +54,21 @@ var Enemy = GameObj.extend(
          * @param dt
          */
         update: function (dt) {
-            // aggiornameto per il ridimenzionamento
-            if (this.maxX !== this.parent.width)
-                this.maxX = this.parent.width;
-            if (this.maxY !== this.parent.height)
-                this.maxY = this.parent.height;
+            // aggiornameto per ridimenzionamento finestra
+            var canvasWidth = this.parent.width
+            var canvasHeight = this.parent.height
 
 
             // movimento player nel canvas
-            if (this.x > this.maxX) {
+            if (this.x > canvasWidth) {
                 this.x = 0;
             } else if (this.x < 0) {
-                this.x = this.maxX;
+                this.x = this.canvasWidth;
             }
-            if (this.y > this.maxY) {
+            if (this.y > this.canvasHeight) {
                 this.y = 0;
             } else if (this.y < 0) {
-                this.y = this.maxY;
+                this.y = this.canvasHeight;
             }
 
 

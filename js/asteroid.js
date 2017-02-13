@@ -120,6 +120,9 @@ var Asteroid = GameObj.extend(
      */
     isCollision: function (x, y) {
       return this.hitTestCircle(x, y)
+    },
+    elasticCollision:function(aster){
+
     }
   }
 );
