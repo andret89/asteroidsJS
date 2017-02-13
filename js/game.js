@@ -91,8 +91,8 @@ Game.prototype = {
                 //var isDone = false;
                 //while (isDone) {
                     var astr = new Asteroid(
-                        k % 2 == 0 ? a.x-size * 3:a.x+size * 3,
-                        k % 2 == 0 ? a.y-size * 3:a.y+size * 3,
+                        k % 2 == 0 ? a.x-size * 4:a.x+size * 4,
+                        k % 2 == 0 ? a.y-size * 4:a.y+size * 4,
                         size,
                         this.screen,
                         this.main.levelDifficulty
