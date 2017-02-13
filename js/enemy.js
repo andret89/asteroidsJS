@@ -18,7 +18,7 @@ var Enemy = GameObj.extend(
         this.target = target;
         this.img = new Image();
         this.hp = 100;
-        this.img.src = "img/aliensh.png";
+        this.img.src = "img/enemy.png";
         this.score = 200;
 
         // time random per probabilita di sparo

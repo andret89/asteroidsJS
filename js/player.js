@@ -14,7 +14,7 @@ var Player = GameObj.extend(
         GameObj.call(this, x, y, size, parent);
         this.color = "green";
         this.img = new Image();
-        this.img.src = "img/ship2.jpg";
+        this.img.src = "img/player.jpg";
         this.hp = 100;
         this.energy = 100;
         this.timeLastShoot = 0;

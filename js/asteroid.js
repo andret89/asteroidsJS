@@ -16,7 +16,7 @@ var Asteroid = GameObj.extend(
         this.type = 'Asteroid'
         this.color = 'grey'
         this.img = new Image()
-        this.img.src = 'img/aster.png'
+        this.img.src = 'img/asteroid.png'
         var sizeAsteroid = 10
 
 
